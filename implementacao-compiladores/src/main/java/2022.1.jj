@@ -1,9 +1,9 @@
 options {
-        STATIC = false;
-        LOOKAHEAD = 1;
-        DEBUG_LOOKAHEAD = true;
-
+    STATIC = false;
+    LOOKAHEAD = 1;
+    DEBUG_LOOKAHEAD = true;
 }
+
 PARSER_BEGIN(2022.1)
 
 //PARTE DO CÓDIGO JAVA
