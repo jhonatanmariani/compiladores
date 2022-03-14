@@ -16,4 +16,18 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
     <li> Acessar: https://javacc.github.io/javacc/ </li>
     <li> Clicar em Download. </li>
     <li> Para baixar a versão 7.0.10, acesse: https://github.com/javacc/javacc/archive/javacc-7.0.10.zip que o download será iniciado automaticamente. </li>
+    <li> Extraia a pasta javacc-javacc-7.0.10 para 'C:\Program Files\Java' com o nome 'javacc-7.0.10'</li>
+    <li> Abrir as Variáveis do Sistema do Windows:</li>
+        <ol>
+            <li> Em Variáveis do Sistema clicar na variável "Path" e depois ir em "Editar"  </li> 
+            <li> Clicar em "Novo" e adicionar o caminho da pasta 'scripts' do JavaCC, exemplo: 'C:\Program Files\Java\javacc-7.0.10\scripts'
+            <li> Clicar em OK </li>
+            <li> Pronto! </li>
+        </ol>
 </ol>
+
+## Instalação do Plugin JavaCC no IntelliJIDEA
+
+Acessar: https://plugins.jetbrains.com/plugin/11431-javacc/
+
+Clicar em 'Install to IntelliJ IDEA'
