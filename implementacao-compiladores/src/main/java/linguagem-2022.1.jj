@@ -4,11 +4,11 @@ options {
     DEBUG_LOOKAHEAD = true;
 }
 
-PARSER_BEGIN(2022.1)
+PARSER_BEGIN(linguagem-2022.1)
 
 //PARTE DO CÓDIGO JAVA
 
-PARSER_END(2022.1)
+PARSER_END(linguagem-2022.1)
 
 SKIP :  //caracteres que o javacc excluirá da linguagem
 {
