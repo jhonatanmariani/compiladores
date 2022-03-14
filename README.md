@@ -1,7 +1,9 @@
 # Compiladores
 
 Esse trabalho é baseado na análise da linguagem 2022.1 .
+
 A IDE utilizada foi a IntelliJ IDEA.
+
 A versão do JDK utilizada foi a 16.0.1.
 
 O arquivo .jj é onde possui a análise léxica e sintática da linguagem 2022.1 .
