@@ -20,6 +20,8 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
         <ol>
             <li> Em Variáveis do Sistema clicar na variável "Path" e depois ir em "Editar"  </li> 
             <li> Clicar em "Novo" e adicionar o caminho da pasta 'scripts' do JavaCC, exemplo: 'C:\Program Files\Java\javacc-7.0.10\scripts'
+            <li> Caso não tenha em Path o diretório da pasta JDK da versão utilizada para programar, adicione também apontando para a pasta 'bin', exemplo: 'C:\Program Files\Java\jdk-16.0.1\bin' </li>
+            <li> Caso não tenha em Path o diretório da pasta JRE da versão utilizada para programar, adicione também apontando para a pasta 'bin', exemplo: 'C:\Program Files\Java\jre1.8.0_301\bin'  </li>
             <li> Clicar em OK </li>
             <li> Pronto! </li>
         </ol>
