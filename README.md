@@ -1,12 +1,11 @@
 # Compiladores
 
-Esse trabalho é baseado na análise da [linguagem 2022.1](https://github.com/jhonatanmariani/compiladores/blob/master/linguagem/Especificacao-linguagem2022.2.pdf).
-
-A IDE utilizada foi a IntelliJ IDEA.
-
-A versão do JDK utilizada foi a 16.0.1.
-
-O arquivo .jj é onde possui a análise léxica e sintática da linguagem 2022.1 .
+<ul>
+    <li> Esse trabalho é baseado na análise da [linguagem 2022.1](https://github.com/jhonatanmariani/compiladores/blob/master/linguagem/Especificacao-linguagem2022.2.pdf). </li>
+    <li> A IDE utilizada foi a IntelliJ IDEA. </li>
+    <li> A versão do JDK utilizada foi a 16.0.1. </li>
+    <li> O arquivo .jj é onde possui a análise léxica e sintática da linguagem 2022.1 . </li>
+</ul>
 
 ## Instalação do JavaCC no Windows
 
@@ -26,8 +25,9 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
         </ol>
 </ol>
 
-## Instalação do Plugin JavaCC no IntelliJIDEA
+## Instalação do Plugin JavaCC no IntelliJ IDEA
 
-Acessar: https://plugins.jetbrains.com/plugin/11431-javacc/
-
-Clicar em 'Install to IntelliJ IDEA'
+<ol>
+    <li> Acessar: https://plugins.jetbrains.com/plugin/11431-javacc/ </li>
+    <li> Clicar em 'Install to IntelliJ IDEA' </li>
+</ol>
