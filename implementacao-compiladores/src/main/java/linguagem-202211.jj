@@ -65,7 +65,7 @@ TOKEN : {
 
 //Identificadores
 TOKEN : {
-
+    < IDENTIFICADORES: "" >
 }
 
 //Constantes Literais
