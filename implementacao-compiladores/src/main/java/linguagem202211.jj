@@ -4,11 +4,10 @@ options {
     DEBUG_LOOKAHEAD = true;
 }
 
-PARSER_BEGIN(linguagem-2022.1)
+PARSER_BEGIN(Language20221)
 
-//PARTE DO CÓDIGO JAVA
-
-PARSER_END(linguagem-2022.1)
+// classe java
+PARSER_END(Language20221)
 
 SKIP :  //caracteres que o javacc excluirá da linguagem
 {
@@ -20,9 +19,26 @@ SKIP :  //caracteres que o javacc excluirá da linguagem
     | "\r\n"
 }
 
-//Comentários
-TOKEN : {
+//COMENTÁRIO DE MULTIPLAS LINHAS
+SKIP:
+{
+    "/*" : comentariodemultiplaslinhas
+}
+<comentariodemultiplaslinhas> SKIP:
+{
+        "*/" : DEFAULT
+    |   <~[]>
+}
 
+//COMENTÁRIO DE LINHA
+SKIP:
+{
+    "//": comentariodelinha
+}
+<comentariodelinha> SKIP:
+{
+        <["\n" , "\r"]> : DEFAULT
+    |   <~[]>
 }
 
 
@@ -48,7 +64,7 @@ TOKEN :
     |   < READ: "read" >
     |   < WRITE: "write" >
     |   < ALL: "all" >
-    |   < REPEAT: "read" >
+    |   < REPEAT: "repeat" >
     |   < TRUE: "true" >
     |   < UNTRUE: "untrue" >
 }
@@ -65,7 +81,7 @@ TOKEN : {
 
 //Identificadores
 TOKEN : {
-    < IDENTIFICADORES: "" >
+    < IDENTIFICADORES: "a" >
 }
 
 //Constantes Literais
@@ -75,14 +91,14 @@ TOKEN : {
 
 //Constantes Númericas (Real e Inteira)
 TOKEN : {
-        <CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)?                   // 1 a 3 digitos
-    |   <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
-    |   <CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? <PONTO_FINAL> <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>
+        < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? <PONTO_FINAL> <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
 
 //Símbolos Especiais
-TOKEN:
+TOKEN :
 {
         < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
     |   < ABRE_CHAVES: "{" >
@@ -96,7 +112,7 @@ TOKEN:
 }
 
 //Operadores Aritméticos
-TOKEN
+TOKEN :
 {
         < ADICAO: "+" >
     |   < SUBTRACAO: "-" >
@@ -108,9 +124,9 @@ TOKEN
 }
 
 //Operadores Relacionais
-TOKEN:
+TOKEN :
 {
-    |   < IGUAL: "=" >
+        < IGUAL: "=" >
     |   < DIFERENTE: "!=" >
     |   < MENOR: "<" >
     |   < MAIOR: ">" >
@@ -119,7 +135,7 @@ TOKEN:
 }
 
 //Operadores Lógicos
-TOKEN:
+TOKEN :
 {
         < E: "&" >
     |   < OU: "|" >
