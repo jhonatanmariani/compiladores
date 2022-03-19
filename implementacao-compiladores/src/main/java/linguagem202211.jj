@@ -6,17 +6,20 @@ options {
 
 PARSER_BEGIN(Language20221)
 
-// classe java
+public class Language20221{
+    
+}
+
 PARSER_END(Language20221)
 
 SKIP :  //caracteres que o javacc excluirá da linguagem
 {
-    " "
-    |  "\t"
-    |  "\n"
-    |  "\r"
-    |  "\f"
-    | "\r\n"
+        " "
+    |   "\t"
+    |   "\n"
+    |   "\r"
+    |   "\f"
+    |   "\r\n"
 }
 
 //COMENTÁRIO DE MULTIPLAS LINHAS
