@@ -1,0 +1,198 @@
+options {
+    STATIC = false;
+    LOOKAHEAD = 1;
+    DEBUG_LOOKAHEAD = true;
+}
+
+PARSER_BEGIN(Language20221)
+package classes;
+import org.javacc.parser.Token;
+import org.javacc.parser.ParseException;
+
+public class Language20221{
+    private StringBuilder results = new StringBuilder();
+
+    public void handleToken()  {
+        try {
+            Token t = null;
+            t = getNextToken();
+            if (t.kind == EOF) return;
+            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
+            if (t.kind >= 13 && t.kind <= 34){
+                results.append("Token: '" + t.image + "' - Type: PALAVRA-RESERVADA-" + t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                //System.out.println("Entrou aqui");
+            }
+
+            handleToken();
+        }catch(Error error){
+            results.append("Error - " + error.getMessage() + "\n");
+            System.out.println(error.toString());
+            handleToken();
+        }
+    }
+
+    public String getTokens(String args[], String textToAnalyze) {
+        Language20221 tokenizer;
+        if(args.length == 0){
+            System.out.println("Reading from received text!");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+            tokenizer = new Language20221(targetStream);
+        }else if(args.length == 1){
+            try{
+                tokenizer = new Language20221(new java.io.FileInputStream(args[0]));
+            }catch(java.io.FileNotFoundException e){
+                System.err.println(args[0] + " was not found." );
+                System.err.println(e);
+                return args[0] + " was not found.";
+            }
+        }else{
+            System.out.println("Use:\njava Tokenizer < inputFile");
+            System.out.println("or java Tokenizer inputFile");
+            return "Use:java Tokenizer < inputFile";
+        }
+        this.handleToken();
+        results.append("<EOF>");
+        return results.toString();
+    }
+
+    public String getResults(){
+        return results.toString();
+    }
+}
+
+PARSER_END(Language20221)
+
+SKIP :  //caracteres que o javacc excluirá da linguagem
+{
+        " "
+    |   "\t"
+    |   "\n"
+    |   "\r"
+    |   "\f"
+    |   "\r\n"
+}
+
+//COMENTÁRIO DE MULTIPLAS LINHAS
+SKIP:
+{
+    "/*" : comentariodemultiplaslinhas
+}
+<comentariodemultiplaslinhas> SKIP:
+{
+        "*/" : DEFAULT
+    |   <~[]>
+}
+
+//COMENTÁRIO DE LINHA
+SKIP:
+{
+    "//": comentariodelinha
+}
+<comentariodelinha> SKIP:
+{
+        <["\n" , "\r"]> : DEFAULT
+    |   <~[]>
+}
+
+
+//palavras reservadas
+TOKEN :
+{
+    < PALAVRA_RESERVADA:
+            "do"
+        |   "this"
+        |   "body"
+        |   "description"
+        |   "declaration"
+        |   "type"
+        |   "is"
+        |   "constant"
+        |   "and"
+        |   "variable"
+        |   "as"
+        |   "integer"
+        |   "real"
+        |   "string"
+        |   "logic"
+        |   "designate"
+        |   "read"
+        |   "write"
+        |   "all"
+        |   "repeat"
+        |   "true"
+        |   "untrue" >
+}
+
+//Tokens Auxiliares
+TOKEN : {
+        < LETRA: ["a"-"z","A"-"Z"] >
+    |   < ASCII : ~[] >      //any character
+    |   < DIGITO: ["0"-"9"] >
+    |   < UNDERLINE: "_" >
+    |   < ASPAS : "\"">
+    |   < APOSTROFO : "'" >
+}
+
+//Identificadores
+TOKEN : {
+    < IDENTIFICADORES: "a" >
+}
+
+//Constantes Literais
+TOKEN : {
+    < CONSTANTE_LITERAL : <ASPAS> (<ASCII>)* <ASPAS> | <APOSTROFO> (<ASCII>)* <APOSTROFO>  >
+}
+
+//Constantes Númericas (Real e Inteira)
+TOKEN : {
+        < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? <PONTO_FINAL> <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
+}
+
+
+//Símbolos Especiais
+TOKEN :
+{
+        < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
+    |   < ABRE_CHAVES: "{" >
+    |   < FECHA_CHAVES: "}" >
+    |   < PONTO_FINAL: "." >
+    |   < VIRGULA: "," >
+    |   < ABRE_COLCHETES: "[" >
+    |   < FECHA_COLCHETES: "]" >
+    |   < ABRE_PARENTESES: "(" >
+    |   < FECHA_PARENTESES: ")" >
+}
+
+//Operadores Aritméticos
+TOKEN :
+{
+        < ADICAO: "+" >
+    |   < SUBTRACAO: "-" >
+    |   < MULTIPLICACAO: "*" >
+    |   < DIVISAO: "/" >
+    |   < POTENCIACAO: "**" >
+    |   < DIVISAO_INTEIRA: "%" >
+    |   < RESTO_DIVISAO_INTEIRA: "%%" >
+}
+
+//Operadores Relacionais
+TOKEN :
+{
+        < IGUAL: "=" >
+    |   < DIFERENTE: "!=" >
+    |   < MENOR: "<" >
+    |   < MAIOR: ">" >
+    |   < MENOR_IGUAL: "<=" >
+    |   < MAIOR_IGUAL: ">=" >
+}
+
+//Operadores Lógicos
+TOKEN :
+{
+        < E: "&" >
+    |   < OU: "|" >
+    |   < NAO: "!" >
+}
+
