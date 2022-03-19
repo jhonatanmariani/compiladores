@@ -6,9 +6,14 @@ options {
 
 PARSER_BEGIN(Language20221)
 
-public class Language20221{
-    
-}
+    public class Language20221{
+         public final static String version = "Linguagem 2022.1 Compiler - Version 1.0 2022";
+         public boolean shortOutput = false;
+         public static String saida;
+         private int contParseError;
+         private int erros = 0;
+
+    }
 
 PARSER_END(Language20221)
 
