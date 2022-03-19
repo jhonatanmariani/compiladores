@@ -18,9 +18,33 @@ public class Language20221{
             t = getNextToken();
             if (t.kind == EOF) return;
             //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
-            if (t.kind >= 13 && t.kind <= 34){
-                results.append("Token: '" + t.image + "' - Type: PALAVRA-RESERVADA-" + t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                //System.out.println("Entrou aqui");
+            if (t.kind == 14){           //PALAVRA_RESERVADA
+                results.append("Token: '" + t.image + "' - Tipo: PALAVRA-RESERVADA  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['PALAVRA-RESERVADA'] -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if (t.kind == 21){     //IDENTIFICADOR
+                 results.append("Token: '" + t.image + "' - Tipo: ['IDENTIFICADORES']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['IDENTIFICADORES']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 22){      //CONSTANTE_LITERAL
+                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_LITERAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_LITERAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 23){      //CONSTANTE_NUMERICA_INTEIRA
+                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 25){      //CONSTANTE_NUMERICA_REAL
+                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 26){      //SIMBOLO ESPECIAIS
+                results.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 27){      //OPERADOR_ARITMETICO
+                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_ARITMETICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_ARITMETICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 28){
+                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_RELACIONAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_RELACIONAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else {
+                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }
 
             handleToken();
@@ -148,7 +172,7 @@ TOKEN : {
 TOKEN : {
         < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
     |   < CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
-    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? <PONTO_FINAL> <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
+    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
 // < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
@@ -183,7 +207,7 @@ TOKEN :
 //Operadores Relacionais
 TOKEN :
 {
-    < OPERADPR_RELACIONAL :
+    < OPERADOR_RELACIONAL :
             "="
         |   "!="
         |   "<"
