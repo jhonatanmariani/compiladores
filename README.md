@@ -36,3 +36,7 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
     <li> Acessar: https://plugins.jetbrains.com/plugin/11431-javacc/ </li>
     <li> Clicar em 'Install to IntelliJ IDEA' </li>
 </ol>
+
+## Gerar classes Java do arquivo .jj
+
+- Basta executar o arquivo geraClassesJavaJJ.bat
