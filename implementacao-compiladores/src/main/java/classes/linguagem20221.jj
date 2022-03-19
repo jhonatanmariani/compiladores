@@ -62,7 +62,7 @@ public class Language20221{
 
 PARSER_END(Language20221)
 
-SKIP :  //caracteres que o javacc excluirá da linguagem
+SKIP :  //caracteres que o javacc excluirá da linguagem para nao interpretar
 {
         " "
     |   "\t"
@@ -70,6 +70,7 @@ SKIP :  //caracteres que o javacc excluirá da linguagem
     |   "\r"
     |   "\f"
     |   "\r\n"
+    |   "\n\r"
 }
 
 //COMENTÁRIO DE MULTIPLAS LINHAS
@@ -125,12 +126,12 @@ TOKEN :
 
 //Tokens Auxiliares
 TOKEN : {
-        < LETRA: ["a"-"z","A"-"Z"] >
-    |   < ASCII : ~[] >      //any character
-    |   < DIGITO: ["0"-"9"] >
-    |   < UNDERLINE: "_" >
-    |   < ASPAS : "\"">
-    |   < APOSTROFO : "'" >
+        < #LETRA: ["a"-"z","A"-"Z"] >
+    |   < #ASCII : ~[] >      //any character
+    |   < #DIGITO: ["0"-"9"] >
+    |   < #UNDERLINE: "_" >
+    |   < #ASPAS : "\"">
+    |   < #APOSTROFO : "'" >
 }
 
 //Identificadores
@@ -140,7 +141,7 @@ TOKEN : {
 
 //Constantes Literais
 TOKEN : {
-    < CONSTANTE_LITERAL : <ASPAS> (<ASCII>)* <ASPAS> | <APOSTROFO> (<ASCII>)* <APOSTROFO>  >
+    < CONSTANTE_LITERAL : (<ASPAS> (<ASCII>)* <ASPAS>) | (<APOSTROFO> (<ASCII>)* <APOSTROFO>)  >
 }
 
 //Constantes Númericas (Real e Inteira)
@@ -150,49 +151,53 @@ TOKEN : {
     |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? <PONTO_FINAL> <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
+// < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
 
 //Símbolos Especiais
 TOKEN :
 {
-        < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
-    |   < ABRE_CHAVES: "{" >
-    |   < FECHA_CHAVES: "}" >
-    |   < PONTO_FINAL: "." >
-    |   < VIRGULA: "," >
-    |   < ABRE_COLCHETES: "[" >
-    |   < FECHA_COLCHETES: "]" >
-    |   < ABRE_PARENTESES: "(" >
-    |   < FECHA_PARENTESES: ")" >
+    < SIMBOLOS_ESPECIAIS :
+            "{"
+        |   "}"
+        |   "."
+        |   ","
+        |   "["
+        |   "]"
+        |   "("
+        |   ")" >
 }
 
 //Operadores Aritméticos
 TOKEN :
 {
-        < ADICAO: "+" >
-    |   < SUBTRACAO: "-" >
-    |   < MULTIPLICACAO: "*" >
-    |   < DIVISAO: "/" >
-    |   < POTENCIACAO: "**" >
-    |   < DIVISAO_INTEIRA: "%" >
-    |   < RESTO_DIVISAO_INTEIRA: "%%" >
+    < OPERADOR_ARITMETICO:
+            "+"
+        |   "-"
+        |   "*"
+        |   "/"
+        |   "**"
+        |   "%"
+        |   "%%" >
 }
 
 //Operadores Relacionais
 TOKEN :
 {
-        < IGUAL: "=" >
-    |   < DIFERENTE: "!=" >
-    |   < MENOR: "<" >
-    |   < MAIOR: ">" >
-    |   < MENOR_IGUAL: "<=" >
-    |   < MAIOR_IGUAL: ">=" >
+    < OPERADPR_RELACIONAL :
+            "="
+        |   "!="
+        |   "<"
+        |   ">"
+        |   "<="
+        |   ">=" >
 }
 
 //Operadores Lógicos
 TOKEN :
 {
-        < E: "&" >
-    |   < OU: "|" >
-    |   < NAO: "!" >
+    < OPERADOR_LOGICO :
+            "&"
+        |   "|"
+        |   "!"  >
 }
 
