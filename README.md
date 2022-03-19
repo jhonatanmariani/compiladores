@@ -24,7 +24,7 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
             <li> Caso não tenha em Path o diretório da pasta JRE da versão utilizada para programar, adicione também apontando para a pasta 'bin', exemplo: 'C:\Program Files\Java\jre1.8.0_301\bin'  </li>
             <li> Clicar em OK </li>
         </ol>
-    <li> Agora, você pode seguir o passo 7, caso dê errado, siga o passo.
+    <li> Agora, você pode seguir o passo 7 e depois pule para o 9, caso dê erro no 9, execute o passo 8.
     <li> Dentro da pasta do "javacc", crie uma pasta "target" e jogue o arquivo "javacc.jar" da pasta "bootstrap" dentro da pasta "target".
     <li> Altere a string 'target' para 'bootstrap' presente nos arquivos da pasta 'scripts' do javaCC </li>
     <li> Para testar se a instalação ocorreu sem erro, execute o comando 'javacc' no Prompt de Comando do Windows, se retornar instruções de execução do comando, a instalação foi concluída com sucesso. </li>
