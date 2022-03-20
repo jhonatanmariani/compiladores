@@ -169,7 +169,7 @@ TOKEN : {
 
 //Identificadores
 TOKEN : {
-    < IDENTIFICADORES: "a" >
+    < IDENTIFICADORES: "ajk" >
 }
 
 //Constantes Literais
