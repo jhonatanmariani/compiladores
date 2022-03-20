@@ -114,7 +114,7 @@ SKIP:
 <comentariodemultiplaslinhas> SKIP:
 {
         "*/" : DEFAULT
-    |   <~[]>
+    |   <~[]>                       //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
 }
 
 //COMENTÁRIO DE LINHA
@@ -125,7 +125,7 @@ SKIP:
 <comentariodelinha> SKIP:
 {
         <["\n" , "\r"]> : DEFAULT
-    |   <~[]>
+    |   <~[]>                        //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
 }
 
 
@@ -232,17 +232,5 @@ TOKEN :
             "&"
         |   "|"
         |   "!"  >
-}
-
-//ERROS DE TOKENS ENCONTRADOS
-TOKEN :
-{
-        < ERRO_SIMBOLO_INVALIDO : ["\u0000" - "\u00ff"] > // "\u0000" =>  NULL/INVALIDO
-    |   < ERRO_CONSTANTE_INTEIRA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
-    |   < ERRO_CONSTANTE_REAL :
-                (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
-           |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
-           |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
-        >
 }
 
