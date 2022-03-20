@@ -45,9 +45,15 @@ public class Language20221{
             }else if(t.kind == 29){      //OPERADOR_LOGICO
                 results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
-            }else{  //SIMBOLO_INVÁLIDO
+            }else if(t.kind == 30){     //SIMBOLO_INVÁLIDO
                 results.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_INVALIDO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_INVALIDO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else if(t.kind == 31){     //CONSTANTE INTEIRA INVALIDA
+                 results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else{
+                 results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }
 
             handleToken();
@@ -174,7 +180,7 @@ TOKEN : {
 //Constantes Númericas (Real e Inteira)
 TOKEN : {
         < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
-    |   < CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
+    |   < #CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
     |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
@@ -232,6 +238,11 @@ TOKEN :
 TOKEN :
 {
         < ERRO_SIMBOLO_INVALIDO : ["\u0000" - "\u00ff"] > // "\u0000" =>  NULL/INVALIDO
-    //|   < ERRO_CONSTANTE_INTEIRA : >
+    |   < ERRO_CONSTANTE_INTEIRA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+    |   < ERRO_CONSTANTE_REAL :
+                (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+           |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+           |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+        >
 }
 
