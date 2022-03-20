@@ -40,3 +40,15 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
 ## Gerar classes Java do arquivo .jj
 
 - Basta executar o arquivo geraClassesJavaJJ.bat
+
+## Gerar arquivo executável .jar com maven
+
+<ol>
+    <li> Ir na pasta aonde está o arquivo pom.xml </li>
+    <li> Abrir o terminal dentro dessa pasta e executar o comando mvn package (isso vai compilar e empacotar o projeto) </li>
+    <li> Executar mvn clean (para limpar caso algo já tenha sido criado </li>
+    <li> Executar mvn package para criar o arquivo .jar </li>
+    <li> Executar mvn clean package para limpar e criar um novo (forma encurtada dos dois comandos acima) </li>
+    <li> Ir na pasta target e executar o .jar criado pelo cmd (executar o arquivo com as dependências) </li>
+    <ul> Ex: java -jar trabalho-compiladores-1.0-SNAPSHOT-jar-with-dependencies.jar </ul>
+</ol>
