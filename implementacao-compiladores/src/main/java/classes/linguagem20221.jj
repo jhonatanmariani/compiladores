@@ -42,9 +42,12 @@ public class Language20221{
             }else if(t.kind == 28){
                 results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_RELACIONAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_RELACIONAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
-            }else {
+            }else if(t.kind = 29){      //OPERADOR_LOGICO
                 results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+            }else{  //SIMBOLOS INVÁLIDOS
+                results.append("Token: '" + t.image + "' - Tipo: ['SÍMBOLO_INVÁLIDO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SÍMBOLO_INVÁLIDO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }
 
             handleToken();
@@ -180,7 +183,7 @@ TOKEN : {
 //Símbolos Especiais
 TOKEN :
 {
-    < SIMBOLOS_ESPECIAIS :
+    < SIMBOLO_ESPECIAL :
             "{"
         |   "}"
         |   "."
@@ -223,5 +226,12 @@ TOKEN :
             "&"
         |   "|"
         |   "!"  >
+}
+
+//ERROS DE TOKENS ENCONTRADOS
+TOKEN :
+{
+        < ERRO_SIMBOLO_INVALIDO : ["\u0000" - "\u00ff"] > // "\u0000" =>  NULL/INVALIDO
+    //|   < ERRO_CONSTANTE_INTEIRA : >
 }
 
