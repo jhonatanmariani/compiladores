@@ -42,7 +42,7 @@ public class Language20221{
             }else if(t.kind == 28){
                 results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_RELACIONAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_RELACIONAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
-            }else if(t.kind = 29){      //OPERADOR_LOGICO
+            }else if(t.kind == 29){      //OPERADOR_LOGICO
                 results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }else{  //SIMBOLO_INVÁLIDO
@@ -231,7 +231,7 @@ TOKEN :
 //ERROS DE TOKENS ENCONTRADOS
 TOKEN :
 {
-        < ERRO_SIMBOLO_INVALIDO : ["\u0000" - "\u00ff"] > // "\u0000" =>  NULL/INVALIDO
+        < ERRO_SIMBOLO_INVALIDO : (["\u0000" - "\u00ff"])+ > // "\u0000" =>  NULL/INVALIDO
     //|   < ERRO_CONSTANTE_INTEIRA : >
 }
 
