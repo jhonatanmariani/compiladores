@@ -231,7 +231,7 @@ TOKEN :
 //ERROS DE TOKENS ENCONTRADOS
 TOKEN :
 {
-        < ERRO_SIMBOLO_INVALIDO : (["\u0000" - "\u00ff"])+ > // "\u0000" =>  NULL/INVALIDO
+        < ERRO_SIMBOLO_INVALIDO : ["\u0000" - "\u00ff"] > // "\u0000" =>  NULL/INVALIDO
     //|   < ERRO_CONSTANTE_INTEIRA : >
 }
 
