@@ -232,3 +232,57 @@ TOKEN :
         |   "|"
         |   "!"  >
 }
+
+//SÍMBOLOS INVÁLIDOS
+SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
+        < INVALID_LEXICAL :
+            (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
+                "A"-"Z",
+                "a"-"z",
+                "0"-"9",
+                "\"",       //aspas
+                "\'",       //apóstrofo
+                "_",
+                "{",
+                "}",
+                ".",
+                ",",
+                "[",
+                "]",
+                "(",
+                ")",
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "=",
+                "<",
+                ">",
+                "&",
+                "|",
+                "!",
+                " ",
+                "\t",
+                "\n",
+                "\r",
+                "\f"
+            ])+
+        >
+    |   <INVALID_CONSTANTE_LITERAL:
+            (
+                ("\"" | "\'")    //Aspas ou apóstrofo
+                (~ ["\n", "\r", "\"", "\'"])* ["\n", "\r"]
+            )
+        >
+        {
+            //results.append("Token: '" + image + "' - Tipo: INVALID_CONSTANTE_LITERAL  -  " + "ID: " +  kind + " - Line-Column: " + beginLine + "-" + beginColumn + "\n");
+            System.out.println("Token: ['" + image + "'] - Tipo: ['INVALID_CONSTANTE_LITERAL'] -  " + "Id: ['" +  "Não tem ID" + "'] - Linha: ['" + input_stream.getBeginLine() + "']  -  Coluna: ['" + input_stream.getBeginColumn() + "']\n");
+        }
+    |   < ERRO_CONSTANTE_INTEIRA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+    |   < ERRO_CONSTANTE_REAL :
+                (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+           |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+           |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+        >
+}
