@@ -163,8 +163,6 @@ TOKEN : {
     |   < #ASCII : ~[] >      //any character
     |   < #DIGITO: ["0"-"9"] >
     |   < #UNDERLINE: "_" >
-    |   < #ASPAS : "\"">
-    |   < #APOSTROFO : "'" >
 }
 
 //Identificadores
@@ -174,7 +172,8 @@ TOKEN : {
 
 //Constantes Literais
 TOKEN : {
-    < CONSTANTE_LITERAL : (<ASPAS> (<ASCII>)* <ASPAS>) | (<APOSTROFO> (<ASCII>)* <APOSTROFO>)  >
+
+    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") > // ~["\""] => Qualquer caractere menos a aspa - ~["'"] => Qualquer caractere menos o apóstrofro
 }
 
 //Constantes Númericas (Real e Inteira)
@@ -233,4 +232,3 @@ TOKEN :
         |   "|"
         |   "!"  >
 }
-
