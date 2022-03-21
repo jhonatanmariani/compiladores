@@ -171,16 +171,29 @@ TOKEN :
 
 //Tokens Auxiliares
 TOKEN : {
-        < #LETRA: ["a"-"z","A"-"Z"] >
+        < #LETRA_MINUSCULA: ["a"-"z"] >
+    |   < #LETRA_MAIUSCULA: ["A"-"Z"]>
+    |   < #LETRA: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
     |   < #ASCII : ~[] >      //any character
     |   < #DIGITO: ["0"-"9"] >
     |   < #UNDERLINE: "_" >
+
 }
 
 //Identificadores
 TOKEN : {
-    < IDENTIFICADORES: "ajk" >
+      //(<LETRA_MAIUSCULA>)((<LETRA>)+(<DIGITO>)?(<DIGITO>)?(<LETRA>)+(<UNDERLINE>)?)
+   <IDENTIFICADORES: ((<LETRA_MAIUSCULA>) (<LETRA>)* (<OP1>)? )> |
+
+       <#OP1: (<DIG> ((<LETRA>)* (<UNDERLINE>)? (<LETRA>)* <DIG>)
+             | ((<LETRA>)+ <DIG> )((<LETRA>)* | (<UNDERLINE>)? (<LETRA>)*)) >
+        |
+      // <#OP2: ((<LETRA>)* <DIG> (<LETRA>)* | (<DIG>)? (<LETRA>)+ (<UNDERLINE>)?) > | <LETRA> |
+       <#DIG: (<DIGITO>)?(<DIGITO>)?>
+
+
 }
+
 
 //Constantes Literais
 TOKEN : {
