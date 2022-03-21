@@ -12,7 +12,7 @@ import org.javacc.parser.ParseException;
 public class Language20221{
     private StringBuilder resultado = new StringBuilder();
 
-    public void handleToken()  {
+    public void leituraDeTokens()  {
         try {
             Token t = null;
             t = getNextToken();
@@ -55,12 +55,11 @@ public class Language20221{
                  resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
                  System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }
-
-            handleToken();
+            leituraDeTokens();
         }catch(Error erro){
             resultado.append("Erro - " + erro.getMessage() + "\n");
             System.out.println(erro.toString());
-            handleToken();
+            leituraDeTokens();
         }
     }
 
@@ -85,7 +84,7 @@ public class Language20221{
             System.out.println("ou java Tokenizer inputFile");
             return "Use:java Tokenizer < inputFile";
         }
-        this.handleToken();
+        this.leituraDeTokens();
         resultado.append("<EOF>");
         return resultado.toString();
     }
@@ -186,7 +185,9 @@ TOKEN : {
 //Constantes Literais
 TOKEN : {
 
-    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") > // ~["\""] => Qualquer caractere menos a aspa - ~["'"] => Qualquer caractere menos o apóstrofro
+    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
+    // ~["\""] => Qualquer caractere menos a aspa
+    // ~["'"] => Qualquer caractere menos o apóstrofro
 }
 
 //Constantes Númericas (Real e Inteira)
