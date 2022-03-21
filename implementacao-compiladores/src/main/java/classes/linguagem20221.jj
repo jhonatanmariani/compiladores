@@ -109,9 +109,9 @@ SKIP :  //caracteres que o javacc excluirá da linguagem para nao interpretar
 //COMENTÁRIO DE MULTIPLAS LINHAS
 SKIP:
 {
-    "/*" : comentariodemultiplaslinhas
+    "/*" : COMENTARIO_BLOCO
 }
-<comentariodemultiplaslinhas> SKIP:
+<COMENTARIO_BLOCO> SKIP:
 {
         "*/" : DEFAULT
     |   <~[]>                       //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
@@ -120,12 +120,23 @@ SKIP:
 //COMENTÁRIO DE LINHA
 SKIP:
 {
-    "//": comentariodelinha
+    "//": COMENTARIO_LINHA
 }
-<comentariodelinha> SKIP:
+<COMENTARIO_LINHA> SKIP:
 {
         <["\n" , "\r"]> : DEFAULT
     |   <~[]>                        //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
+}
+
+// < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
+SKIP : {
+    ":-" : COMENTARIO_FACULTATIVO
+ }
+<COMENTARIO_FACULTATIVO> SKIP : {
+    ":-" : DEFAULT
+}
+<COMENTARIO_FACULTATIVO> MORE : {
+    <~[]>
 }
 
 
@@ -183,7 +194,6 @@ TOKEN : {
     |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
-// < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
 
 //Símbolos Especiais
 TOKEN :
@@ -271,8 +281,11 @@ SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         >
     |   <INVALID_CONSTANTE_LITERAL:
             (
-                ("\"" | "\'")    //Aspas ou apóstrofo
-                (~ ["\n", "\r", "\"", "\'"])* ["\n", "\r"]
+            ("\"" (~["\""])*) | "'" (~["'"])*
+                /*
+                ("\"")    //Aspas ou apóstrofo
+                (~ ["\n", "\r", "\""])* ["\n", "\r"]
+                 */
             )
         >
         {
