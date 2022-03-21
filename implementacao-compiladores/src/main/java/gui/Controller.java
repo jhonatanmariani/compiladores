@@ -276,6 +276,9 @@ public class Controller {
         this.messageTextArea.clear();
     }
 
+    public void exitProgram(ActionEvent actionEvent) {
+        System.exit(0);
+    }
 
     public class ExitButtonListener implements EventHandler<WindowEvent> {
         @Override

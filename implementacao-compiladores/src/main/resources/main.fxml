@@ -17,6 +17,7 @@
                     <MenuItem onAction="#newFileDialog" text="Novo"/>
                     <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Salvar" accelerator="Shortcut+S"/>
                     <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Salvar como..."/>
+                    <MenuItem fx:id="exitProgram" onAction="#exitProgram" text="Sair"/>
                 </Menu>
                 <Menu text="Edição">
                     <MenuItem fx:id="cutMenuItem" text="Recortar" onAction="#cutSelection"/>
