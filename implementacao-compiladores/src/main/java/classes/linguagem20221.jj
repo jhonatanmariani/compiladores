@@ -19,41 +19,41 @@ public class Language20221{
             if (t.kind == EOF) return;
             //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
             if (t.kind == 14){           //PALAVRA_RESERVADA
-                resultado.append("Token: '" + t.image + "' - Tipo: PALAVRA-RESERVADA  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['PALAVRA-RESERVADA'] -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == 21){     //IDENTIFICADOR
-                 resultado.append("Token: '" + t.image + "' - Tipo: ['IDENTIFICADORES']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['IDENTIFICADORES']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADORES'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADORES'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
             }else if(t.kind == 22){      //CONSTANTE_LITERAL
-                resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_LITERAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_LITERAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 23){      //CONSTANTE_NUMERICA_INTEIRA
-                resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 25){      //CONSTANTE_NUMERICA_REAL
-                resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
             }else if(t.kind == 26){      //SIMBOLO ESPECIAIS
-                resultado.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 27){      //OPERADOR_ARITMETICO
-                resultado.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_ARITMETICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_ARITMETICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 28){
-                resultado.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_RELACIONAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_RELACIONAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 29){      //OPERADOR_LOGICO
-                resultado.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "Id: ['" +  t.kind + "'] - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 30){     //SIMBOLO_INVÁLIDO
-                resultado.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_INVALIDO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_INVALIDO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: ['" +  t.kind + "'] - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 31){     //CONSTANTE INTEIRA INVALIDA
-                 resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else{
-                 resultado.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Erro: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: ''" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }
             leituraDeTokens();
         }catch(Error erro){
@@ -126,7 +126,7 @@ SKIP:
 <COMENTARIO_LINHA> SKIP:
 {
         <["\n" , "\r"]> : DEFAULT
-    |   <~[]>                        //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
+    |   <~[]>
 }
 
 // < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
@@ -284,7 +284,7 @@ SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         >
     |   <INVALID_CONSTANTE_LITERAL:
             (
-            ("\"" (~["\""])*) | "'" (~["'"])*
+            ("\"" (~["\""])*) | ("'" (~["'"])*)
                 /*
                 ("\"")    //Aspas ou apóstrofo
                 (~ ["\n", "\r", "\""])* ["\n", "\r"]
