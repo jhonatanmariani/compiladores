@@ -48,7 +48,13 @@ public class Controller {
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
         // Error handling
         if (!editorFile.isFileStatusOK()) {
-            Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", String.format("Failed opening file: %s", editorFile.getFileStatus()));
+            Alert alert = AlertFactory.create
+                    (
+                            Alert.AlertType.ERROR,
+                            "Erro",
+                            "Erro",
+                            String.format("Falha ao abrir arquivo: %s", editorFile.getFileStatus())
+                    );
             alert.showAndWait();
             return;
         }
@@ -75,13 +81,13 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setStatusMsg(String.format("Success reading file %s", editorFile.getFilePath().get()));
+        setStatusMsg(String.format("Arquivo lido com sucesso %s", editorFile.getFilePath().get()));
         updateStageTitle();
         clearMessageArea();
     }
 
     private void updateStageTitle() {
-        String title = "Compiler";
+        String title = "Compilador";
         if (hasOpenFile) {
             title += String.format(" - [%s]", editorFile.getFilePath().get());
         }
@@ -97,8 +103,8 @@ public class Controller {
             onSaveSuccess();
             op = Operation.SUCCESS;
         } else {
-            AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed",
-                    String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
+            AlertFactory.create(Alert.AlertType.ERROR, "Erro", "Falha na operacao",
+                    String.format("Falha ao salvar arquivo em '%s'", editorFile.getFilePath().get()))
                     .show();
         }
         return op;
@@ -107,7 +113,7 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        System.out.println("Save as called");
+        System.out.println("Chamada de salvar como ...");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -115,20 +121,37 @@ public class Controller {
         EditorFile newED = new EditorFile(newFile, false);
         switch (newED.getFileStatus()) {
             case INVALID_EXTENSION -> {
-                AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
+                AlertFactory.create
+                        (
+                                Alert.AlertType.ERROR,
+                                "Erro",
+                                "Extensao invalida",
+                                "O nome do arquivo deve usar a extensao '.txt'"
+                        ).show();
                 op = Operation.FAILURE;
             }
             case IO_ERROR -> {
-                AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
+                AlertFactory.create(
+                        Alert.AlertType.ERROR,
+                        "Erro",
+                        "Erro de leitura/escrita de arquivo",
+                        "Erro ao ler/escrever arquivo"
+                ).show();
                 op = Operation.FAILURE;
             }
             case NO_OPEN_FILE -> {
-                AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation Canceled", "You've canceled saving to a new file").show();
+                AlertFactory.create
+                        (
+                                Alert.AlertType.INFORMATION,
+                                "Info",
+                                "Operacao cancelada",
+                                "Cancelado salvar em um novo arquivo"
+                        ).show();
                 op = Operation.CANCELED;
             }
             case OK -> {
                 editorFile.saveAs(inputTextArea.getText(), newFile);
-                System.out.println("Should run onSaveSuccess()");
+                System.out.println("Salvo com sucesso");
                 onSaveSuccess();
                 op = Operation.SUCCESS;
             }
@@ -149,7 +172,7 @@ public class Controller {
     private void onSaveSuccess() {
         hasOpenFile = true;
         hasEditedFile = false;
-        setStatusMsg("File saved!");
+        setStatusMsg("Arquivo salvo");
         updateStageTitle();
         disableSaving(true);
     }
@@ -159,7 +182,7 @@ public class Controller {
         saveMenuItem.setDisable(b);
     }
 
-    public void disableEditOptions(boolean b) {
+    public void disableEditOptions(boolean b) { // todo função não está sendo usada
         cutBtn.setDisable(b);
         cutMenuItem.setDisable(b);
         copyBtn.setDisable(b);
@@ -186,7 +209,7 @@ public class Controller {
     }
 
     private void setLineColLabel(int line, int col) {
-        lineColLabel.setText(String.format("Line/Column: %d:%d", line, col));
+        lineColLabel.setText(String.format("Linha/Coluna: %d:%d", line, col));
     }
 
     public void registerWindowClose() {
@@ -206,9 +229,9 @@ public class Controller {
         Alert alert;
         if (hasEditedFile) {
             alert = AlertFactory.AlertYesNoCancel(Alert.AlertType.CONFIRMATION,
-                    "Confirmation",
-                    "Unsaved work",
-                    "You have an edited file open and unsaved, do you want to save it?"
+                    "Confirmacao",
+                    "Arquivo nao salvo",
+                    "Voce editou um arquivo aberto e nao salvou, deseja salva-lo?"
             );
         } else {
             return Operation.SUCCESS;
@@ -270,10 +293,11 @@ public class Controller {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create
-                    (Alert.AlertType.ERROR,
-                            "Error",
-                            "Blank file",
-                            "A blank file cannot be compiled"
+                    (
+                            Alert.AlertType.ERROR,
+                            "Erro",
+                            "Arquivo em branco",
+                            "Um arquivo em branco nao pode ser compilado"
                     );
             alert.show();
             return;
@@ -287,7 +311,9 @@ public class Controller {
     }
 
     public String copySelection() {
-        return inputTextArea.getSelectedText();
+        String selection = inputTextArea.getSelectedText();
+        inputTextArea.copy();
+        return selection;
     }
 
     public String cutSelection() {

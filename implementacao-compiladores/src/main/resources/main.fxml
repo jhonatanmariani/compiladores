@@ -12,18 +12,18 @@
           AnchorPane.topAnchor="0.0">
         <HBox>
             <MenuBar>
-                <Menu text="File">
+                <Menu text="Arquivo">
                     <MenuItem onAction="#openFileDialog" text="Abrir"/>
                     <MenuItem onAction="#newFileDialog" text="Novo"/>
                     <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Salvar" accelerator="Shortcut+S"/>
                     <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Salvar como..."/>
                 </Menu>
-                <Menu text="Edit">
+                <Menu text="Edição">
                     <MenuItem fx:id="cutMenuItem" text="Recortar" onAction="#cutSelection"/>
                     <MenuItem fx:id="copyMenuItem" text="Copiar" onAction="#copySelection"/>
                     <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
-                <Menu text="Compile">
+                <Menu text="Compilação">
                     <MenuItem text="Build" onAction="#compileProgram"/>
                     <MenuItem disable="true" text="Executar"/>
                 </Menu>
@@ -78,7 +78,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-
+                <Separator/>
                 <Button fx:id="buildBtn" onAction="#compileProgram">
                     <graphic>
                         <ImageView>
@@ -104,7 +104,7 @@
             </ToolBar>
         </HBox>
         <VBox VBox.vgrow="ALWAYS">
-            <Label>Program</Label>
+            <Label>Entrada</Label>
             <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
                 <VirtualizedScrollPane HBox.hgrow="ALWAYS">
                     <content>
@@ -112,15 +112,15 @@
                     </content>
                 </VirtualizedScrollPane>
             </HBox>
-            <HBox>
-                <Label fx:id="lineColLabel">Line/Column:</Label>
-            </HBox>
-            <Label>Message Area</Label>
+            <Label>Saída</Label>
             <HBox>
                 <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox>
                 <Label fx:id="statusBar">Status ...</Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="lineColLabel">Linha/Coluna</Label>
             </HBox>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>

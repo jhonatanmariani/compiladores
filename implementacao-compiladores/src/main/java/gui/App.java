@@ -22,7 +22,7 @@ public class App extends Application {
         Parent root = fxmlLoader.load();
 //        root.getStylesheets().add("/main.css"); TODO não tem nada nesse arquivo
         primaryStage.setTitle("Compilador");
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/toolbox-48.png")));
+//        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/toolbox-48.png"))); // acho melhor deixar sem o ícone
         primaryStage.setScene(new Scene(root));
 
         Controller controller = fxmlLoader.getController();
