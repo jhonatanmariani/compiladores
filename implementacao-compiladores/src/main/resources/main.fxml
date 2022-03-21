@@ -13,24 +13,24 @@
         <HBox>
             <MenuBar>
                 <Menu text="File">
-                    <MenuItem onAction="#openFileDialog" text="Open"/>
-                    <MenuItem onAction="#newFileDialog" text="New"/>
-                    <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Save" accelerator="Shortcut+S"/>
-                    <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Save as..."/>
+                    <MenuItem onAction="#openFileDialog" text="Abrir"/>
+                    <MenuItem onAction="#newFileDialog" text="Novo"/>
+                    <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Salvar" accelerator="Shortcut+S"/>
+                    <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Salvar como..."/>
                 </Menu>
                 <Menu text="Edit">
-                    <MenuItem fx:id="cutMenuItem" text="Cut" onAction="#cutSelection"/>
-                    <MenuItem fx:id="copyMenuItem" text="Copy" onAction="#copySelection"/>
-                    <MenuItem fx:id="pasteMenuItem" text="Paste" onAction="#pasteFromClipboard"/>
+                    <MenuItem fx:id="cutMenuItem" text="Recortar" onAction="#cutSelection"/>
+                    <MenuItem fx:id="copyMenuItem" text="Copiar" onAction="#copySelection"/>
+                    <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compile">
-                    <MenuItem text="Compile" onAction="#compileProgram"/>
-                    <MenuItem disable="true" text="Run"/>
+                    <MenuItem text="Build" onAction="#compileProgram"/>
+                    <MenuItem disable="true" text="Executar"/>
                 </Menu>
-                <Menu text="Help">
-                    <MenuItem text="Help"/>
-<!--                    <MenuItem text="About" onAction="#showAboutDialog"/> TODO ver se realmente precisa disso -->
-                </Menu>
+<!--                <Menu text="Help">-->
+<!--                    <MenuItem text="Help"/>-->
+<!--&lt;!&ndash;                    <MenuItem text="About" onAction="#showAboutDialog"/> TODO ver se realmente precisa disso &ndash;&gt;-->
+<!--                </Menu>-->
             </MenuBar>
         </HBox>
         <HBox>
@@ -38,21 +38,21 @@
                 <Button fx:id="newBtn" onAction="#newFileDialog">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/new-48.png"/>
+                            <Image url="@icones/novo.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="openBtn" onAction="#openFileDialog">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/open-48.png"/>
+                            <Image url="@icones/abrir.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="saveBtn" onAction="#saveAction">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/diskette-48.png"/>
+                            <Image url="@icones/salvar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -60,47 +60,47 @@
                 <Button fx:id="cutBtn" onAction="#cutSelection">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/cut-48.png"/>
+                            <Image url="@icones/recortar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="copyBtn" onAction="#copySelection">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/copy-48.png"/>
+                            <Image url="@icones/copiar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="pasteBtn" onAction="#pasteFromClipboard">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/paste-48.png"/>
+                            <Image url="@icones/colar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Separator/>
+
                 <Button fx:id="buildBtn" onAction="#compileProgram">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/toolbox-48.png"/>
+                            <Image url="@icones/build.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="runBtn" disable="true">
                     <graphic>
                         <ImageView>
-                            <Image url="@icons/play-48.png"/>
+                            <Image url="@icones/executar.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Separator/>
-                <Button fx:id="helpBtn">
-                    <graphic>
-                        <ImageView>
-                            <Image url="@icons/help-48.png"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
+
+<!--                <Button fx:id="helpBtn">-->
+<!--                    <graphic>-->
+<!--                        <ImageView>-->
+<!--                            <Image url="@icones/ajuda.png"/>-->
+<!--                        </ImageView>-->
+<!--                    </graphic>-->
+<!--                </Button>-->
             </ToolBar>
         </HBox>
         <VBox VBox.vgrow="ALWAYS">
