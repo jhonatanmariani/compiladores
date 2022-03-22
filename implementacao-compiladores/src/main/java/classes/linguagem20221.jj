@@ -10,86 +10,87 @@ import org.javacc.parser.Token;
 import org.javacc.parser.ParseException;
 
 public class Language20221{
-    private StringBuilder results = new StringBuilder();
+    private StringBuilder resultado = new StringBuilder();
 
-    public void handleToken()  {
+    public void leituraDeTokens()  {
         try {
             Token t = null;
             t = getNextToken();
             if (t.kind == EOF) return;
             //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
             if (t.kind == 14){           //PALAVRA_RESERVADA
-                results.append("Token: '" + t.image + "' - Tipo: PALAVRA-RESERVADA  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['PALAVRA-RESERVADA'] -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == 21){     //IDENTIFICADOR
-                 results.append("Token: '" + t.image + "' - Tipo: ['IDENTIFICADORES']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['IDENTIFICADORES']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADORES'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADORES'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
             }else if(t.kind == 22){      //CONSTANTE_LITERAL
-                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_LITERAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_LITERAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 23){      //CONSTANTE_NUMERICA_INTEIRA
-                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_INTEIRA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 25){      //CONSTANTE_NUMERICA_REAL
-                results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_NUMERICA_REAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 26){      //SIMBOLO ESPECIAIS
-                results.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_ESPECIAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 27){      //OPERADOR_ARITMETICO
-                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_ARITMETICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_ARITMETICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 28){
-                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_RELACIONAL']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_RELACIONAL']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 29){      //OPERADOR_LOGICO
-                results.append("Token: '" + t.image + "' - Tipo: ['OPERADOR_LOGICO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['OPERADOR_LOGICO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "Id: ['" +  t.kind + "'] - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 30){     //SIMBOLO_INVÁLIDO
-                results.append("Token: '" + t.image + "' - Tipo: ['SIMBOLO_INVALIDO']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: ['SIMBOLO_INVALIDO']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == 31){     //CONSTANTE INTEIRA INVALIDA
-                 results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_INTEIRA_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else{
-                 results.append("Token: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Line-Column: " + t.beginLine + "-" + t.beginColumn + "\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: ['" + t.beginColumn + "']\n");
+                 resultado.append("Erro: '" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: ''" + t.image + "' - Tipo: ['CONSTANTE_REAL_INVALIDA']  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }
-
-            handleToken();
-        }catch(Error error){
-            results.append("Error - " + error.getMessage() + "\n");
-            System.out.println(error.toString());
-            handleToken();
+            leituraDeTokens();
+        }catch(Error erro){
+            resultado.append("Erro - " + erro.getMessage() + "\n");
+            System.out.println(erro.toString());
+            leituraDeTokens();
         }
     }
 
-    public String getTokens(String args[], String textToAnalyze) {
-        Language20221 tokenizer;
+    public String getTokens(String args[], String textoParaAnalisar) {
+        Language20221 language20221;
         if(args.length == 0){
-            System.out.println("Reading from received text!");
-            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-            tokenizer = new Language20221(targetStream);
+            System.out.println("#####################################");
+            System.out.println("### Iniciando leitura dos tokens ...");
+            System.out.println("#####################################");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textoParaAnalisar.getBytes());
+            language20221 = new Language20221(targetStream);
         }else if(args.length == 1){
             try{
-                tokenizer = new Language20221(new java.io.FileInputStream(args[0]));
+                language20221 = new Language20221(new java.io.FileInputStream(args[0]));
             }catch(java.io.FileNotFoundException e){
-                System.err.println(args[0] + " was not found." );
+                System.err.println(args[0] + " não foi encontrado." );
                 System.err.println(e);
-                return args[0] + " was not found.";
+                return args[0] + " não foi encontrado.";
             }
         }else{
             System.out.println("Use:\njava Tokenizer < inputFile");
-            System.out.println("or java Tokenizer inputFile");
+            System.out.println("ou java Tokenizer inputFile");
             return "Use:java Tokenizer < inputFile";
         }
-        this.handleToken();
-        results.append("<EOF>");
-        return results.toString();
+        this.leituraDeTokens();
+        resultado.append("<EOF>");
+        return resultado.toString();
     }
 
-    public String getResults(){
-        return results.toString();
+    public String getResultado(){
+        return resultado.toString();
     }
 }
 
@@ -109,9 +110,9 @@ SKIP :  //caracteres que o javacc excluirá da linguagem para nao interpretar
 //COMENTÁRIO DE MULTIPLAS LINHAS
 SKIP:
 {
-    "/*" : comentariodemultiplaslinhas
+    "/*" : COMENTARIO_BLOCO
 }
-<comentariodemultiplaslinhas> SKIP:
+<COMENTARIO_BLOCO> SKIP:
 {
         "*/" : DEFAULT
     |   <~[]>                       //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
@@ -120,12 +121,23 @@ SKIP:
 //COMENTÁRIO DE LINHA
 SKIP:
 {
-    "//": comentariodelinha
+    "//": COMENTARIO_LINHA
 }
-<comentariodelinha> SKIP:
+<COMENTARIO_LINHA> SKIP:
 {
         <["\n" , "\r"]> : DEFAULT
-    |   <~[]>                        //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
+    |   <~[]>
+}
+
+// < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
+SKIP : {
+    ":-" : COMENTARIO_FACULTATIVO
+ }
+<COMENTARIO_FACULTATIVO> SKIP : {
+    ":-" : DEFAULT
+}
+<COMENTARIO_FACULTATIVO> MORE : {
+    <~[]>
 }
 
 
@@ -159,21 +171,36 @@ TOKEN :
 
 //Tokens Auxiliares
 TOKEN : {
-        < #LETRA: ["a"-"z","A"-"Z"] >
+        < #LETRA_MINUSCULA: ["a"-"z"] >
+    |   < #LETRA_MAIUSCULA: ["A"-"Z"]>
+    |   < #LETRA: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
     |   < #ASCII : ~[] >      //any character
     |   < #DIGITO: ["0"-"9"] >
     |   < #UNDERLINE: "_" >
+
 }
 
 //Identificadores
 TOKEN : {
-    < IDENTIFICADORES: "ajk" >
+      //(<LETRA_MAIUSCULA>)((<LETRA>)+(<DIGITO>)?(<DIGITO>)?(<LETRA>)+(<UNDERLINE>)?)
+   <IDENTIFICADORES: ((<LETRA_MAIUSCULA>) (<LETRA>)* (<OP1>)? )> |
+
+       <#OP1: (<DIG> ((<LETRA>)* (<UNDERLINE>)? (<LETRA>)* <DIG>)
+             | ((<LETRA>)+ <DIG> )((<LETRA>)* | (<UNDERLINE>)? (<LETRA>)*)) >
+        |
+      // <#OP2: ((<LETRA>)* <DIG> (<LETRA>)* | (<DIG>)? (<LETRA>)+ (<UNDERLINE>)?) > | <LETRA> |
+       <#DIG: (<DIGITO>)?(<DIGITO>)?>
+
+
 }
+
 
 //Constantes Literais
 TOKEN : {
 
-    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") > // ~["\""] => Qualquer caractere menos a aspa - ~["'"] => Qualquer caractere menos o apóstrofro
+    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
+    // ~["\""] => Qualquer caractere menos a aspa
+    // ~["'"] => Qualquer caractere menos o apóstrofro
 }
 
 //Constantes Númericas (Real e Inteira)
@@ -183,7 +210,6 @@ TOKEN : {
     |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
 }
 
-// < COMENTARIO_FACULTATIVO: ":-">         ///VERRRRRRRRRRRRRRRRRRRRR
 
 //Símbolos Especiais
 TOKEN :
@@ -231,4 +257,61 @@ TOKEN :
             "&"
         |   "|"
         |   "!"  >
+}
+
+//SÍMBOLOS INVÁLIDOS
+SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
+        < INVALID_LEXICAL :
+            (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
+                "A"-"Z",
+                "a"-"z",
+                "0"-"9",
+                "\"",       //aspas
+                "\'",       //apóstrofo
+                "_",
+                "{",
+                "}",
+                ".",
+                ",",
+                "[",
+                "]",
+                "(",
+                ")",
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "=",
+                "<",
+                ">",
+                "&",
+                "|",
+                "!",
+                " ",
+                "\t",
+                "\n",
+                "\r",
+                "\f"
+            ])+
+        >
+    |   <INVALID_CONSTANTE_LITERAL:
+            (
+            ("\"" (~["\""])*) | ("'" (~["'"])*)
+                /*
+                ("\"")    //Aspas ou apóstrofo
+                (~ ["\n", "\r", "\""])* ["\n", "\r"]
+                 */
+            )
+        >
+        {
+            //results.append("Token: '" + image + "' - Tipo: INVALID_CONSTANTE_LITERAL  -  " + "ID: " +  kind + " - Line-Column: " + beginLine + "-" + beginColumn + "\n");
+            System.out.println("Token: ['" + image + "'] - Tipo: ['INVALID_CONSTANTE_LITERAL'] -  " + "Id: ['" +  "Não tem ID" + "'] - Linha: ['" + input_stream.getBeginLine() + "']  -  Coluna: ['" + input_stream.getBeginColumn() + "']\n");
+        }
+    |   < ERRO_CONSTANTE_INTEIRA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+    |   < ERRO_CONSTANTE_REAL :
+                (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+           |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+           |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+        >
 }
