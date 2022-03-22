@@ -202,7 +202,7 @@ TOKEN : {
 //Constantes Literais
 TOKEN : {
 
-    < CONSTANTE_LITERAL : ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
+    < CONSTANTE_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
     // ~["\""] => Qualquer caractere menos a aspa
     // ~["'"] => Qualquer caractere menos o apóstrofro
 }
@@ -272,7 +272,6 @@ SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 "0"-"9",
                 "\"",       //aspas
                 "\'",       //apóstrofo
-                "_",
                 "{",
                 "}",
                 ".",
@@ -300,17 +299,11 @@ SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
             ])+
         >
     |   <INVALID_CONSTANTE_LITERAL:
-            (
-            ("\"" (~["\""])*) | ("'" (~["'"])*)
-                /*
-                ("\"")    //Aspas ou apóstrofo
-                (~ ["\n", "\r", "\""])* ["\n", "\r"]
-                 */
-            )
-        >
+        //("\"" (~["\""])*) | ("'" (~["'"])*)
+            "\"" (~ ["\n", "\r", "\""])* ["\n", "\r"]>
         {
             //results.append("Token: '" + image + "' - Tipo: INVALID_CONSTANTE_LITERAL  -  " + "ID: " +  kind + " - Line-Column: " + beginLine + "-" + beginColumn + "\n");
-            System.out.println("Token: ['" + image + "'] - Tipo: ['INVALID_CONSTANTE_LITERAL'] -  " + "Id: ['" +  "Não tem ID" + "'] - Linha: ['" + input_stream.getBeginLine() + "']  -  Coluna: ['" + input_stream.getBeginColumn() + "']\n");
+            System.err.println("Token: ['" + image + "'] - Tipo: ['INVALID_CONSTANTE_LITERAL'] -  " + "Id: ['" +  "Não tem ID" + "'] - Linha: ['" + input_stream.getBeginLine() + "']  -  Coluna: ['" + input_stream.getBeginColumn() + "']\n");
         }
     |   < ERRO_CONSTANTE_INTEIRA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
     |   < ERRO_CONSTANTE_REAL :
