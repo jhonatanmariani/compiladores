@@ -264,7 +264,7 @@ TOKEN :
 }
 
 //SÍMBOLOS INVÁLIDOS
-SPECIAL_TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
+TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         < INVALID_LEXICAL :
             (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
                 "A"-"Z",
