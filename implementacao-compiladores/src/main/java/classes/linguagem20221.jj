@@ -6,8 +6,8 @@ options {
 
 PARSER_BEGIN(Language20221)
 package classes;
-import org.javacc.parser.Token;
-import org.javacc.parser.ParseException;
+//import org.javacc.parser.Token;
+//import org.javacc.parser.ParseException;
 
 public class Language20221{
     private StringBuilder resultado = new StringBuilder();
@@ -196,8 +196,6 @@ TOKEN : {
         |
       // <#OP2: ((<LETRA>)* <DIG> (<LETRA>)* | (<DIG>)? (<LETRA>)+ (<UNDERLINE>)?) > | <LETRA> |
        <#DIG: (<DIGITO>)?(<DIGITO>)?>
-
-
 }
 
 
