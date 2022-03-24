@@ -268,7 +268,7 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         < SIMBOLO_INVALIDO :
             (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
                 "A"-"Z",
-                "a"-"z",
+//              "a"-"z",
                 "0"-"9",
                 "\"",       //aspas
                 "\'",       //apóstrofo
