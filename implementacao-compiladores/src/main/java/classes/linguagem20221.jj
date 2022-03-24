@@ -54,12 +54,15 @@ public class Language20221{
             }else if(t.kind == CONSTANTE_NUMERICA_INTEIRA_INVALIDA){     //CONSTANTE INTEIRA INVALIDA
                  resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                  System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == ERRO_CONSTANTE_NUMERICA_REAL_INVALIDA){     //CONSTANTE REAL INVALIDA
-                 resultado.append("Erro: '" + t.image + "' - Tipo: 'ERRO_CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                 System.out.println("Erro: '" + t.image + "' - Tipo: 'ERRO_CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_NUMERICA_REAL_INVALIDA){     //CONSTANTE REAL INVALIDA
+                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == COMENTARIO_FACULTATIVO_INVALIDO){
                 resultado.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                                 System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if (t.kind == IDENTIFICADOR_INVALIDO){
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else{                      // ERRO NAO MAPEADO
                  resultado.append("Erro: '" + t.image + "' - Tipo: ['ERRO_NAO_MAPEADO']  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                  System.out.println("Erro: ''" + t.image + "' - Tipo: ['ERRO_NAO_MAPEADO']  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
@@ -190,8 +193,8 @@ TOKEN : {
 
 //Identificadores
 TOKEN : {
-     <IDENTIFICADOR: (<LETRA_MAIUSCULA> (<LETRA>)* (<IDENT1>)? )
-                         | (("_")? (<LETRA>)+ (<IDENT2>)) | ( <DIGITO> (<DIGITO>)? (<IDENT1> | <IDENT2>)) >
+     <IDENTIFICADOR: <LETRA_MAIUSCULA> ((<LETRA>)* (<IDENT1>)?
+                         | (("_")? (<LETRA>)+ (<IDENT2>)) | ( <DIGITO> (<DIGITO>)? (<IDENT1> | <IDENT2>))) >
 |    <#IDENT1: <DIGITO> (<DIGITO>)? ((<LETRA>)* "_" (<LETRA>)* <DIGITO> | (<LETRA>)+ <DIGITO> )*
                                      ((<LETRA>)+ (<DIGITO> (<DIGITO>)?)? ("_")? | (<LETRA>)+ (<DIGITO> (<DIGITO>)?)?)+ >
 |    <#IDENT2: "_" ((<LETRA>)* <DIGITO> (<DIGITO>)? (<LETRA>)* "_" | (<DIGITO> (<DIGITO>)?)? (<LETRA>)+ ("_")?)* >
@@ -298,12 +301,13 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 "\f"
             ])+
         >
-    |   < CONSTANTE_LITERAL_INVALIDA:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
-    |   < CONSTANTE_NUMERICA_INTEIRA_INVALIDA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
-    |   < ERRO_CONSTANTE_NUMERICA_REAL_INVALIDA :
-                (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
-           |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
-           |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
-        >
-    |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" <CONSTANTE_LITERAL_INVALIDA> >
+        |   < CONSTANTE_LITERAL_INVALIDA:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+        |   < CONSTANTE_NUMERICA_INTEIRA_INVALIDA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+        |   < CONSTANTE_NUMERICA_REAL_INVALIDA :
+                    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+               |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+               |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+            >
+        |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" <CONSTANTE_LITERAL_INVALIDA> >
+        |   < IDENTIFICADOR_INVALIDO : ( <LETRA_MINUSCULA> | <UNDERLINE> ) (~ ["\n", "\r"])* (<LETRA>)* >
 }
