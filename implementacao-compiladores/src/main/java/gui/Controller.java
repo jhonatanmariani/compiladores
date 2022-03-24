@@ -43,6 +43,7 @@ public class Controller {
         }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
+        filePicker.setInitialDirectory(new File(System.getProperty("user.dir")));
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
 
         if (!editorFile.isFileStatusOK()) {
@@ -65,6 +66,7 @@ public class Controller {
             return;
         }
         inputTextArea.clear();
+        clearMessageArea();
         hasOpenFile = false;
         this.editorFile.setFile(null);
         updateStageTitle();
@@ -114,6 +116,7 @@ public class Controller {
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
+        filePicker.setInitialDirectory(new File(System.getProperty("user.dir")));
         File newFile = filePicker.showSaveDialog(new Stage());
         EditorFile newED = new EditorFile(newFile, false);
         switch (newED.getFileStatus()) {
