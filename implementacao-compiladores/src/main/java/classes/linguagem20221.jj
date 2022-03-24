@@ -22,8 +22,8 @@ public class Language20221{
                 resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == IDENTIFICADOR){     //IDENTIFICADOR
-                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADORES'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADORES'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
+                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADOR'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADOR'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
             }else if(t.kind == CONSTANTE_LITERAL){      //CONSTANTE_LITERAL
                 resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
@@ -145,12 +145,6 @@ SKIP : {
 <COMENTARIO_FACULTATIVO> SKIP : {
      <["\n" , "\r"]> : DEFAULT
 }
-
-<COMENTARIO_FACULTATIVO> MORE : {
-    <~[]>
-}
-
-
 
 //palavras reservadas
 TOKEN :
@@ -311,5 +305,5 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
            |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
            |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
         >
-    |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+    |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" <CONSTANTE_LITERAL_INVALIDA> >
 }
