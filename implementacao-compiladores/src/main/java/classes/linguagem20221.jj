@@ -151,28 +151,32 @@ SKIP : {
 TOKEN :
 {
     < PALAVRA_RESERVADA:
-            "do"
-        |   "this"
-        |   "body"
-        |   "description"
-        |   "declaration"
-        |   "type"
-        |   "is"
-        |   "constant"
+
+            "all"
         |   "and"
-        |   "variable"
         |   "as"
-        |   "integer"
-        |   "real"
-        |   "string"
-        |   "logic"
+        |   "avaliate"
+        |   "body"
+        |   "constant"
+        |   "declaration"
+        |   "description"
         |   "designate"
+        |   "do"
+        |   "integer"
+        |   "is"
+        |   "logic"
         |   "read"
-        |   "write"
-        |   "all"
+        |   "real"
         |   "repeat"
+        |   "result"
+        |   "string"
+        |   "this"
         |   "true"
-        |   "untrue" >
+        |   "type"
+        |   "untrue"
+        |   "variable"
+        |   "write"
+    >
 }
 
 //Tokens Auxiliares
@@ -300,7 +304,9 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         >
     |   <INVALID_CONSTANTE_LITERAL:
         //("\"" (~["\""])*) | ("'" (~["'"])*)
-            "\"" (~ ["\n", "\r", "\""])* ["\n", "\r"]>
+            "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+            //        ("\"" (~ ["\n", "\r", "\""])* ["\r"])>// | ("\'" (~ ["\n", "\r", "\'"])* ["\r"])> reconhece constante literal pulando linha
+            //            "\"" (~ ["\""] | "\\" "\"")* "\"" > // reconhece só a linha com \n como const literal
         {
             //results.append("Token: '" + image + "' - Tipo: INVALID_CONSTANTE_LITERAL  -  " + "ID: " +  kind + " - Line-Column: " + beginLine + "-" + beginColumn + "\n");
             System.err.println("Token: ['" + image + "'] - Tipo: ['INVALID_CONSTANTE_LITERAL'] -  " + "Id: ['" +  "Não tem ID" + "'] - Linha: ['" + input_stream.getBeginLine() + "']  -  Coluna: ['" + input_stream.getBeginColumn() + "']\n");
