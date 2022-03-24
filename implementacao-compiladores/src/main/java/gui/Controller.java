@@ -2,7 +2,6 @@ package gui;
 
 import classes.Language20221;
 import util.AlertFactory;
-import util.AppMetadataHelper;
 import util.Operation;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -29,13 +28,12 @@ public class Controller {
     public TextArea messageTextArea;
     public Label statusBar, lineColLabel;
     // Menu bar items
-    public MenuItem saveMenuItem, saveAsMenuItem;
+    public MenuItem saveMenuItem, saveAsMenuItem, exitProgramItem;
     public MenuItem cutMenuItem, copyMenuItem, pasteMenuItem;
     //  Menu toolbar buttons
     public Button newBtn, openBtn, saveBtn;
     public Button copyBtn, cutBtn, pasteBtn;
     public Button buildBtn, runBtn;
-    public Button helpBtn;
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -46,7 +44,7 @@ public class Controller {
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
-        // Error handling
+
         if (!editorFile.isFileStatusOK()) {
             Alert alert = AlertFactory.create
                     (
@@ -70,6 +68,7 @@ public class Controller {
         hasOpenFile = false;
         this.editorFile.setFile(null);
         updateStageTitle();
+        setStatusMsg("");
     }
 
     private void fileContentsToCodeArea() {
@@ -104,8 +103,7 @@ public class Controller {
             op = Operation.SUCCESS;
         } else {
             AlertFactory.create(Alert.AlertType.ERROR, "Erro", "Falha na operacao",
-                    String.format("Falha ao salvar arquivo em '%s'", editorFile.getFilePath().get()))
-                    .show();
+                    String.format("Falha ao salvar arquivo em '%s'", editorFile.getFilePath().get())).show();
         }
         return op;
     }
@@ -113,7 +111,6 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        System.out.println("Chamada de salvar como ...");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -145,7 +142,7 @@ public class Controller {
                                 Alert.AlertType.INFORMATION,
                                 "Info",
                                 "Operacao cancelada",
-                                "Cancelado salvar em um novo arquivo"
+                                "Salvar em um novo arquivo cancelado"
                         ).show();
                 op = Operation.CANCELED;
             }
@@ -180,15 +177,6 @@ public class Controller {
     public void disableSaving(boolean b) {
         saveBtn.setDisable(b);
         saveMenuItem.setDisable(b);
-    }
-
-    public void disableEditOptions(boolean b) { // todo função não está sendo usada
-        cutBtn.setDisable(b);
-        cutMenuItem.setDisable(b);
-        copyBtn.setDisable(b);
-        copyMenuItem.setDisable(b);
-        pasteBtn.setDisable(b);
-        pasteMenuItem.setDisable(b);
     }
 
     public void setStatusMsg(String msg) {
@@ -253,31 +241,16 @@ public class Controller {
         return op;
     }
 
-//    public void showAboutDialog(ActionEvent event) {
-//        event.consume();
-//        Alert about = new Alert(Alert.AlertType.INFORMATION);
-//        about.setTitle("Pluto Compiler");
-//        StringBuilder authorString = new StringBuilder();
-//        for (String author : AppMetadataHelper.getAuthors()) {
-//            authorString.append("\n").append(author);
-//        }
-//        about.setContentText(String.format(
-//                "Authors: %s\n" +
-//                        "\n\nSystem Info:\n" +
-//                        "Running on JAVA Version: %s\n" +
-//                        "Running JavaFX Version %s\n",
-//                authorString.toString(), AppMetadataHelper.javaVersion(), AppMetadataHelper.javafxVersion())
-//        );
-//        about.setHeaderText("About this app");
-//        about.show();
-//    }
-
     private void clearMessageArea() {
         this.messageTextArea.clear();
     }
 
     public void exitProgram(ActionEvent actionEvent) {
-        System.exit(0);
+        if (handleOpenUnsavedFile() == Operation.SUCCESS) {
+            Platform.exit();
+        } else {
+            actionEvent.consume();
+        }
     }
 
     public class ExitButtonListener implements EventHandler<WindowEvent> {
@@ -289,7 +262,6 @@ public class Controller {
                 windowEvent.consume();
             }
         }
-
     }
 
     public void compileProgram(ActionEvent actionEvent) {
@@ -299,8 +271,8 @@ public class Controller {
                     (
                             Alert.AlertType.ERROR,
                             "Erro",
-                            "Arquivo em branco",
-                            "Um arquivo em branco nao pode ser compilado"
+                            "Arquivo vazio",
+                            "Um arquivo vazio nao pode ser compilado"
                     );
             alert.show();
             return;

@@ -15,9 +15,9 @@
                 <Menu text="Arquivo">
                     <MenuItem onAction="#openFileDialog" text="Abrir"/>
                     <MenuItem onAction="#newFileDialog" text="Novo"/>
-                    <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Salvar" accelerator="Shortcut+S"/>
+                    <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Salvar"/>
                     <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Salvar como..."/>
-                    <MenuItem fx:id="exitProgram" onAction="#exitProgram" text="Sair"/>
+                    <MenuItem fx:id="exitProgramItem" onAction="#exitProgram" text="Sair"/>
                 </Menu>
                 <Menu text="Edição">
                     <MenuItem fx:id="cutMenuItem" text="Recortar" onAction="#cutSelection"/>
@@ -25,13 +25,9 @@
                     <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compilação">
-                    <MenuItem text="Build" onAction="#compileProgram"/>
+                    <MenuItem text="Compilar" onAction="#compileProgram"/>
                     <MenuItem disable="true" text="Executar"/>
                 </Menu>
-<!--                <Menu text="Help">-->
-<!--                    <MenuItem text="Help"/>-->
-<!--&lt;!&ndash;                    <MenuItem text="About" onAction="#showAboutDialog"/> TODO ver se realmente precisa disso &ndash;&gt;-->
-<!--                </Menu>-->
             </MenuBar>
         </HBox>
         <HBox>
@@ -94,14 +90,6 @@
                         </ImageView>
                     </graphic>
                 </Button>
-
-<!--                <Button fx:id="helpBtn">-->
-<!--                    <graphic>-->
-<!--                        <ImageView>-->
-<!--                            <Image url="@icones/ajuda.png"/>-->
-<!--                        </ImageView>-->
-<!--                    </graphic>-->
-<!--                </Button>-->
             </ToolBar>
         </HBox>
         <VBox VBox.vgrow="ALWAYS">
@@ -128,6 +116,4 @@
             </padding>
         </VBox>
     </VBox>
-
-
 </AnchorPane>
