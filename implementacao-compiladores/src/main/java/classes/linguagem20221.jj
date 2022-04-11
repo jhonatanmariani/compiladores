@@ -60,7 +60,7 @@ public class Language20221{
             }else if (t.kind == COMENTARIO_FACULTATIVO_INVALIDO){
                 resultado.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else{
+            }else{      //IDENTIFICADOR INVALIDO
                 resultado.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }
