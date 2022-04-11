@@ -1,0 +1,310 @@
+options {
+    STATIC = false;
+    LOOKAHEAD = 1;
+    DEBUG_LOOKAHEAD = true;
+}
+
+PARSER_BEGIN(Language20221)
+package classes;
+//import org.javacc.parser.Token;
+//import org.javacc.parser.ParseException;
+
+public class Language20221{
+    private StringBuilder resultado = new StringBuilder();
+
+    public void leituraDeTokens()  {
+        try {
+            Token t = null;
+            t = getNextToken();
+            if (t.kind == EOF) return;
+            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
+            if (t.kind == PALAVRA_RESERVADA){           //PALAVRA_RESERVADA
+                resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if (t.kind == IDENTIFICADOR){     //IDENTIFICADOR
+                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADOR'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADOR'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
+            }else if(t.kind == CONSTANTE_LITERAL){      //CONSTANTE_LITERAL
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_NUMERICA_INTEIRA){      //CONSTANTE_NUMERICA_INTEIRA
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_NUMERICA_REAL){      //CONSTANTE_NUMERICA_REAL
+                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == SIMBOLO_ESPECIAL){      //SIMBOLO ESPECIAIS
+                resultado.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == OPERADOR_ARITMETICO){      //OPERADOR_ARITMETICO
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == OPERADOR_RELACIONAL){
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == OPERADOR_LOGICO){      //OPERADOR_LOGICO
+                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "Id: ['" +  t.kind + "'] - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == SIMBOLO_INVALIDO){     //SIMBOLO_INVÁLIDO
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_LITERAL_INVALIDA){     //CONSTANTE LITERAL INVALIDA
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_NUMERICA_INTEIRA_INVALIDA){     //CONSTANTE INTEIRA INVALIDA
+                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if(t.kind == CONSTANTE_NUMERICA_REAL_INVALIDA){     //CONSTANTE REAL INVALIDA
+                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else if (t.kind == COMENTARIO_FACULTATIVO_INVALIDO){
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }else{
+                resultado.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            }
+            leituraDeTokens();
+        }catch(Error erro){
+            resultado.append("Erro - " + erro.getMessage() + "\n");
+            System.out.println(erro.toString());
+            leituraDeTokens();
+        }
+    }
+
+    public String getTokens(String args[], String textoParaAnalisar) {
+        Language20221 language20221;
+        if(args.length == 0){
+            System.out.println("#####################################");
+            System.out.println("### Iniciando leitura dos tokens ...");
+            System.out.println("#####################################");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textoParaAnalisar.getBytes());
+            language20221 = new Language20221(targetStream);
+        }else if(args.length == 1){
+            try{
+                language20221 = new Language20221(new java.io.FileInputStream(args[0]));
+            }catch(java.io.FileNotFoundException e){
+                System.err.println(args[0] + " não foi encontrado." );
+                System.err.println(e);
+                return args[0] + " não foi encontrado.";
+            }
+        }else{
+            System.out.println("Use:\njava Language2021 < inputFile");
+            System.out.println("ou java Language2021 inputFile");
+            return "Use:java Language2021 < inputFile";
+        }
+        this.leituraDeTokens();
+        resultado.append("<EOF>");
+        return resultado.toString();
+    }
+
+    public String getResultado(){
+        return resultado.toString();
+    }
+}
+
+PARSER_END(Language20221)
+
+SKIP :  //caracteres que o javacc excluirá da linguagem para nao interpretar
+{
+        " "
+    |   "\t"
+    |   "\n"
+    |   "\r"
+    |   "\f"
+    |   "\r\n"
+    |   "\n\r"
+}
+
+//COMENTÁRIO DE MULTIPLAS LINHAS
+SKIP:
+{
+    "/*" : COMENTARIO_BLOCO
+}
+<COMENTARIO_BLOCO> SKIP:
+{
+        "*/" : DEFAULT
+    |   <~[]>                       //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
+}
+
+//COMENTÁRIO DE LINHA
+SKIP:
+{
+    "//": COMENTARIO_LINHA
+}
+<COMENTARIO_LINHA> SKIP:
+{
+        <["\n" , "\r"]> : DEFAULT       //quando encontrar o "\n" ou o "\r" retorna ao estado normal
+    |   <~[]>
+}
+
+// < COMENTARIO_FACULTATIVO: ":-">
+SKIP : {
+    "description" : COMENTARIO_FACULTATIVO
+ }
+<COMENTARIO_FACULTATIVO> SKIP : {
+     <["\n" , "\r"]> : DEFAULT
+}
+
+//palavras reservadas
+TOKEN :
+{
+    < PALAVRA_RESERVADA:
+            "all"
+        |   "and"
+        |   "as"
+        |   "avaliate"
+        |   "body"
+        |   "constant"
+        |   "declaration"
+        |   "description"
+        |   "designate"
+        |   "do"
+        |   "integer"
+        |   "is"
+        |   "logic"
+        |   "read"
+        |   "real"
+        |   "repeat"
+        |   "result"
+        |   "string"
+        |   "this"
+        |   "true"
+        |   "type"
+        |   "untrue"
+        |   "variable"
+        |   "write"
+    >
+}
+
+//Tokens Auxiliares
+TOKEN : {
+        < #LETRA_MINUSCULA: ["a"-"z"] >
+    |   < #LETRA_MAIUSCULA: ["A"-"Z"]>
+    |   < #LETRA: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
+    |   < #ASCII : ~[] >      //any character
+    |   < #DIGITO: ["0"-"9"] >
+    |   < #UNDERLINE: "_" >
+
+}
+
+//Identificadores
+TOKEN : {
+     <IDENTIFICADOR: <LETRA_MAIUSCULA> ((<LETRA>)* (<IDENT1>)?
+                         | (("_")? (<LETRA>)+ (<IDENT2>)) | ( <DIGITO> (<DIGITO>)? (<IDENT1> | <IDENT2>))) >
+|    <#IDENT1: <DIGITO> (<DIGITO>)? ((<LETRA>)* "_" (<LETRA>)* <DIGITO> | (<LETRA>)+ <DIGITO> )*
+                                     ((<LETRA>)+ (<DIGITO> (<DIGITO>)?)? ("_")? | (<LETRA>)+ (<DIGITO> (<DIGITO>)?)?)+ >
+|    <#IDENT2: "_" ((<LETRA>)* <DIGITO> (<DIGITO>)? (<LETRA>)* "_" | (<DIGITO> (<DIGITO>)?)? (<LETRA>)+ ("_")?)* >
+
+}
+
+
+//Constantes Literais
+TOKEN : {
+
+    < CONSTANTE_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
+    // ~["\""] => Qualquer caractere menos a aspa
+    // ~["'"] => Qualquer caractere menos o apóstrofro
+}
+
+//Constantes Númericas (Real e Inteira)
+TOKEN : {
+        < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
+    |   < #CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
+}
+
+
+//Símbolos Especiais
+TOKEN :
+{
+    < SIMBOLO_ESPECIAL :
+            "{"
+        |   "}"
+        |   "."
+        |   ","
+        |   "["
+        |   "]"
+        |   "("
+        |   ")" >
+}
+
+//Operadores Aritméticos
+TOKEN :
+{
+    < OPERADOR_ARITMETICO:
+            "+"
+        |   "-"
+        |   "*"
+        |   "/"
+        |   "**"
+        |   "%"
+        |   "%%" >
+}
+
+//Operadores Relacionais
+TOKEN :
+{
+    < OPERADOR_RELACIONAL :
+            "="
+        |   "!="
+        |   "<"
+        |   ">"
+        |   "<="
+        |   ">=" >
+}
+
+//Operadores Lógicos
+TOKEN :
+{
+    < OPERADOR_LOGICO :
+            "&"
+        |   "|"
+        |   "!"  >
+}
+
+//SÍMBOLOS INVÁLIDOS
+TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
+        < SIMBOLO_INVALIDO :
+            (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
+                "A"-"Z",
+//              "a"-"z",
+                "0"-"9",
+                "\"",       //aspas
+                "\'",       //apóstrofo
+                "{",
+                "}",
+                ".",
+                ",",
+                "[",
+                "]",
+                "(",
+                ")",
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "=",
+                "<",
+                ">",
+                "&",
+                "|",
+                "!",
+                " ",
+                "\t",
+                "\n",
+                "\r",
+                "\f"
+            ])+
+        >
+        |   < CONSTANTE_LITERAL_INVALIDA:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+        |   < CONSTANTE_NUMERICA_INTEIRA_INVALIDA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+        |   < CONSTANTE_NUMERICA_REAL_INVALIDA :
+                    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+               |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+               |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+            >
+        |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" <CONSTANTE_LITERAL_INVALIDA> >
+        |   < IDENTIFICADOR_INVALIDO : ( <LETRA_MINUSCULA> | <UNDERLINE> ) (~ ["\n", "\r"])* (<LETRA>)* >
+}
