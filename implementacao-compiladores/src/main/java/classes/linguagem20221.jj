@@ -216,15 +216,14 @@ TOKEN : {
 //Símbolos Especiais
 TOKEN :
 {
-    < SIMBOLO_ESPECIAL :
-            "{"
-        |   "}"
-        |   "."
-        |   ","
-        |   "["
-        |   "]"
-        |   "("
-        |   ")" >
+        < SIMBOLO_ESPECIAL_ABRE_CHAVES: "{" >
+    |   < SIMBOLO_ESPECIAL_FECHA_CHAVES: "}" >
+    |   < SIMBOLO_ESPECIAL_PONTO_FINAL: "." >
+    |   < SIMBOLO_ESPECIAL_VIRGULA: "," >
+    |   < SIMBOLO_ESPECIAL_ABRE_COLCHETES: "[" >
+    |   < SIMBOLO_ESPECIAL_FECHA_COLCHETES: "]" >
+    |   < SIMBOLO_ESPECIAL_ABRE_PARENTESES: "(" >
+    |   < SIMBOLO_ESPECIAL_FECHA_PARENTESES: ")" >
 }
 
 //Operadores Aritméticos
