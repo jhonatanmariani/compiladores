@@ -242,13 +242,12 @@ TOKEN :
 //Operadores Relacionais
 TOKEN :
 {
-    < OPERADOR_RELACIONAL :
-            "="
-        |   "!="
-        |   "<"
-        |   ">"
-        |   "<="
-        |   ">=" >
+        < OPERADOR_RELACIONAL_IGUAL: "==">
+    |   < OPERADOR_RELACIONAL_DIFERENTE: "!=">
+    |   < OPERADOR_RELACIONAL_MENOR: "<<">
+    |   < OPERADOR_RELACIONAL_MAIOR: ">>">
+    |   < OPERADOR_RELACIONAL_MENOR_IGUAL: "<<=">
+    |   < OPERADOR_RELACIONAL_MAIOR_IGUAL: ">>=">
 }
 
 //Operadores Lógicos
