@@ -253,10 +253,9 @@ TOKEN :
 //Operadores Lógicos
 TOKEN :
 {
-    < OPERADOR_LOGICO :
-            "&"
-        |   "|"
-        |   "!"  >
+        < OPERADOR_LOGICO_E: "&">
+    |   < OPERADOR_LOGICO_OU: "|">
+    |   < OPERADOR_LOGICO_NAO: "!">
 }
 
 //SÍMBOLOS INVÁLIDOS
