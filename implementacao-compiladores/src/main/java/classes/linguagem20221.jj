@@ -18,7 +18,7 @@ public class Language20221{
             t = getNextToken();
             if (t.kind == EOF) return;
             //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
-            if (t.kind == PALAVRA_RESERVADA){           //PALAVRA_RESERVADA
+            if (t.kind >= 16 && t.kind <= 39 ){           //PALAVRA_RESERVADA
                 resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == IDENTIFICADOR){     //IDENTIFICADOR
@@ -147,34 +147,32 @@ SKIP : {
 }
 
 //palavras reservadas
-TOKEN :
+TOKEN [IGNORE_CASE]:
 {
-    < PALAVRA_RESERVADA:
-            "all"
-        |   "and"
-        |   "as"
-        |   "avaliate"
-        |   "body"
-        |   "constant"
-        |   "declaration"
-        |   "description"
-        |   "designate"
-        |   "do"
-        |   "integer"
-        |   "is"
-        |   "logic"
-        |   "read"
-        |   "real"
-        |   "repeat"
-        |   "result"
-        |   "string"
-        |   "this"
-        |   "true"
-        |   "type"
-        |   "untrue"
-        |   "variable"
-        |   "write"
-    >
+        <PALAVRA_RESERVADA_ALL: "all">
+    |   <PALAVRA_RESERVADA_AND: "and">
+    |   <PALAVRA_RESERVADA_AS:  "as">
+    |   <PALAVRA_RESERVADA_AVALIATE: "avaliate">
+    |   <PALAVRA_RESERVADA_BODY: "body">
+    |   <PALAVRA_RESERVADA_CONSTANT: "constant">
+    |   <PALAVRA_RESERVADA_DECLARATION: "declaration">
+    |   <PALAVRA_RESERVADA_DESCRIPTION: "description">
+    |   <PALAVRA_RESERVADA_DESIGNATE: "designate">
+    |   <PALAVRA_RESERVADA_DO: "do">
+    |   <PALAVRA_RESERVADA_INTEGER: "integer">
+    |   <PALAVRA_RESERVADA_IS: "is">
+    |   <PALAVRA_RESERVADA_LOGIC: "logic">
+    |   <PALAVRA_RESERVADA_READ: "read">
+    |   <PALAVRA_RESERVADA_REAL: "real">
+    |   <PALAVRA_RESERVADA_REPEAT: "repeat">
+    |   <PALAVRA_RESERVADA_RESULT: "result">
+    |   <PALAVRA_RESERVADA_STRING: "string">
+    |   <PALAVRA_RESERVADA_THIS: "this">
+    |   <PALAVRA_RESERVADA_TRUE: "true">
+    |   <PALAVRA_RESERVADA_TYPE: "type">
+    |   <PALAVRA_RESERVADA_UNTRUE: "untrue">
+    |   <PALAVRA_RESERVADA_VARIABLE: "variable">
+    |   <PALAVRA_RESERVADA_WRITE: "write">
 }
 
 //Tokens Auxiliares
@@ -268,7 +266,7 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         < SIMBOLO_INVALIDO :
             (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
                 "A"-"Z",
-//              "a"-"z",
+                "a"-"z",
                 "0"-"9",
                 "\"",       //aspas
                 "\'",       //apóstrofo
