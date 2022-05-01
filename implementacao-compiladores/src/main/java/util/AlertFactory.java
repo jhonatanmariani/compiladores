@@ -16,7 +16,7 @@ public class AlertFactory {
     public static Alert AlertYesNoCancel(Alert.AlertType type, String title, String header, String content) {
         var alert = new Alert(type, "",
                 new ButtonType("Sim", ButtonBar.ButtonData.YES),
-                new ButtonType("Não", ButtonBar.ButtonData.NO),
+                new ButtonType("Nao", ButtonBar.ButtonData.NO),
                 new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE));
         alert.setTitle(title);
         alert.setHeaderText(header);
