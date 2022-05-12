@@ -18,7 +18,7 @@ public class Language20221{
             t = getNextToken();
             if (t.kind == EOF) return;
             //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
-            if (t.kind == PALAVRA_RESERVADA){           //PALAVRA_RESERVADA
+            if (t.kind >= 16 && t.kind <= 39 ){           //PALAVRA_RESERVADA
                 resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if (t.kind == IDENTIFICADOR){     //IDENTIFICADOR
@@ -33,18 +33,9 @@ public class Language20221{
             }else if(t.kind == CONSTANTE_NUMERICA_REAL){      //CONSTANTE_NUMERICA_REAL
                 resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == SIMBOLO_ESPECIAL){      //SIMBOLO ESPECIAIS
+            }else if(t.kind >= 53 && t.kind <= 76){      //SIMBOLO ESPECIAIS
                 resultado.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == OPERADOR_ARITMETICO){      //OPERADOR_ARITMETICO
-                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_ARITMETICO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == OPERADOR_RELACIONAL){
-                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_RELACIONAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == OPERADOR_LOGICO){      //OPERADOR_LOGICO
-                resultado.append("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: '" + t.image + "' - Tipo: 'OPERADOR_LOGICO'  -  " + "Id: ['" +  t.kind + "'] - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
             }else if(t.kind == SIMBOLO_INVALIDO){     //SIMBOLO_INVÁLIDO
                 resultado.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                 System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
@@ -147,34 +138,32 @@ SKIP : {
 }
 
 //palavras reservadas
-TOKEN :
+TOKEN [IGNORE_CASE]:
 {
-    < PALAVRA_RESERVADA:
-            "all"
-        |   "and"
-        |   "as"
-        |   "avaliate"
-        |   "body"
-        |   "constant"
-        |   "declaration"
-        |   "description"
-        |   "designate"
-        |   "do"
-        |   "integer"
-        |   "is"
-        |   "logic"
-        |   "read"
-        |   "real"
-        |   "repeat"
-        |   "result"
-        |   "string"
-        |   "this"
-        |   "true"
-        |   "type"
-        |   "untrue"
-        |   "variable"
-        |   "write"
-    >
+        < PALAVRA_RESERVADA_ALL: "all">
+    |   < PALAVRA_RESERVADA_AND: "and">
+    |   < PALAVRA_RESERVADA_AS:  "as">
+    |   < PALAVRA_RESERVADA_AVALIATE: "avaliate">
+    |   < PALAVRA_RESERVADA_BODY: "body">
+    |   < PALAVRA_RESERVADA_CONSTANT: "constant">
+    |   < PALAVRA_RESERVADA_DECLARATION: "declaration">
+    |   < PALAVRA_RESERVADA_DESCRIPTION: "description">
+    |   < PALAVRA_RESERVADA_DESIGNATE: "designate">
+    |   < PALAVRA_RESERVADA_DO: "do">
+    |   < PALAVRA_RESERVADA_INTEGER: "integer">
+    |   < PALAVRA_RESERVADA_IS: "is">
+    |   < PALAVRA_RESERVADA_LOGIC: "logic">
+    |   < PALAVRA_RESERVADA_READ: "read">
+    |   < PALAVRA_RESERVADA_REAL: "real">
+    |   < PALAVRA_RESERVADA_REPEAT: "repeat">
+    |   < PALAVRA_RESERVADA_RESULT: "result">
+    |   < PALAVRA_RESERVADA_STRING: "string">
+    |   < PALAVRA_RESERVADA_THIS: "this">
+    |   < PALAVRA_RESERVADA_TRUE: "true">
+    |   < PALAVRA_RESERVADA_TYPE: "type">
+    |   < PALAVRA_RESERVADA_UNTRUE: "untrue">
+    |   < PALAVRA_RESERVADA_VARIABLE: "variable">
+    |   < PALAVRA_RESERVADA_WRITE: "write">
 }
 
 //Tokens Auxiliares
@@ -218,49 +207,45 @@ TOKEN : {
 //Símbolos Especiais
 TOKEN :
 {
-    < SIMBOLO_ESPECIAL :
-            "{"
-        |   "}"
-        |   "."
-        |   ","
-        |   "["
-        |   "]"
-        |   "("
-        |   ")" >
+        < SIMBOLO_ESPECIAL_ABRE_CHAVES: "{" >
+    |   < SIMBOLO_ESPECIAL_FECHA_CHAVES: "}" >
+    |   < SIMBOLO_ESPECIAL_PONTO_FINAL: "." >
+    |   < SIMBOLO_ESPECIAL_VIRGULA: "," >
+    |   < SIMBOLO_ESPECIAL_ABRE_COLCHETES: "[" >
+    |   < SIMBOLO_ESPECIAL_FECHA_COLCHETES: "]" >
+    |   < SIMBOLO_ESPECIAL_ABRE_PARENTESES: "(" >
+    |   < SIMBOLO_ESPECIAL_FECHA_PARENTESES: ")" >
 }
 
 //Operadores Aritméticos
 TOKEN :
 {
-    < OPERADOR_ARITMETICO:
-            "+"
-        |   "-"
-        |   "*"
-        |   "/"
-        |   "**"
-        |   "%"
-        |   "%%" >
+        < OPERADOR_ARITMETICO_ADICAO: "+">
+    |   < OPERADOR_ARITMETICO_SUBTRACAO: "-">
+    |   < OPERADOR_ARITMETICO_MULTIPLICACAO: "*">
+    |   < OPERADOR_ARITMETICO_DIVISAO: "/">
+    |   < OPERADOR_ARITMETICO_POTENCIACAO: "**">
+    |   < OPERADOR_ARITMETICO_DIVISAO_INTEIRA: "%">
+    |   < OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA: "%%">
 }
 
 //Operadores Relacionais
 TOKEN :
 {
-    < OPERADOR_RELACIONAL :
-            "="
-        |   "!="
-        |   "<"
-        |   ">"
-        |   "<="
-        |   ">=" >
+        < OPERADOR_RELACIONAL_IGUAL: "==">
+    |   < OPERADOR_RELACIONAL_DIFERENTE: "!=">
+    |   < OPERADOR_RELACIONAL_MENOR: "<<">
+    |   < OPERADOR_RELACIONAL_MAIOR: ">>">
+    |   < OPERADOR_RELACIONAL_MENOR_IGUAL: "<<=">
+    |   < OPERADOR_RELACIONAL_MAIOR_IGUAL: ">>=">
 }
 
 //Operadores Lógicos
 TOKEN :
 {
-    < OPERADOR_LOGICO :
-            "&"
-        |   "|"
-        |   "!"  >
+        < OPERADOR_LOGICO_E: "&">
+    |   < OPERADOR_LOGICO_OU: "|">
+    |   < OPERADOR_LOGICO_NAO: "!">
 }
 
 //SÍMBOLOS INVÁLIDOS
@@ -268,7 +253,7 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         < SIMBOLO_INVALIDO :
             (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
                 "A"-"Z",
-//              "a"-"z",
+                "a"-"z",
                 "0"-"9",
                 "\"",       //aspas
                 "\'",       //apóstrofo

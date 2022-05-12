@@ -38,6 +38,9 @@
                             <Image url="@icones/novo.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Novo"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="openBtn" onAction="#openFileDialog">
                     <graphic>
@@ -45,6 +48,9 @@
                             <Image url="@icones/abrir.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Abrir"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="saveBtn" onAction="#saveAction">
                     <graphic>
@@ -52,6 +58,9 @@
                             <Image url="@icones/salvar.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Salvar"/>
+                    </tooltip>
                 </Button>
                 <Separator/>
                 <Button fx:id="cutBtn" onAction="#cutSelection">
@@ -60,6 +69,9 @@
                             <Image url="@icones/recortar.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Recortar"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="copyBtn" onAction="#copySelection">
                     <graphic>
@@ -67,6 +79,9 @@
                             <Image url="@icones/copiar.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Copiar"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="pasteBtn" onAction="#pasteFromClipboard">
                     <graphic>
@@ -74,6 +89,9 @@
                             <Image url="@icones/colar.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Colar"/>
+                    </tooltip>
                 </Button>
                 <Separator/>
                 <Button fx:id="buildBtn" onAction="#compileProgram">
@@ -82,6 +100,9 @@
                             <Image url="@icones/build.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Compilar"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="runBtn" disable="true">
                     <graphic>
@@ -89,6 +110,9 @@
                             <Image url="@icones/executar.png"/>
                         </ImageView>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Executar"/>
+                    </tooltip>
                 </Button>
             </ToolBar>
         </HBox>
