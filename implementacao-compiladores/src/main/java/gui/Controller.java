@@ -43,9 +43,9 @@ public class Controller {
         }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
-        filePicker.setInitialDirectory(new File(System.getProperty("user.dir")));
+        filePicker.setInitialDirectory(EditorFile.LAST_CURRENT_WORKING_DIR);
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
-
+        // Error handling
         if (!editorFile.isFileStatusOK()) {
             Alert alert = AlertFactory.create
                     (
@@ -66,11 +66,12 @@ public class Controller {
             return;
         }
         inputTextArea.clear();
-        clearMessageArea();
+        //clearMessageArea();
+        messageTextArea.clear();
         hasOpenFile = false;
         this.editorFile.setFile(null);
         updateStageTitle();
-        setStatusMsg("");
+        //setStatusMsg("");
     }
 
     private void fileContentsToCodeArea() {
@@ -113,6 +114,7 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
+        System.out.println("Save as called");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -181,7 +183,14 @@ public class Controller {
         saveBtn.setDisable(b);
         saveMenuItem.setDisable(b);
     }
-
+    public void disableEditOptions(boolean b) {
+        cutBtn.setDisable(b);
+        cutMenuItem.setDisable(b);
+        copyBtn.setDisable(b);
+        copyMenuItem.setDisable(b);
+        pasteBtn.setDisable(b);
+        pasteMenuItem.setDisable(b);
+    }
     public void setStatusMsg(String msg) {
         statusBar.setText(String.format("Status: %s", msg));
     }
@@ -287,6 +296,95 @@ public class Controller {
         messageTextArea.setText(result);
         System.out.println(result);
     }
+    /*
+    public void handleRunButton() throws ParseEOFException, ParseException {
+        if (handleVMmaybeRunning() == Operation.SUCCESS) {
+            if (compileProgram()) {
+                this.vm = new VirtualMachine.java(insList);
+                this.isReadingConsole = false;
+                runVirtualMachine();
+            }
+        }
+    }
+       public Operation handleVMmaybeRunning() {
+        if (vm == null || vm.getStatus() == VMStatus.HALTED) {
+            return Operation.SUCCESS;
+        }
+        var confirm = AlertFactory.create(Alert.AlertType.CONFIRMATION, "Confirmation", "", "VM is still running, do you wish to stop the VM and continue this operation?");
+        Optional<ButtonType> optional = Optional.empty();
+        var op = Operation.CANCELED;
+        if (vm.getStatus() == VMStatus.RUNNING || vm.getStatus() == VMStatus.SYSCALL_IO_READ || vm.getStatus() == VMStatus.SYSCALL_IO_WRITE) {
+            optional = confirm.showAndWait();
+        }
+        if (optional.isEmpty()) {
+            return Operation.CANCELED;
+        }
+        var buttonData = optional.get().getButtonData();
+        if (buttonData.equals(ButtonType.OK.getButtonData())) {
+            vm = null;
+            this.messageTextArea.clear();
+            setStatusMsg("Forcefully closed VM!");
+            return Operation.SUCCESS;
+        }
+        if (buttonData.equals(ButtonType.CANCEL.getButtonData())) {
+            return Operation.CANCELED;
+        }
+        return op;
+    }
+
+    public void runVirtualMachine() {
+        try {
+            while (vm.getStatus() != VMStatus.HALTED) {
+                if (isReadingConsole) {
+                    return;
+                }
+                statusBar.setText("Running Virtual Machine...");
+                vm.executeAll();
+                switch (vm.getStatus()) {
+                    case SYSCALL_IO_READ -> {
+                        handleSyscallRead(vm.getSyscallDataType());
+                    }
+                    case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
+                }
+            }
+            statusBar.setText("Virtual Machine halted, program terminated!");
+        } catch (Exception e) {
+            statusBar.setText("Runtime error when executing VM, aborting!!");
+            this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
+            e.printStackTrace();
+            this.vm.setStatus(VMStatus.HALTED);
+            this.isReadingConsole = false;
+            this.consoleInput.setDisable(true);
+        }
+    }
+
+    private void handleSyscallWrite(Object o) {
+        messageTextArea.appendText("\n" + o.toString());
+    }
+
+    private void handleSyscallRead(DataType o) {
+        consoleInput.setDisable(false);
+        isReadingConsole = true;
+        statusBar.setText("Waiting for input of " + o.toString());
+        consoleInput.setOnKeyReleased(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                vm.setSyscallData(consoleInput.getText().trim());
+                messageTextArea.appendText("\n--> " + consoleInput.getText().trim());
+                consoleInput.setDisable(true);
+                consoleInput.clear();
+                isReadingConsole = false;
+                runVirtualMachine();
+            }
+        });
+    }
+
+    private void displayInstructions(List<Instruction.java> instructions) {
+        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
+        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
+        instructionTable.setItems(getObservableListOf(instructions));
+    }
+     */
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();
@@ -302,5 +400,8 @@ public class Controller {
 
     public void pasteFromClipboard() {
         inputTextArea.paste();
+    }
+    private ObservableList<Instruction> getObservableListOf(List<Instruction> instructionList) {
+        return FXCollections.observableArrayList(instructionList);
     }
 }
