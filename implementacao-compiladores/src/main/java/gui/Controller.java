@@ -4,12 +4,10 @@ import classes.ParseException;
 //import classes.Sintatico;
 //import classes.ParseEOFException;
 import util.AlertFactory;
-import util.AppMetadataHelper;
 import util.Operation;
-import maquinavirtual.DataType;
+import maquinavirtual.DataTypeK;
 import maquinavirtual.Instruction;
-import maquinavirtual.VirtualMachineStatus;
-import maquinavirtual.VirtualMachine;
+//import maquinavirtual.VirtualMachineK;
 import classes.ErrorStruct;
 import classes.LanguageParser;
 import classes.LanguageParserConstants;
@@ -360,6 +358,7 @@ public class Controller {
             this.messageTextArea.appendText("\nErros(s) lexicos encontrados 0\n");
         }
     }
+
     /*
     public void handleRunButton() throws ParseEOFException, ParseException {
         if (handleVMmaybeRunning() == Operation.SUCCESS) {
@@ -448,7 +447,7 @@ public class Controller {
         instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
         instructionTable.setItems(getObservableListOf(instructions));
     }
-     */
+    */
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();
