@@ -1,19 +1,19 @@
-/*package maquinavirtual;
+package maquinavirtual;
 
 import java.util.List;
 
 public class InstructionK implements Comparable<InstructionK> {
     public Integer number;
     public final Mnemonic mnemonic;
-    public DataFrame parameter;
+    public DataFrameK parameter;
 
-    public InstructionK (Mnemonic mnemonic, DataFrame parameter) {
+    public InstructionK (Mnemonic mnemonic, DataFrameK parameter) {
         this.number = 0;
         this.mnemonic = mnemonic;
         this.parameter = parameter;
     }
 
-    public InstructionK(Integer number, Mnemonic mnemonic, DataFrame parameter) {
+    public InstructionK(Integer number, Mnemonic mnemonic, DataFrameK parameter) {
         this.number = number;
         this.mnemonic = mnemonic;
         this.parameter = parameter;
@@ -28,11 +28,11 @@ public class InstructionK implements Comparable<InstructionK> {
         return mnemonic;
     }
 
-    public DataFrame getParameter() {
+    public DataFrameK getParameter() {
         return parameter;
     }
 
-    public void setParameter(DataFrame parameter) {
+    public void setParameter(DataFrameK parameter) {
         this.parameter = parameter;
     }
 
@@ -48,7 +48,7 @@ public class InstructionK implements Comparable<InstructionK> {
     }
 
     @Override
-    public int compareTo(Instruction o) {
+    public int compareTo(InstructionK o) {
         return this.number.compareTo(o.number);
     }
 
@@ -88,4 +88,3 @@ public class InstructionK implements Comparable<InstructionK> {
         STC
     }
 }
-*/
