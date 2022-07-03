@@ -1,10 +1,10 @@
 package maquinavirtual;
 
-public class DataFrame {
+public class DataFrameK {
     public final Object content;
-    public final DataType type;
+    public final DataTypeK type;
 
-    public DataFrame(DataType type, Object content) {
+    public DataFrameK(DataTypeK type, Object content) {
         this.content = content;
         this.type = type;
     }

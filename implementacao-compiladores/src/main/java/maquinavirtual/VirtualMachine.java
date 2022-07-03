@@ -136,7 +136,8 @@ public class VirtualMachine {
             case "OR":
                 instrucaoOR();
                 break;
-            /*case "REA":
+            /*
+            case "REA":
                 instrucaoREA(Integer.parseInt(instrucao.getEndereco()));
                 break;
             */

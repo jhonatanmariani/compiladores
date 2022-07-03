@@ -1,6 +1,6 @@
 package maquinavirtual;
 
-public enum VirtualMachineStatus {
+public enum VirtualMachineStatusK {
     NOT_STARTED,
     RUNNING,
     SYSCALL_IO_WRITE,

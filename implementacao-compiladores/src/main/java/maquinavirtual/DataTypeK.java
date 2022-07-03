@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public enum DataType {
+public enum DataTypeK {
     INTEGER(1),
     FLOAT(2),
     LITERAL(3),
@@ -14,12 +14,12 @@ public enum DataType {
 
     public final Integer id;
 
-    private DataType(Integer value) {
+    private DataTypeK(Integer value) {
         this.id = value;
     }
 
-    public static DataType get(int id) {
-        for (DataType d : values()) {
+    public static DataTypeK get(int id) {
+        for (DataTypeK d : values()) {
             if (d.id.equals(id)) {
                 return d;
             }
@@ -27,8 +27,7 @@ public enum DataType {
         return null;
     }
 
-
-    public static List<DataType> getNumericDataTypes() {
-        return new ArrayList<>(Arrays.asList(DataType.FLOAT, DataType.INTEGER));
+    public static List<DataTypeK> getNumericDataTypes() {
+        return new ArrayList<>(Arrays.asList(DataTypeK.FLOAT, DataTypeK.INTEGER));
     }
 }
