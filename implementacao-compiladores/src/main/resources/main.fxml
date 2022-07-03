@@ -19,12 +19,12 @@
                     <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Salvar como..."/>
                     <MenuItem fx:id="exitProgramItem" onAction="#exitProgram" text="Sair"/>
                 </Menu>
-                <Menu text="Edição">
+                <Menu text="Edicao">
                     <MenuItem fx:id="cutMenuItem" text="Recortar" onAction="#cutSelection"/>
                     <MenuItem fx:id="copyMenuItem" text="Copiar" onAction="#copySelection"/>
                     <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
-                <Menu text="Compilação">
+                <Menu text="Compilacao">
                     <MenuItem text="Compilar" onAction="#compileProgram"/>
                     <MenuItem disable="true" text="Executar"/>
                 </Menu>

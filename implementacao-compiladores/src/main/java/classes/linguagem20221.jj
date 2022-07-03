@@ -1,295 +1,616 @@
 options {
+    IGNORE_CASE = true;
+    JAVA_UNICODE_ESCAPE = true;
     STATIC = false;
+    DEBUG_PARSER = true;
     LOOKAHEAD = 1;
     DEBUG_LOOKAHEAD = true;
 }
 
-PARSER_BEGIN(Language20221)
+PARSER_BEGIN(LanguageParser)
 package classes;
-//import org.javacc.parser.Token;
-//import org.javacc.parser.ParseException;
 
-public class Language20221{
-    private StringBuilder resultado = new StringBuilder();
+//import javax.swing.text.html.parser.Parser;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.lang.StringBuilder;
+import java.lang.StringBuilder;
 
-    public void leituraDeTokens()  {
+public class LanguageParser {
+    int contParseError = 0;
+    boolean debugRecovery = true;
+    final static List<ErrorStruct> output = new ArrayList<ErrorStruct>();
+    boolean eof;
+
+    public static List<Token> getTokens(String stream){
+        InputStream target =  new ByteArrayInputStream(stream.getBytes());
+        LanguageParser parser = new LanguageParser(target);
+        return tokenize(parser);
+    }
+
+    public static ArrayList<ErrorStruct> checkSyntax(String stream) {
+        InputStream target =  new ByteArrayInputStream(stream.getBytes());
+        LanguageParser parser = new LanguageParser(target);
         try {
-            Token t = null;
-            t = getNextToken();
-            if (t.kind == EOF) return;
-            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
-            if (t.kind >= 16 && t.kind <= 39 ){           //PALAVRA_RESERVADA
-                resultado.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if (t.kind == IDENTIFICADOR){     //IDENTIFICADOR
-                 resultado.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADOR'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                 System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADOR'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
-            }else if(t.kind == CONSTANTE_LITERAL){      //CONSTANTE_LITERAL
-                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == CONSTANTE_NUMERICA_INTEIRA){      //CONSTANTE_NUMERICA_INTEIRA
-                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == CONSTANTE_NUMERICA_REAL){      //CONSTANTE_NUMERICA_REAL
-                resultado.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind >= 53 && t.kind <= 76){      //SIMBOLO ESPECIAIS
-                resultado.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == SIMBOLO_INVALIDO){     //SIMBOLO_INVÁLIDO
-                resultado.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == CONSTANTE_LITERAL_INVALIDA){     //CONSTANTE LITERAL INVALIDA
-                resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == CONSTANTE_NUMERICA_INTEIRA_INVALIDA){     //CONSTANTE INTEIRA INVALIDA
-                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if(t.kind == CONSTANTE_NUMERICA_REAL_INVALIDA){     //CONSTANTE REAL INVALIDA
-                 resultado.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                 System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else if (t.kind == COMENTARIO_FACULTATIVO_INVALIDO){
-                resultado.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-            }else{      //IDENTIFICADOR INVALIDO
-                resultado.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+            parser.begin_program();
             }
-            leituraDeTokens();
-        }catch(Error erro){
-            resultado.append("Erro - " + erro.getMessage() + "\n");
-            System.out.println(erro.toString());
-            leituraDeTokens();
+        catch (ParseException e){
+            output.add(new ErrorStruct("Error parsing the program.\n", e));
         }
+        ArrayList tmp = new ArrayList<ErrorStruct>(output);
+        output.clear();
+        return tmp;
     }
 
-    public String getTokens(String args[], String textoParaAnalisar) {
-        Language20221 language20221;
-        if(args.length == 0){
-            System.out.println("#####################################");
-            System.out.println("### Iniciando leitura dos tokens ...");
-            System.out.println("#####################################");
-            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textoParaAnalisar.getBytes());
-            language20221 = new Language20221(targetStream);
-        }else if(args.length == 1){
-            try{
-                language20221 = new Language20221(new java.io.FileInputStream(args[0]));
-            }catch(java.io.FileNotFoundException e){
-                System.err.println(args[0] + " não foi encontrado." );
-                System.err.println(e);
-                return args[0] + " não foi encontrado.";
+   public static LanguageParser create(String stream){
+        InputStream target =  new ByteArrayInputStream(stream.getBytes());
+        LanguageParser parser = new LanguageParser(target);
+        return parser;
+   }
+
+    public static void main(String args[]) throws TokenMgrError, ParseException {
+        LanguageParser parser = null;
+        if (args.length == 0) {
+            parser = new LanguageParser(System.in);
+        }
+        else if (args.length == 1) {
+            try {
+                parser = new LanguageParser(new java.io.FileInputStream(args[0]));
             }
-        }else{
-            System.out.println("Use:\njava Language2021 < inputFile");
-            System.out.println("ou java Language2021 inputFile");
-            return "Use:java Language2021 < inputFile";
+            catch (java.io.FileNotFoundException e) {
+                System.out.println("LanguageParser: file " + args[0] + " was not found.");
+                return;
+            }
         }
-        this.leituraDeTokens();
-        resultado.append("<EOF>");
-        return resultado.toString();
+
+        //for (Token token: tokenize(parser)){
+        //    String name = LanguageParserConstants.tokenImage[token.kind];
+        //    System.out.println("Line " + token.beginLine + " | Column " + token.beginColumn + " | " + token + "\n");
+        //}
     }
 
-    public String getResultado(){
-        return resultado.toString();
+    public static List<Token> tokenize(LanguageParser parser){
+        List<Token> tokens = new ArrayList<Token>();
+
+        Token token = parser.getNextToken();
+        while (token.kind != LanguageParserConstants.EOF){
+            tokens.add(token);
+            token = parser.getNextToken();
+        }
+
+        if (!TokenHandler.isClosed()){
+            tokens.add(TokenHandler.createToken());
+        }
+
+        return tokens;
+    }
+
+    static public String im(int x){
+        String s = tokenImage[x];
+        int k = s.lastIndexOf("\"");
+        try {
+            s = s.substring(1, k);
+        }
+        catch (StringIndexOutOfBoundsException e){}
+        return s;
+    }
+
+    public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
+        Token tok;
+        if (g == null){
+            throw e;
+        }
+        tok = getToken(1); // Current token
+        while (!eof){
+            /* found a token in set */
+            if (g.contains(tok.kind)) {
+                break;
+            }
+            getNextToken();
+            tok = getToken(1);
+            if (tok.kind == EOF && !g.contains(EOF)){
+                eof = true;
+            }
+        }
+        contParseError++;
     }
 }
+PARSER_END(LanguageParser)
 
-PARSER_END(Language20221)
-
-SKIP :  //caracteres que o javacc excluirá da linguagem para nao interpretar
-{
-        " "
-    |   "\t"
-    |   "\n"
-    |   "\r"
-    |   "\f"
-    |   "\r\n"
-    |   "\n\r"
+SKIP: {
+    " "
+    | "\n"
+    | "\t"
+    | < "//" (~["\n", "\r"])* >
+    | < "/*"> {TokenHandler.writeInvalidToOutput(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), jjmatchedKind);}: BLOCK_COMMENT_STATE
 }
 
-//COMENTÁRIO DE MULTIPLAS LINHAS
-SKIP:
-{
-    "/*" : COMENTARIO_BLOCO
-}
-<COMENTARIO_BLOCO> SKIP:
-{
-        "*/" : DEFAULT
-    |   <~[]>                       //caractares que podem ser ignorados devem ser declarados dentro dos colchetes
+<BLOCK_COMMENT_STATE> SKIP: {
+    <"*/"> {TokenHandler.setClosed(true);}: DEFAULT
+    | <~[]>
 }
 
-//COMENTÁRIO DE LINHA
-SKIP:
-{
-    "//": COMENTARIO_LINHA
-}
-<COMENTARIO_LINHA> SKIP:
-{
-        <["\n" , "\r"]> : DEFAULT       //quando encontrar o "\n" ou o "\r" retorna ao estado normal
-    |   <~[]>
+
+/* Keywords */
+TOKEN [IGNORE_CASE]: {
+    <INTEGER: "integer">
+    | <REAL: "real">
+    | <STRING: "string">
+    | <TRUE: "true">
+    | <UNTRUE: "untrue">
+    | <DO: "do">
+    | <THIS: "this">
+    | <DESCRIPTION: "description">
+    | <BODY: "body">
+    | <IS: "is">
+    | <AS: "as">
+    | <AND: "and">
+    | <CONSTANT: "constant">
+    | <VARIABLE: "variable">
+    | <DESIGNATE: "designate">
+    | <READ: "read">
+    | <WRITE: "write">
+    | <ALL: "all">
+    | <AVALIATE: "avaliate">
+    | <RESULT: "result">
+    | <REPEAT: "repeat">
+    | <DECLARATION: "declaration">
+    | <TYPE: "type">
+    | <ENUM: "enum">
 }
 
-// < COMENTARIO_FACULTATIVO: ":-">
-SKIP : {
-    "description" : COMENTARIO_FACULTATIVO
- }
-<COMENTARIO_FACULTATIVO> SKIP : {
-     <["\n" , "\r"]> : DEFAULT
+/* Operators, relations, etc*/
+TOKEN: {
+    <PLUS : "+">
+    | <MINUS : "-">
+    | <MULTIPLY : "*">
+    | <DIV : "/">
+    | <POWER : "**">
+    | <WHOLE_DIV : "%">
+    | <REST_DIV: "%%">
+    | <EQUAL_TO: "==">
+    | <ASSIGN: "=">
+    | <DIFF_THAN: "!=">
+    | <LESS_THAN: "<<">
+    | <GREATER_THAN: ">>">
+    | <LESS_THAN_OR_EQ_TO: "<<=">
+    | <GREATER_THAN_OR_EQ_TO: ">>=">
+    | <OPEN_BRACKET: "[">
+    | <CLOSE_BRACKET: "]">
+    | <OPEN_PARENTHESIS: "(">
+    | <CLOSE_PARENTHESIS: ")">
+    | <OPEN_CURLY_BRACKETS: "{">
+    | <CLOSE_CURLY_BRACKETS: "}">
+    | <DOT: ".">
+    | <COMMA: ",">
 }
 
-//palavras reservadas
-TOKEN [IGNORE_CASE]:
-{
-        < PALAVRA_RESERVADA_ALL: "all">
-    |   < PALAVRA_RESERVADA_AND: "and">
-    |   < PALAVRA_RESERVADA_AS:  "as">
-    |   < PALAVRA_RESERVADA_AVALIATE: "avaliate">
-    |   < PALAVRA_RESERVADA_BODY: "body">
-    |   < PALAVRA_RESERVADA_CONSTANT: "constant">
-    |   < PALAVRA_RESERVADA_DECLARATION: "declaration">
-    |   < PALAVRA_RESERVADA_DESCRIPTION: "description">
-    |   < PALAVRA_RESERVADA_DESIGNATE: "designate">
-    |   < PALAVRA_RESERVADA_DO: "do">
-    |   < PALAVRA_RESERVADA_INTEGER: "integer">
-    |   < PALAVRA_RESERVADA_IS: "is">
-    |   < PALAVRA_RESERVADA_LOGIC: "logic">
-    |   < PALAVRA_RESERVADA_READ: "read">
-    |   < PALAVRA_RESERVADA_REAL: "real">
-    |   < PALAVRA_RESERVADA_REPEAT: "repeat">
-    |   < PALAVRA_RESERVADA_RESULT: "result">
-    |   < PALAVRA_RESERVADA_STRING: "string">
-    |   < PALAVRA_RESERVADA_THIS: "this">
-    |   < PALAVRA_RESERVADA_TRUE: "true">
-    |   < PALAVRA_RESERVADA_TYPE: "type">
-    |   < PALAVRA_RESERVADA_UNTRUE: "untrue">
-    |   < PALAVRA_RESERVADA_VARIABLE: "variable">
-    |   < PALAVRA_RESERVADA_WRITE: "write">
+/* Logical Operators */
+TOKEN: {
+    <LOGICAL_AND : "&" >
+    | <LOGICAL_OR : "|">
+    | <LOGICAL_NOT: "!">
+}
+TOKEN [IGNORE_CASE]: {
+ <LOGIC: "logic">
 }
 
 //Tokens Auxiliares
 TOKEN : {
         < #LETRA_MINUSCULA: ["a"-"z"] >
     |   < #LETRA_MAIUSCULA: ["A"-"Z"]>
-    |   < #LETRA: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
+    |   < #LETTER: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
     |   < #ASCII : ~[] >      //any character
-    |   < #DIGITO: ["0"-"9"] >
+    |   < #DIGITS: ["0"-"9"] >
     |   < #UNDERLINE: "_" >
 
 }
 
-//Identificadores
-TOKEN : {
-     <IDENTIFICADOR: <LETRA_MAIUSCULA> ((<LETRA>)* (<IDENT1>)?
-                         | (("_")? (<LETRA>)+ (<IDENT2>)) | ( <DIGITO> (<DIGITO>)? (<IDENT1> | <IDENT2>))) >
-|    <#IDENT1: <DIGITO> (<DIGITO>)? ((<LETRA>)* "_" (<LETRA>)* <DIGITO> | (<LETRA>)+ <DIGITO> )*
-                                     ((<LETRA>)+ (<DIGITO> (<DIGITO>)?)? ("_")? | (<LETRA>)+ (<DIGITO> (<DIGITO>)?)?)+ >
-|    <#IDENT2: "_" ((<LETRA>)* <DIGITO> (<DIGITO>)? (<LETRA>)* "_" | (<DIGITO> (<DIGITO>)?)? (<LETRA>)+ ("_")?)* >
-
+/* Identifiers */
+TOKEN: {
+     <IDENTIFIER: <LETRA_MAIUSCULA> ((<LETTER>)* (<IDENT1>)?
+                         | (("_")? (<LETTER>)+ (<IDENT2>)) | ( <DIGITS> (<DIGITS>)? (<IDENT1> | <IDENT2>))) >
+|    <#IDENT1: <DIGITS> (<DIGITS>)? ((<LETTER>)* "_" (<LETTER>)* <DIGITS> | (<LETTER>)+ <DIGITS> )*
+                                     ((<LETTER>)+ (<DIGITS> (<DIGITS>)?)? ("_")? | (<LETTER>)+ (<DIGITS> (<DIGITS>)?)?)+ >
+|    <#IDENT2: "_" ((<LETTER>)* <DIGITS> (<DIGITS>)? (<LETTER>)* "_" | (<DIGITS> (<DIGITS>)?)? (<LETTER>)+ ("_")?)* >
 }
 
+/* Numbers  */
+TOKEN:  {
+    <NUM : (<MINUS>)?(<DIGIT> (<DIGIT>)? (<DIGIT>)?)+>
+    | <#NUMBER_REAL_DECIMAL: <DIGIT> (<DIGIT>)? (<DIGIT>)? >
+    | <NUMBER_REAL: (<MINUS>)? (<NUM> (<DIGIT>)? (<DIGIT>)? "." <NUMBER_REAL_DECIMAL>)>
+    | <#DIGIT : ["0" - "9"]>
+}
 
 //Constantes Literais
 TOKEN : {
 
-    < CONSTANTE_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
+    < STRING_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
     // ~["\""] => Qualquer caractere menos a aspa
     // ~["'"] => Qualquer caractere menos o apóstrofro
 }
 
-//Constantes Númericas (Real e Inteira)
+/* Catch all for undefined tokens */
 TOKEN : {
-        < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
-    |   < #CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
-    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
+    <OTHER: ~[]> |
+    <INVALID_IDENTIFIER:
+        <LETTER>(<LETTER>|<DIGITS>|(""))*<DIGITS>(<DIGITS>)+(<LETTER>|(""))* |
+        <LETTER>(<LETTER>|<DIGITS>|("_"))*(<DIGITS>)+ |
+        <LETTER>(<LETTER>|<DIGITS>)((""))+<DIGITS>(<LETTER>|<DIGITS>|("")) |
+        (<DIGITS>)+(<LETTER>|<DIGITS>|("_"))* |
+        ("")(<LETTER>|<DIGITS>|(""))*>
+    |< INVALID_STRING_LITERAL:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+    |< INVALID_NUM: <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ >
+    |< INVALID_NUM_REAL: (<DIGIT> <DIGIT> <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ "." <NUMBER_REAL_DECIMAL>)                 // 6 casas inteiras ou +
+                                            | (<DIGIT> <DIGIT> <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ "." <NUMBER_REAL_DECIMAL> (<DIGIT>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+                                            | (<DIGIT> (<DIGIT>)? (<DIGIT>)? (<DIGIT>)? (<DIGIT>)? "." <NUMBER_REAL_DECIMAL> (<DIGIT>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+     >
+    |< INVALID_FACULTATIVE_COMMENT : "description" <INVALID_STRING_LITERAL> >
+
+}
+
+void enum_values(): {} {
+    constant_result() | <IDENTIFIER>
+}
+
+void inner_enum_declaration(RecoverySet r) : {} {
+    try {
+        <IDENTIFIER> <IS> enum_values() inner_enum_decla_cont() <DOT>
+    }
+    catch (ParseException e){
+           consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+           output.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
+        }
+}
+
+void inner_enum_decla_cont() : {} {
+    (<COMMA> enum_values() inner_enum_decla_cont())?
+}
+void enum_declaration(RecoverySet r) : {} {
+    try {
+        <TYPE> <OPEN_BRACKET>
+            (inner_enum_declaration(r))+
+        <CLOSE_BRACKET>
+        (<DECLARATION> declaration_constants_and_variables(r))?
+    }
+    catch (ParseException e){
+       consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+       output.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
+    }
+}
+
+void identifiers() : {} {
+    <IDENTIFIER> index()
+
+
+}
+
+void identifiers_list() : {} {
+    try {
+        identifiers() (<COMMA> identifiers())*
+       }
+      catch (ParseException e){
+              output.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
+          }
+
+}
+
+void type_declaration() : {} {
+    <INTEGER> | <REAL> | <STRING> | <LOGIC> | <ENUM>
 }
 
 
-//Símbolos Especiais
-TOKEN :
-{
-        < SIMBOLO_ESPECIAL_ABRE_CHAVES: "{" >
-    |   < SIMBOLO_ESPECIAL_FECHA_CHAVES: "}" >
-    |   < SIMBOLO_ESPECIAL_PONTO_FINAL: "." >
-    |   < SIMBOLO_ESPECIAL_VIRGULA: "," >
-    |   < SIMBOLO_ESPECIAL_ABRE_COLCHETES: "[" >
-    |   < SIMBOLO_ESPECIAL_FECHA_COLCHETES: "]" >
-    |   < SIMBOLO_ESPECIAL_ABRE_PARENTESES: "(" >
-    |   < SIMBOLO_ESPECIAL_FECHA_PARENTESES: ")" >
+void variable_declaration() : {} {
+    identifiers_list() <IS> type_declaration() <DOT>
 }
 
-//Operadores Aritméticos
-TOKEN :
-{
-        < OPERADOR_ARITMETICO_ADICAO: "+">
-    |   < OPERADOR_ARITMETICO_SUBTRACAO: "-">
-    |   < OPERADOR_ARITMETICO_MULTIPLICACAO: "*">
-    |   < OPERADOR_ARITMETICO_DIVISAO: "/">
-    |   < OPERADOR_ARITMETICO_POTENCIACAO: "**">
-    |   < OPERADOR_ARITMETICO_DIVISAO_INTEIRA: "%">
-    |   < OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA: "%%">
+void type_constant() : {} {
+    <INTEGER> | <REAL> | <STRING> | <LOGIC>
 }
 
-//Operadores Relacionais
-TOKEN :
-{
-        < OPERADOR_RELACIONAL_IGUAL: "==">
-    |   < OPERADOR_RELACIONAL_DIFERENTE: "!=">
-    |   < OPERADOR_RELACIONAL_MENOR: "<<">
-    |   < OPERADOR_RELACIONAL_MAIOR: ">>">
-    |   < OPERADOR_RELACIONAL_MENOR_IGUAL: "<<=">
-    |   < OPERADOR_RELACIONAL_MAIOR_IGUAL: ">>=">
+void end_constant() : {} {
+    <AS> <CONSTANT> (constant_declaration())+
 }
 
-//Operadores Lógicos
-TOKEN :
-{
-        < OPERADOR_LOGICO_E: "&">
-    |   < OPERADOR_LOGICO_OU: "|">
-    |   < OPERADOR_LOGICO_NAO: "!">
+void start_variable() : {} {
+    <VARIABLE> (variable_declaration())+ (end_constant())?
 }
 
-//SÍMBOLOS INVÁLIDOS
-TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
-        < SIMBOLO_INVALIDO :
-            (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
-                "A"-"Z",
-                "a"-"z",
-                "0"-"9",
-                "\"",       //aspas
-                "\'",       //apóstrofo
-                "{",
-                "}",
-                ".",
-                ",",
-                "[",
-                "]",
-                "(",
-                ")",
-                "+",
-                "-",
-                "*",
-                "/",
-                "%",
-                "=",
-                "<",
-                ">",
-                "&",
-                "|",
-                "!",
-                " ",
-                "\t",
-                "\n",
-                "\r",
-                "\f"
-            ])+
-        >
-        |   < CONSTANTE_LITERAL_INVALIDA:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
-        |   < CONSTANTE_NUMERICA_INTEIRA_INVALIDA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
-        |   < CONSTANTE_NUMERICA_REAL_INVALIDA :
-                    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
-               |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
-               |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
-            >
-        |   < COMENTARIO_FACULTATIVO_INVALIDO : "description" <CONSTANTE_LITERAL_INVALIDA> >
-        |   < IDENTIFICADOR_INVALIDO : ( <LETRA_MINUSCULA> | <UNDERLINE> ) (~ ["\n", "\r"])* (<LETRA>)* >
+void constant_declaration() : {} {
+    identifiers_list() <IS> type_constant() <ASSIGN> constant_result() <DOT>
+}
+
+void end_variable() : {} {
+    <AS> <VARIABLE> (variable_declaration())+
+}
+
+void start_constant() : {} {
+    <CONSTANT> (constant_declaration())+ (end_variable())?
+}
+
+void start_declaration(RecoverySet r) : {} {
+    try{
+        start_variable() | start_constant()
+    }
+     catch (ParseException e){
+         consumeUntil(r, e, "Error: Invalid declaration body.\n");
+         output.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
+     }
+}
+
+void inner_declaration(RecoverySet r) : {} {
+    try {
+        <AS> start_declaration(r)
+        }
+    catch (ParseException e){
+        consumeUntil(r, e, "Error: Invalid declaration body.\n");
+        output.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
+    }
+}
+
+void declaration_constants_and_variables(RecoverySet r) : {} {
+    try{
+       <CONSTANT> <AND> <VARIABLE> <OPEN_BRACKET> inner_declaration(r) <CLOSE_BRACKET>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "declaration_constants_and_variables");
+        output.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
+    }
+}
+
+void constant_result() : {} {
+    <STRING_LITERAL> | <NUM> | <NUMBER_REAL>
+}
+
+void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+    try {
+        <TRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> true_result_cont() | <UNTRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> untrue_result_cont()
+    }
+   catch (ParseException e){
+           consumeUntil(r, e, "");
+           output.add(new ErrorStruct("Erro: Verificacao de resultado logico incorreto.\n", e));
+       }
+}
+
+void true_result_cont() : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+    try {
+        (<UNTRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> <DOT>) | <DOT>
+    }
+   catch (ParseException e){
+           consumeUntil(g, e, "list_of_commands");
+           output.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
+       }
+
+}
+
+void untrue_result_cont() : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+    try {
+        (<TRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> <DOT>) | <DOT>
+    }
+    catch (ParseException e){
+        consumeUntil(g, e, "");
+        output.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
+    }
+}
+
+void declarations(RecoverySet r) : {} {
+  try {
+      (<DECLARATION> (enum_declaration(r) | declaration_constants_and_variables(r)))?
+  }
+  catch (ParseException e) {
+       consumeUntil(r, e, "declarations");
+       output.add(new ErrorStruct("Erro de declaracao de enum/variable\n", e));
+  }
+}
+
+void list_of_commands(RecoverySet r) : {RecoverySet g = First.list_of_commands ;} {
+    try {
+        (repeat(g) | avaliate(g) | (<WRITE> (write(g) | write_all(g))) | designate(g) | read(g))+
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "list_of_commands");
+        output.add(new ErrorStruct("Erro: Declaracao de comando incorreta.\n", e));
+    }
+}
+
+void expression(RecoverySet g) : {} {
+    try {
+        arithmetic_or_logic_expression(g) expression_cont(g)
+   }
+   catch (ParseException e){
+       consumeUntil(g, e, "list_of_commands");
+       output.add(new ErrorStruct("Erro: Expressao incorreta.\n", e));
+   }
+}
+
+void arithmetic_or_logic_expression(RecoverySet g) : {} {
+    second_term(g) lesser_priority_operators(g)
+}
+
+void expression_cont(RecoverySet g) : {} {
+    ((<EQUAL_TO> arithmetic_or_logic_expression(g)) | (<DIFF_THAN> arithmetic_or_logic_expression(g)) | (<LESS_THAN> arithmetic_or_logic_expression(g)) | (<GREATER_THAN> arithmetic_or_logic_expression(g))
+    | (<LESS_THAN_OR_EQ_TO> arithmetic_or_logic_expression(g)) | (<GREATER_THAN_OR_EQ_TO> arithmetic_or_logic_expression(g)))?
+}
+
+void first_term(RecoverySet g) : {} {
+    element(g) top_priority_operators(g)
+}
+
+void second_term(RecoverySet g) : {} {
+    first_term(g) medium_priority_operators(g)
+}
+
+void element(RecoverySet g) : {} {
+    (<IDENTIFIER> index())
+    | <NUM> | <NUMBER_REAL> | <STRING_LITERAL>
+    | <TRUE> | <UNTRUE> | (<OPEN_PARENTHESIS> expression(g) <CLOSE_PARENTHESIS>)
+    | (<LOGICAL_NOT> <OPEN_PARENTHESIS> expression(g) <CLOSE_PARENTHESIS>)
+}
+
+void index() : {} {
+    (<OPEN_CURLY_BRACKETS> <NUM> <CLOSE_CURLY_BRACKETS>)?
+}
+
+void top_priority_operators(RecoverySet g) : {} {
+    (<POWER> element(g))*
+}
+
+void medium_priority_operators(RecoverySet g) : {} {
+    ((<MULTIPLY> first_term(g)) | (<DIV> first_term(g)) | (<WHOLE_DIV> first_term(g)) | (<REST_DIV> first_term(g)) | (<LOGICAL_AND> first_term(g)))*
+}
+
+void lesser_priority_operators(RecoverySet g) : {} {
+    ((<PLUS> second_term(g)) | (<MINUS> second_term(g)) | (<LOGICAL_OR> second_term(g)))*
+}
+
+void repeat(RecoverySet r) : {
+        RecoverySet g = new RecoverySet(OPEN_BRACKET);
+        RecoverySet h = new RecoverySet(CLOSE_BRACKET);
+        } {
+    try {
+        <REPEAT> <THIS> expression(g) <OPEN_BRACKET>
+            list_of_commands(h)
+        <CLOSE_BRACKET> <DOT>
+    }
+    catch (ParseException e){
+       consumeUntil(r, e, "");
+       output.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
+    }
+}
+
+void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(DOT);} {
+    try {
+    <AVALIATE> <THIS> expression(First.selection_command)
+        logic_result(g)
+    }
+    catch (ParseException e){
+           consumeUntil(r, e, "");
+           output.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
+    }
+}
+
+void write(RecoverySet g) : {} {
+    try {
+        <THIS> <OPEN_BRACKET> write_body() <CLOSE_BRACKET> <DOT>
+    }
+    catch (ParseException e){
+        consumeUntil(g, e, "list_of_commands");
+        output.add(new ErrorStruct("Erro: Comando write incorreto.\n", e));
+  }
+}
+
+void write_all(RecoverySet g) : {} {
+    try {
+        <ALL> <THIS> <OPEN_BRACKET> write_body() <CLOSE_BRACKET> <DOT>
+    }
+   catch (ParseException e){
+       consumeUntil(g, e, "");
+       output.add(new ErrorStruct("Erro: no comando write all.\n", e));
+   }
+
+}
+
+void write_body() : {} {
+    try {
+         (constant_result()  (<COMMA> write_body_cont())* | identifiers()  (<COMMA> write_body_cont())*)
+    }
+   catch (ParseException e){
+       output.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
+   }
+
+}
+
+void write_body_cont() : {} {
+    try {
+        constant_result() | identifiers()
+    }
+    catch (ParseException e){
+        output.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
+    }
+}
+
+void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(DOT);} {
+    try {
+        <DESIGNATE> <THIS> identifiers_list() <AS> expression(h) <DOT>
+    }
+   catch (ParseException e){
+       consumeUntil(r, e, "");
+       output.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
+   }
+
+}
+
+void read(RecoverySet r) : {} {
+    try {
+        <READ> <THIS> <OPEN_BRACKET> identifiers_list() <CLOSE_BRACKET> <DOT>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "read");
+    }
+}
+
+
+void header(RecoverySet r) : {} {
+    try {
+        <DO> <THIS> <IDENTIFIER> <OPEN_BRACKET> <CLOSE_BRACKET>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "header");
+        output.add(new ErrorStruct("Erro: Cabecalho principal incorreto.\n", e));
+    }
+}
+
+void body(RecoverySet r) : {RecoverySet g = new RecoverySet(OPEN_BRACKET);} {
+    try {
+            <BODY>  <OPEN_BRACKET>
+                list_of_commands(g)
+            <CLOSE_BRACKET>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "body");
+        output.add(new ErrorStruct("Erro: Declaracao do corpo incorreto.\n", e));
+    }
+
+}
+
+void desc(RecoverySet r) : {} {
+    try {
+        (<DESCRIPTION> <STRING_LITERAL>)?
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "description");
+        output.add(new ErrorStruct("Erro: Descricao do programa incorreto\n", e));
+    }
+}
+
+
+
+void main(RecoverySet r) : {
+        RecoverySet h = new RecoverySet(BODY);
+        RecoverySet g = new RecoverySet(DECLARATION);
+        RecoverySet i = g.union(h);
+        RecoverySet l = new RecoverySet(DESCRIPTION);
+        } {
+    try {
+            header(i)
+            declarations(h)
+            body(r.union(l))
+            desc(r)
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "main");
+    }
+}
+
+void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
+    try {
+        [ main(r) ] <EOF>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "begin_program");
+        output.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
+    }
 }
