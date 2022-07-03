@@ -1,596 +1,580 @@
 package maquinavirtual;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+//import javax.swing.JOptionPane;
 
 public class VirtualMachine {
-    private final List<Instruction> instructions;
-    private final Stack<DataFrame> stack = new Stack<>();
-    private int instructionPointer = 0;
-    private VirtualMachineStatus status = VirtualMachineStatus.NOT_STARTED;
-    private DataType syscallDataType = null;
-    private Object syscallData = null;
 
-    public VirtualMachine(List<Instruction> instructions) {
-        this.instructions = instructions;
+    private List<SymbolTable> pilha_de_simbolos;
+    private List<Instruction> pilha_de_instrucoes;
+    private List<String> pilha;
+    private List<String> error;
+    private Integer ponteiro;
+    private Integer topo;
+    //private Pront pront;
+    private List<String> result;
+    private boolean loop;
+    private String valorEntrada;
+
+    private boolean regexFloat(String value){
+        Pattern roma = Pattern.compile("[0-9]{1,5}.[0-9]{1,2}");
+        return roma.matcher(value).matches();
     }
 
-    public Stack<DataFrame> getStack() {
-        return stack;
+    private boolean regexInteger(String value){
+        Pattern roma = Pattern.compile("[0-9]{1,3}");
+        return roma.matcher(value).matches();
     }
 
-    public VirtualMachineStatus getStatus() {
-        return status;
+    public VirtualMachine(List<SymbolTable> pilha_de_simbolos, List<Instruction> pilha_de_instrucoes) {
+        this.pilha_de_simbolos = pilha_de_simbolos;
+        this.pilha_de_instrucoes = pilha_de_instrucoes;
+        pilha = new ArrayList<>();
+        ponteiro = 0;
+        topo = 0;
+        this.result = new ArrayList<>();
+        //pront = new Pront();
+        //pront.setVisible(true);
+        loop = true;
     }
 
-    public List<Instruction> getInstructions() {
-        return instructions;
+    public List<SymbolTable> getPilha_de_simbolos() {
+        return pilha_de_simbolos;
     }
 
-    public int getInstructionPointer() {
-        return instructionPointer;
+    public void setPilha_de_simbolos(List<SymbolTable> pilha_de_simbolos) {
+        this.pilha_de_simbolos = pilha_de_simbolos;
     }
 
-    public void setStatus(VirtualMachineStatus status) {
-        this.status = status;
+    public List<Instruction> getPilha_de_instrucoes() {
+        return pilha_de_instrucoes;
     }
 
-    public String printStack() {
-        int stackPos = 0;
-        StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
-        for (DataFrame se : stack) {
-            sb.append(stackPos).append(" - ").append(se.toDebugString()).append("\n");
-            stackPos++;
+    public void setPilha_de_instrucoes(List<Instruction> pilha_de_instrucoes) {
+        this.pilha_de_instrucoes = pilha_de_instrucoes;
+    }
+
+    public List<String> getError() {
+        return error;
+    }
+
+    public void executar(){
+        error = new ArrayList<>();
+        while(loop){
+            chamarInstruction(pilha_de_instrucoes.get(ponteiro));
         }
-        sb.append("-- STACK TOP --");
-        return sb.toString();
+        loop = true;
     }
 
-    public void resumeExecution() {
-        if (status == VirtualMachineStatus.SYSCALL_IO_READ) {
-            syscallData = syscallData.toString().trim();
-            try {
-                switch (syscallDataType) {
-                    case INTEGER -> syscallData = Integer.parseInt((String) syscallData);
-                    case FLOAT -> syscallData = Float.parseFloat((String) syscallData);
-                }
-                stack.push(new DataFrame(syscallDataType, syscallData));
-                System.out.println(printStack());
-            } catch (NumberFormatException e) {
-                throw new RuntimeException(String.format("Invalid input read! Reason: cannot interpret %s as %s\n", syscallData.toString(), this.syscallDataType.toString()));
-            }
-        }
-        this.syscallData = null;
-        this.syscallDataType = null;
-    }
-
-    public DataType getSyscallDataType() {
-        return syscallDataType;
-    }
-
-    public void setSyscallDataType(DataType syscallDataType) {
-        this.syscallDataType = syscallDataType;
-    }
-
-    public Object getSyscallData() {
-        return syscallData;
-    }
-
-    public void setSyscallData(Object syscallData) {
-        this.syscallData = syscallData;
-    }
-
-    public void executeAll() {
-        while (this.status != VirtualMachineStatus.HALTED) {
-            // IF we returned from a syscall/IO operation
-            if (status == VirtualMachineStatus.SYSCALL_IO_READ || status == VirtualMachineStatus.SYSCALL_IO_WRITE) {
-                resumeExecution();
-            }
-            executeStep();
-            // If the last instruction was a syscall, pause execution until it completes
-            if (status == VirtualMachineStatus.SYSCALL_IO_READ || status == VirtualMachineStatus.SYSCALL_IO_WRITE) {
+    private void chamarInstruction(Instruction instrucao){
+        switch(instrucao.getInstrucao()){
+            case "ADD":
+                instrucaoADD();
                 break;
-            }
+            case "ALB":
+                instrucaoALB(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "ALI":
+                instrucaoALI(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "ALR":
+                instrucaoALR(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "ALS":
+                instrucaoALS(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "AND":
+                instrucaoAND();
+                break;
+            case "BGE":
+                instrucaoBGE();
+                break;
+            case "BGR":
+                instrucaoBGR();
+                break;
+            case "DIF":
+                instrucaoDIF();
+                break;
+            case "DIV":
+                instrucaoDIV();
+                break;
+            case "EQL":
+                instrucaoEQL();
+                break;
+            case "JMF":
+                instrucaoJMF(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "JMP":
+                instrucaoJMP(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "JMT":
+                instrucaoJMT(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "LDV":
+                instrucaoLDV(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "LDB":
+                instrucaoLDB(instrucao.getEndereco());
+                break;
+            case "LDI":
+                instrucaoLDI(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "LDR":
+                instrucaoLDR(Float.parseFloat(instrucao.getEndereco()));
+                break;
+            case "LDS":
+                instrucaoLDS(instrucao.getEndereco());
+                break;
+            case "MUL":
+                instrucaoMUL();
+                break;
+            case "NOT":
+                instrucaoNOT();
+                break;
+            case "OR":
+                instrucaoOR();
+                break;
+            /*case "REA":
+                instrucaoREA(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            */
+            case "SME":
+                instrucaoSME();
+                break;
+            case "SMR":
+                instrucaoSMR();
+                break;
+            case "STR":
+                instrucaoSTR(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "STP":
+                instrucaoSTP();
+                break;
+            case "SUB":
+                instrucaoSUB();
+                break;
+            case "WRT":
+                instrucaoWRT();
+                break;
+            case "STC":
+                instrucaoSTC(Integer.parseInt(instrucao.getEndereco()));
+                break;
+            case "DVI":
+                instrucaoDVI();
+                break;
+            case "MOD":
+                instrucaoMOD();
+                break;
+            case "POT":
+                instrucaoPOT();
+                break;
+            default :
+                break;
         }
     }
 
-    public void executeStep() {
-        // TODO
-        status = VirtualMachineStatus.RUNNING;
-        Instruction ins = instructions.get(instructionPointer);
-        System.out.printf("Instruction Pointer: %d\n", instructionPointer+1);
-        System.out.println(ins);
-        switch (ins.mnemonic) {
-            case ADD -> add(ins);
-            case DIV -> divide(ins);
-            case MUL -> multiply(ins);
-            case SUB -> subtract(ins);
-            case DVW -> divideWhole(ins);
-            case MOD -> modulo(ins);
-            case PWR -> potentiation(ins);
-            case ALB -> allocateBoolean(ins);
-            case ALI -> allocateInteger(ins);
-            case ALR -> allocateFloat(ins);
-            case ALS -> allocateLiteralValue(ins);
-            case LDB -> loadBoolean(ins);
-            case LDI -> loadInteger(ins);
-            case LDR -> loadFloat(ins);
-            case LDS -> loadLiteral(ins);
-            case LDV -> loadValueAt(ins);
-            case STR -> storeValueAt(ins);
-            case AND -> logicalAnd(ins);
-            case NOT -> logicalNOT(ins);
-            case OR -> logicalOr(ins);
-            case BGE -> relationalGreaterOrEquals(ins);
-            case BGR -> relationalGreater(ins);
-            case DIF -> relationalDifferent(ins);
-            case EQL -> relationalEquals(ins);
-            case SME -> relationalLessOrEquals(ins);
-            case SMR -> relationalLess(ins);
-            case JMF -> jumpFalseToAddress(ins);
-            case JMP -> jumpToAddress(ins);
-            case JMT -> jumpTrueToAddress(ins);
-            case STP -> {
-                this.status = VirtualMachineStatus.HALTED;
-                return;
-            }
-            case REA -> read(ins);
-            case WRT -> write(ins);
-            case STC -> stackCopyToPositions(ins);
-        }
-        if (this.status != VirtualMachineStatus.SYSCALL_IO_READ) {
-            System.out.println(this.printStack());
-        }
-        instructionPointer++;
-    }
-
-    // VM Instructions
-    private void add(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = x_val + y_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = x_val + y_val;
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void divide(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var divideByZeroEx = new RuntimeException(String.format("Division by Zero on Instruction %s\n ->> top: %s\n --> subTop: %s", ins, x, y));
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            if (x_val.equals(0)) {
-                throw divideByZeroEx;
-            }
-            x_val = y_val / x_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = (Float)((Number) x.content).floatValue();
-            var y_val = (Float)((Number) y.content).floatValue();
-            if (x_val.equals(0f)) {
-                throw divideByZeroEx;
-            }
-            float result = y_val / x_val;
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void multiply(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = x_val * y_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = x_val * y_val;
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void subtract(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = y_val - x_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = y_val - x_val;
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void divideWhole(Instruction ins) {
-        var x = stack.pop();
-        var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = y_val / x_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = y_val / x_val;
-            stack.push(new DataFrame(DataType.INTEGER, (int) result));
-        }
-    }
-
-    private void modulo(Instruction ins) {
-        var x = stack.pop();
-        var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = y_val % x_val;
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = y_val % x_val;
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void potentiation(Instruction ins) {
-        var x = stack.pop();
-        var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            x_val = (int) Math.pow(y_val, x_val);
-            stack.push(new DataFrame(type, x_val));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            float result = (float) Math.pow(y_val,x_val);
-            stack.push(new DataFrame(type, result));
-        }
-    }
-
-    private void allocateBoolean(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
-            stack.push(new DataFrame(DataType.BOOLEAN, false));
-        }
-    }
-
-    private void allocateInteger(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
-            stack.push(new DataFrame(DataType.INTEGER, 0));
-        }
-    }
-
-    private void allocateFloat(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
-            stack.push(new DataFrame(DataType.FLOAT, 0f));
-        }
-    }
-
-    private void allocateLiteralValue(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
-            stack.push(new DataFrame(DataType.LITERAL, ""));
-        }
-    }
-
-    private void loadBoolean(Instruction ins) {
-        if (ins.parameter.type != DataType.BOOLEAN) {
-            invalidInstructionParameter(Collections.singletonList(DataType.BOOLEAN), ins.parameter.type);
-        }
-        var content = (Boolean) ins.parameter.content;
-        stack.push(new DataFrame(DataType.BOOLEAN, content));
-    }
-
-    private void loadInteger(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        var content = (Integer) ins.parameter.content;
-        stack.push(new DataFrame(DataType.INTEGER, content));
-    }
-
-    private void loadFloat(Instruction ins) {
-        if (ins.parameter.type != DataType.FLOAT) {
-            invalidInstructionParameter(Collections.singletonList(DataType.FLOAT), ins.parameter.type);
-        }
-        var content = (Float) ins.parameter.content;
-        stack.push(new DataFrame(DataType.FLOAT, content));
-    }
-
-    private void loadLiteral(Instruction ins) {
-        if (ins.parameter.type != DataType.LITERAL) {
-            invalidInstructionParameter(Collections.singletonList(DataType.LITERAL), ins.parameter.type);
-        }
-        var content = (String) ins.parameter.content;
-        stack.push(new DataFrame(DataType.LITERAL, content));
-    }
-
-    private void storeValueAt(Instruction ins) {
-        if (ins.parameter.type != DataType.ADDRESS) {
-            invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
-        }
-        // stack starts at 1 on the grammar level, so we must offset that with a -1.
-        var stackElement = stack.pop();
-        stack.set( (Integer)ins.parameter.content - 1,
-                new DataFrame(stackElement.type, stackElement.content)
-        );
-    }
-
-    private void loadValueAt(Instruction ins) {
-        if (ins.parameter.type != DataType.ADDRESS) {
-            invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
-        }
-        // stack starts at 1 on the grammar level, so we must offset that with a -1.
-        var stackElement = stack.get((Integer) ins.parameter.content - 1);
-        stack.push(new DataFrame(stackElement.type, stackElement.content));
-    }
-
-    private void logicalAnd(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, y);
-        var x_val = (Boolean) x.content;
-        var y_val = (Boolean) y.content;
-        x_val = x_val & y_val;
-        stack.push(new DataFrame(type, x_val));
-    }
-
-    private void logicalNOT(Instruction ins) {
-        DataFrame x = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, x);
-        var x_val = !(Boolean) x.content;
-        stack.push(new DataFrame(type, x_val));
-    }
-
-    private void logicalOr(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, y);
-        var x_val = (Boolean) x.content;
-        var y_val = (Boolean) y.content;
-        x_val = x_val || y_val;
-        stack.push(new DataFrame(type, x_val));
-    }
-
-    private void relationalGreaterOrEquals(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            var flag = y_val >= x_val;
-            stack.push(new DataFrame(DataType.BOOLEAN, flag));
-        } else {
-            var x_val = (Float) x.content;
-            var y_val = (Float) y.content;
-            var flag = y_val >= x_val;
-            stack.push(new DataFrame(DataType.BOOLEAN, flag));
-        }
-    }
-
-    private void relationalGreater(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            var flag = y_val > x_val;
-            stack.push(new DataFrame(DataType.BOOLEAN, flag));
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            Boolean result = y_val > x_val;
-            stack.push(new DataFrame(DataType.BOOLEAN, result));
-        }
-    }
-
-    private void relationalDifferent(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        var result = false;
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            result = !y_val.equals(x_val);
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            result = y_val != x_val;
-        }
-        stack.push(new DataFrame(DataType.BOOLEAN, result));
-    }
-
-    private void relationalEquals(Instruction ins) {
-        DataFrame x = stack.pop();
-        DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
-        var result = false;
-        if (type == DataType.INTEGER) {
-            var x_val = (Integer) x.content;
-            var y_val = (Integer) y.content;
-            result = y_val.equals(x_val);
-        } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
-            result = y_val == x_val;
-        }
-        stack.push(new DataFrame(DataType.BOOLEAN, result));
-    }
-
-    private void relationalLessOrEquals(Instruction ins) {
-        DataFrame top = stack.pop();
-        DataFrame sub = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, top, sub);
-        var result = false;
-        if (type == DataType.INTEGER) {
-            var top_val = (Integer) top.content;
-            var sub_val = (Integer) sub.content;
-            result = sub_val <= top_val;
-        } else {
-            var top_val = (Float) top.content;
-            var sub_val = (Float) sub.content;
-            result = sub_val <= top_val;
-        }
-        stack.push(new DataFrame(DataType.BOOLEAN, result));
-    }
-
-    private void relationalLess(Instruction ins) {
-        DataFrame top = stack.pop();
-        DataFrame sub = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins, top, sub);
-        var result = false;
-        if (type == DataType.INTEGER) {
-            var top_val = (Integer) top.content;
-            var sub_val = (Integer) sub.content;
-            result = sub_val < top_val;
-        } else {
-            var top_val = (Float) top.content;
-            var sub_val = (Float) sub.content;
-            result = sub_val < top_val;
-        }
-        stack.push(new DataFrame(DataType.BOOLEAN, result));
-    }
-
-
-    private void jumpFalseToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
-        var top = stack.pop();
-        checkType(Collections.singletonList(DataType.BOOLEAN), ins, top, top);
-        if (!(Boolean) top.content) {
-            instructionPointer = (Integer) ins.parameter.content;
-            instructionPointer--; // We always add +1 after each instruction, this will revert that
-        }
-    }
-
-    private void jumpToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
-        instructionPointer = (Integer) ins.parameter.content;
-        instructionPointer--; // We always add +1 after each instruction, this will revert that
-    }
-
-    private void jumpTrueToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
-        var top = stack.pop();
-        checkType(Collections.singletonList(DataType.BOOLEAN), ins, top, top);
-        if ((Boolean) top.content) {
-            instructionPointer = (Integer) ins.parameter.content;
-            instructionPointer--; // We always add +1 after each instruction, this will revert that
-        }
-    }
-
-    private void read(Instruction ins) {
-        var acceptedTypes = DataType.getNumericDataTypes();
-        acceptedTypes.add(DataType.LITERAL);
-        if (!acceptedTypes.contains(ins.parameter.type)) {
-            invalidInstructionParameter(acceptedTypes, ins.parameter.type);
-        }
-        this.status = VirtualMachineStatus.SYSCALL_IO_READ;
-        this.syscallDataType = ins.parameter.type;
-    }
-
-    private void write(Instruction ins) {
-        var stackElement = stack.pop();
-        checkType(Arrays.asList(DataType.INTEGER, DataType.FLOAT, DataType.LITERAL),
-                ins, stackElement, stackElement);
-        this.status = VirtualMachineStatus.SYSCALL_IO_WRITE;
-        this.syscallDataType = stackElement.type;
-        this.syscallData = stackElement.content;
-    }
-
-    private void stackCopyToPositions(Instruction ins) {
-        if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
-        }
-        var numberPositions = (Integer) ins.parameter.content;
-        var stackElement = stack.pop();
-        for (int i=stack.size()-numberPositions; i<=stack.size()-1; i++) {
-            stack.set(i, stackElement);
-        }
-    }
-
-    private static DataType checkType(List<DataType> compatibleTypes, Instruction ins, DataFrame x, DataFrame y) {
-        var runtimeException = new RuntimeException(String.format("Incompatible stack data types for instruction %s!\n --> top: %s\n --> subTop: %s", ins, x.toDebugString(), y.toDebugString()));
-        DataType effectiveOutputDataType = null;
-        boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
-        if (!compatibleTypesFlag) {
-            switch (x.type) {
-                // ADD, MUL, SUB, DIV
-                case FLOAT -> {
-                    switch (y.type) {
-                        case FLOAT, INTEGER -> effectiveOutputDataType = DataType.FLOAT;
-                    }
-                }
-                // ADD, MUL, SUB, DIV
-                case INTEGER -> {
-                    switch (y.type) {
-                        case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
-                        case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
-                    }
-                }
-                // LDB
-                case BOOLEAN -> {
-                    if (y.type == DataType.BOOLEAN) {
-                        effectiveOutputDataType = DataType.BOOLEAN;
-                    }
-                }
-                // JMP
-                case ADDRESS -> {
-                    if (y.type == DataType.ADDRESS) {
-                        effectiveOutputDataType = DataType.ADDRESS;
-                    }
-                }
-                case LITERAL -> {
-                    if (y.type == DataType.LITERAL) {
-                        effectiveOutputDataType = DataType.LITERAL;
-                    }
-                }
+    private void instrucaoADD(){
+        Float aux = (Float.parseFloat(pilha.get(topo - 2)) + Float.parseFloat(pilha.get(topo - 1)));
+        if(pilha.get(topo - 2).contains(".") || pilha.get(topo - 1).contains(".")){
+            if(!regexFloat(aux.toString())){
+                error.add("Soma resultou em um valor de float inválido. Valor: " + aux.toString());
+                loop = false;
             }
         } else {
-            throw runtimeException;
+            Integer aux2 = Math.round(aux);
+            if(!regexInteger(aux2.toString())){
+                error.add("Soma resultou em um valor de inteiro inválido. Valor: " + aux2.toString());
+                loop = false;
+            }
+            int a = Math.round(aux);
+            aux = (float) a;
         }
-        if (effectiveOutputDataType == null) {
-            throw runtimeException;
-        }
-        return effectiveOutputDataType;
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
     }
 
-    private static void invalidInstructionParameter(List<DataType> expected, DataType got) {
-        throw new RuntimeException(String.format("Invalid instruction, expected %s parameter, got: %s", expected, got));
+    private void instrucaoALB(Integer deslocamento){
+        for(int i = topo + 1; i <= topo + deslocamento; i++){
+            pilha.add("FALSE");
+        }
+        topo = topo + deslocamento;
+        ponteiro = ponteiro + 1;
     }
+
+    private void instrucaoALI(Integer deslocamento){
+        for(int i = topo + 1; i <= topo + deslocamento; i++){
+            pilha.add("0");
+        }
+        topo = topo + deslocamento;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoALR(Integer deslocamento){
+        for(int i = topo + 1; i <= topo + deslocamento; i++){
+            pilha.add("0.0");
+        }
+        topo = topo + deslocamento;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoALS(Integer deslocamento){
+        for(int i = topo + 1; i <= topo + deslocamento; i++){
+            pilha.add(" ");
+        }
+        topo = topo + deslocamento;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoAND(){
+        boolean aux = pilha.get(topo - 2).equals("TRUE") && pilha.get(topo - 1).equals("TRUE");
+        if(aux){
+            pilha.set(topo-2, "TRUE");
+        }else{
+            pilha.set(topo-2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoBGE(){
+        boolean aux = (Float.parseFloat(pilha.get(topo - 2)) >= Float.parseFloat(pilha.get(topo - 1)));
+        if(aux){
+            pilha.set(topo-2, "TRUE");
+        }else{
+            pilha.set(topo-2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoBGR(){
+        boolean aux = (Float.parseFloat(pilha.get(topo - 2)) > Float.parseFloat(pilha.get(topo - 1)));
+        if(aux){
+            pilha.set(topo-2, "TRUE");
+        }else{
+            pilha.set(topo-2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoDIF(){
+        boolean aux = pilha.get(topo -2).equals(pilha.get(topo - 1));
+        if(!aux){
+            pilha.set(topo-2, "TRUE");
+        }else{
+            pilha.set(topo-2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoDIV(){
+        if(pilha.get(topo - 1).equals("0") | pilha.get(topo - 1).equals("00") | pilha.get(topo - 1).equals("000") | pilha.get(topo - 1).equals("0000")
+                | pilha.get(topo - 1).equals("00000") | pilha.get(topo - 1).equals("0.0") | pilha.get(topo - 1).equals("00.0")
+                | pilha.get(topo - 1).equals("000.0") | pilha.get(topo - 1).equals("0000.0") | pilha.get(topo - 1).equals("00000.0")
+                | pilha.get(topo - 1).equals("0.00") | pilha.get(topo - 1).equals("00.00")
+                | pilha.get(topo - 1).equals("000.00") | pilha.get(topo - 1).equals("0000.00") | pilha.get(topo - 1).equals("00000.00")
+        ){
+            error.add("Não pode existir divisão por por 0");
+            loop = false;
+        }
+        Float aux = Float.parseFloat(pilha.get(topo - 2)) / Float.parseFloat(pilha.get(topo - 1));
+        if(pilha.get(topo - 2).contains(".") || pilha.get(topo - 1).contains(".")){
+            if(!regexFloat(aux.toString())){
+                error.add("Divisão resultou em um valor de float inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+        } else {
+            Integer aux2 = Math.round(aux);
+            if(!regexInteger(aux2.toString())){
+                error.add("Divisão resultou em um valor de inteiro inválido. Valor: " + aux2.toString());
+                loop = false;
+            }
+            int a = Math.round(aux);
+            aux = (float) a;
+        }
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoEQL(){
+        boolean aux = pilha.get(topo - 2).equals(pilha.get(topo - 1));
+        if(aux){
+            pilha.set(topo-2, "TRUE");
+        }else{
+            pilha.set(topo-2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoJMF(Integer endereco){
+        if(pilha.get(topo - 1).equals("FALSE")){
+            ponteiro = endereco - 1;
+        }else{
+            ponteiro = ponteiro +1;
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+    }
+
+    private void instrucaoJMP(Integer endereco){
+        ponteiro = endereco - 1;
+    }
+
+    private void instrucaoJMT(Integer endereco){
+        if(pilha.get(topo - 1).equals("TRUE")){
+            ponteiro = endereco - 1;
+        }else{
+            ponteiro = ponteiro + 1;
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+    }
+
+    private void instrucaoLDV(Integer endereco){
+        topo = topo + 1;
+        pilha.add(pilha.get(endereco - 1));
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoLDB(String constante){
+        topo = topo + 1;
+        pilha.add(constante.toUpperCase());
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoLDI(Integer constante){
+        topo = topo + 1;
+        pilha.add(constante.toString());
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoLDR(Float constante){
+        topo = topo + 1;
+        pilha.add(constante.toString());
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoLDS(String constante){
+        topo = topo + 1;
+        pilha.add(constante);
+        valorEntrada = constante;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoMUL(){
+        Float aux = Float.parseFloat(pilha.get(topo - 2)) * Float.parseFloat(pilha.get(topo - 1));
+        if(pilha.get(topo - 2).contains(".") || pilha.get(topo - 1).contains(".")){
+            if(!regexFloat(aux.toString())){
+                error.add("Multiplicação resultou em um valor de float inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+        } else {
+            if(!regexInteger(aux.toString())){
+                error.add("Multiplicação resultou em um valor de inteiro inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+            int a = Math.round(aux);
+            aux = (float) a;
+        }
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoNOT(){
+        if(pilha.get(topo - 1).equals("TRUE")){
+            pilha.set(topo - 1, "FALSE");
+        }else{
+            pilha.set(topo - 1, "TRUE");
+        }
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoOR(){
+        if(pilha.get(topo - 2).equals("TRUE") || pilha.get(topo - 1).equals("TRUE")){
+            pilha.set(topo - 2, "TRUE");
+        }else{
+            pilha.set(topo - 2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    /*
+    private void instrucaoREA(Integer tipo){
+        topo = topo + 1;
+        String value = JOptionPane.showInputDialog(valorEntrada);
+//        String value = pront.getValor();
+//        pilha.add(pront.getValor()); //veriticar como para entrada;
+//implementar validação de inteiro float e boolean. char não precisa também deve ser implementado no set validação de entrada
+        if(tipo == 1){
+            Integer validador = Math.round(Float.parseFloat(value));
+            if(!regexInteger(value)){
+                error.add("O valor (" + value + ") é um inteiro inválido");
+                loop = false;
+            }
+            pilha.add(value);
+        } else if(tipo == 2){
+            Float validador = Float.parseFloat(value);
+            if(!regexFloat(value)){
+                error.add("O valor (" + value + ") é um float inválido");
+                loop = false;
+            }
+            pilha.add(value);
+        } else if(tipo == 3){
+            pilha.add(value);
+        } else if(tipo == 4){
+            if(value.toUpperCase().equals("TRUE") || value.toUpperCase().equals("1")){
+                pilha.add("TRUE");
+            } else if(value.toUpperCase().equals("FALSE") || value.toUpperCase().equals("0")){
+                pilha.add("FALSE");
+            } else {
+                error.add("valor (" + value + ") é um boolean inválido");
+                loop = false;
+            }
+        }
+        ponteiro = ponteiro + 1;
+    }*/
+
+    private void instrucaoSME(){
+        boolean aux = (Float.parseFloat(pilha.get(topo - 2)) <= Float.parseFloat(pilha.get(topo - 1)));
+        if(aux){
+            pilha.set(topo - 2, "TRUE");
+        }else{
+            pilha.set(topo - 2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoSMR(){
+        boolean aux = (Float.parseFloat(pilha.get(topo - 2)) < Float.parseFloat(pilha.get(topo - 1)));
+        if(aux){
+            pilha.set(topo - 2, "TRUE");
+        }else{
+            pilha.set(topo - 2, "FALSE");
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoSTR(Integer endereco){
+        pilha.set(endereco - 1, pilha.get(topo - 1));
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoSTP(){
+        loop = false;
+    }
+
+    private void instrucaoSUB(){
+        Float aux = Float.parseFloat(pilha.get(topo - 2)) - Float.parseFloat(pilha.get(topo - 1));
+        if(pilha.get(topo - 2).contains(".") || pilha.get(topo - 1).contains(".")){
+            if(!regexFloat(aux.toString())){
+                error.add("Soma resultou em um valor de float inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+        } else {
+            if(!regexInteger(aux.toString())){
+                error.add("Soma resultou em um valor de inteiro inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+            int a = Math.round(aux);
+            aux = (float) a;
+        }
+
+        pilha.set(topo-2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoWRT(){
+        this.result.add(pilha.get(topo - 1));
+        //pront.setValor(pilha.get(topo - 1));
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoSTC(Integer deslocamento){
+        for(int i = topo - deslocamento -1; i <= topo - 2; i++){
+            pilha.set(i, pilha.get(topo - 1));
+        }
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoDVI() {
+        if(pilha.get(topo - 1).equals("0") | pilha.get(topo - 1).equals("00") | pilha.get(topo - 1).equals("000") | pilha.get(topo - 1).equals("0000")
+                | pilha.get(topo - 1).equals("00000") | pilha.get(topo - 1).equals("0.0") | pilha.get(topo - 1).equals("00.0")
+                | pilha.get(topo - 1).equals("000.0") | pilha.get(topo - 1).equals("0000.0") | pilha.get(topo - 1).equals("00000.0")
+                | pilha.get(topo - 1).equals("0.00") | pilha.get(topo - 1).equals("00.00")
+                | pilha.get(topo - 1).equals("000.00") | pilha.get(topo - 1).equals("0000.00") | pilha.get(topo - 1).equals("00000.00")
+        ){
+            error.add("Não pode existir divisão por por 0");
+            loop = false;
+        }
+        Integer aux = (Math.round(Float.parseFloat(pilha.get(topo - 2))) / Math.round(Float.parseFloat(pilha.get(topo - 1))));
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoMOD() {
+        Float aux = (Float.parseFloat(pilha.get(topo - 2)) % Float.parseFloat(pilha.get(topo - 1)));
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    private void instrucaoPOT() {
+        Float aux = (float) Math.pow(Float.parseFloat(pilha.get(topo - 2)), Float.parseFloat(pilha.get(topo - 1)));
+        if(pilha.get(topo - 2).contains(".") || pilha.get(topo - 1).contains(".")){
+            if(!regexFloat(aux.toString())){
+                error.add("Potência resultou em um valor de float inválido. Valor: " + aux.toString());
+                loop = false;
+            }
+        } else {
+            Integer aux2 = Math.round(aux);
+            if(!regexInteger(aux2.toString())){
+                error.add("Potência resultou em um valor de inteiro inválido. Valor: " + aux2.toString());
+                loop = false;
+            }
+            int a = Math.round(aux);
+            aux = (float) a;
+        }
+        pilha.set(topo - 2, aux.toString());
+        pilha.remove(topo - 1);
+        topo = topo - 1;
+        ponteiro = ponteiro + 1;
+    }
+
+    public void setProntVisible(boolean b) {
+        //pront.setVisible(b);
+    }
+
 }

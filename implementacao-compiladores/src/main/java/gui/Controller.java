@@ -364,7 +364,7 @@ public class Controller {
     public void handleRunButton() throws ParseEOFException, ParseException {
         if (handleVMmaybeRunning() == Operation.SUCCESS) {
             if (compileProgram()) {
-                this.vm = new VirtualMachine.java(insList);
+                this.vm = new VirtualMachineK.java(insList);
                 this.isReadingConsole = false;
                 runVirtualMachine();
             }
@@ -442,7 +442,7 @@ public class Controller {
         });
     }
 
-    private void displayInstructions(List<Instruction.java> instructions) {
+    private void displayInstructions(List<InstructionK.java> instructions) {
         instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
         instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
         instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
