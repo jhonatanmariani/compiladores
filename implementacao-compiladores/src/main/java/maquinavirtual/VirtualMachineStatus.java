@@ -1,6 +1,6 @@
-package br.univali.comp.virtualmachine;
+package maquinavirtual;
 
-public enum VMStatus {
+public enum VirtualMachineStatus {
     NOT_STARTED,
     RUNNING,
     SYSCALL_IO_WRITE,

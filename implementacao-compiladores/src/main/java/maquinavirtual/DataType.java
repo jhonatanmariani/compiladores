@@ -1,4 +1,4 @@
-package br.univali.comp.virtualmachine;
+package maquinavirtual;
 
 import java.util.ArrayList;
 import java.util.Arrays;

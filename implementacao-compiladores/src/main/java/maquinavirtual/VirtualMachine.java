@@ -1,4 +1,4 @@
-package br.univali.comp.virtualmachine;
+package maquinavirtual;
 
 import java.util.*;
 
@@ -6,7 +6,7 @@ public class VirtualMachine {
     private final List<Instruction> instructions;
     private final Stack<DataFrame> stack = new Stack<>();
     private int instructionPointer = 0;
-    private VMStatus status = VMStatus.NOT_STARTED;
+    private VirtualMachineStatus status = VirtualMachineStatus.NOT_STARTED;
     private DataType syscallDataType = null;
     private Object syscallData = null;
 
@@ -18,7 +18,7 @@ public class VirtualMachine {
         return stack;
     }
 
-    public VMStatus getStatus() {
+    public VirtualMachineStatus getStatus() {
         return status;
     }
 
@@ -30,7 +30,7 @@ public class VirtualMachine {
         return instructionPointer;
     }
 
-    public void setStatus(VMStatus status) {
+    public void setStatus(VirtualMachineStatus status) {
         this.status = status;
     }
 
@@ -46,7 +46,7 @@ public class VirtualMachine {
     }
 
     public void resumeExecution() {
-        if (status == VMStatus.SYSCALL_IO_READ) {
+        if (status == VirtualMachineStatus.SYSCALL_IO_READ) {
             syscallData = syscallData.toString().trim();
             try {
                 switch (syscallDataType) {
@@ -80,14 +80,14 @@ public class VirtualMachine {
     }
 
     public void executeAll() {
-        while (this.status != VMStatus.HALTED) {
+        while (this.status != VirtualMachineStatus.HALTED) {
             // IF we returned from a syscall/IO operation
-            if (status == VMStatus.SYSCALL_IO_READ || status == VMStatus.SYSCALL_IO_WRITE) {
+            if (status == VirtualMachineStatus.SYSCALL_IO_READ || status == VirtualMachineStatus.SYSCALL_IO_WRITE) {
                 resumeExecution();
             }
             executeStep();
             // If the last instruction was a syscall, pause execution until it completes
-            if (status == VMStatus.SYSCALL_IO_READ || status == VMStatus.SYSCALL_IO_WRITE) {
+            if (status == VirtualMachineStatus.SYSCALL_IO_READ || status == VirtualMachineStatus.SYSCALL_IO_WRITE) {
                 break;
             }
         }
@@ -95,7 +95,7 @@ public class VirtualMachine {
 
     public void executeStep() {
         // TODO
-        status = VMStatus.RUNNING;
+        status = VirtualMachineStatus.RUNNING;
         Instruction ins = instructions.get(instructionPointer);
         System.out.printf("Instruction Pointer: %d\n", instructionPointer+1);
         System.out.println(ins);
@@ -130,14 +130,14 @@ public class VirtualMachine {
             case JMP -> jumpToAddress(ins);
             case JMT -> jumpTrueToAddress(ins);
             case STP -> {
-                this.status = VMStatus.HALTED;
+                this.status = VirtualMachineStatus.HALTED;
                 return;
             }
             case REA -> read(ins);
             case WRT -> write(ins);
             case STC -> stackCopyToPositions(ins);
         }
-        if (this.status != VMStatus.SYSCALL_IO_READ) {
+        if (this.status != VirtualMachineStatus.SYSCALL_IO_READ) {
             System.out.println(this.printStack());
         }
         instructionPointer++;
@@ -520,7 +520,7 @@ public class VirtualMachine {
         if (!acceptedTypes.contains(ins.parameter.type)) {
             invalidInstructionParameter(acceptedTypes, ins.parameter.type);
         }
-        this.status = VMStatus.SYSCALL_IO_READ;
+        this.status = VirtualMachineStatus.SYSCALL_IO_READ;
         this.syscallDataType = ins.parameter.type;
     }
 
@@ -528,7 +528,7 @@ public class VirtualMachine {
         var stackElement = stack.pop();
         checkType(Arrays.asList(DataType.INTEGER, DataType.FLOAT, DataType.LITERAL),
                 ins, stackElement, stackElement);
-        this.status = VMStatus.SYSCALL_IO_WRITE;
+        this.status = VirtualMachineStatus.SYSCALL_IO_WRITE;
         this.syscallDataType = stackElement.type;
         this.syscallData = stackElement.content;
     }

@@ -1,12 +1,22 @@
 package gui;
 
+import classes.ParseException;
+//import classes.Sintatico;
+//import classes.ParseEOFException;
+import util.AlertFactory;
+import util.AppMetadataHelper;
+import util.Operation;
+import maquinavirtual.DataType;
+import maquinavirtual.Instruction;
+import maquinavirtual.VirtualMachineStatus;
+import maquinavirtual.VirtualMachine;
 import classes.ErrorStruct;
 import classes.LanguageParser;
 import classes.LanguageParserConstants;
 import classes.Token;
-import util.AlertFactory;
-import util.Operation;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,6 +29,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 

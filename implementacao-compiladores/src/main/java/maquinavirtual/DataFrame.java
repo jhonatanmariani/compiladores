@@ -1,4 +1,4 @@
-package br.univali.comp.virtualmachine;
+package maquinavirtual;
 
 public class DataFrame {
     public final Object content;
