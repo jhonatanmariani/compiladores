@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
 import java.lang.StringBuilder;
+import maquinavirtual.Instruction;
+import maquinavirtual.VirtualMachine;
+import maquinavirtual.SymbolTable;
 
 public class LanguageParser implements LanguageParserConstants {
     int contParseError = 0;
@@ -15,10 +18,188 @@ public class LanguageParser implements LanguageParserConstants {
     final static List<ErrorStruct> output = new ArrayList<ErrorStruct>();
     boolean eof;
 
+    static List<String> listaComandos = new ArrayList<String>();
+    static List<String> listaParametros = new ArrayList<String>();
+    static LanguageRules regraDasLinguagem = new LanguageRules();
+    static VirtualMachine maquina;
+    static Instruction instrucoes;
+
     public static List<Token> getTokens(String stream){
         InputStream target =  new ByteArrayInputStream(stream.getBytes());
         LanguageParser parser = new LanguageParser(target);
         return tokenize(parser);
+    }
+
+    public LanguageParser LanguageParser(String code){
+        this.checkSyntax(code);
+        return this;
+    }
+
+    final public void adicionar_regra(String regra, List<String> lista_parametros_dentro_funcao) throws ParseException {
+        System.out.println("Iniciando an\u00c3\u00a1lise sem\u00c3\u00a2ntica...");
+        switch(regra){
+            case "#1":
+                regraDasLinguagem.regra1(lista_parametros_dentro_funcao.get(0));
+                for(Instruction instrucao: regraDasLinguagem.getPilha_de_instrucoes()){
+                    System.out.println(instrucao.getPonteiro() + " | "
+                        + instrucao.getInstrucao()
+                        + " | " + instrucao.getEndereco());
+                }
+                System.out.println("\n\n");
+                for(SymbolTable tabelaSimbolo: regraDasLinguagem.getPilha_de_simbolos()){
+                    System.out.println(tabelaSimbolo.getIdentificador()
+                        + " | " + tabelaSimbolo.getCategoria()
+                        + " | " + tabelaSimbolo.getAtributo1()
+                        + " | " + tabelaSimbolo.getAtributo2());
+                }
+                break;
+                case "#2":
+                    regraDasLinguagem.regra2();
+                    break;
+                case "#3":
+                    regraDasLinguagem.regra3();
+                    break;
+                case "#4":
+                    regraDasLinguagem.regra4(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#5":
+                    regraDasLinguagem.regra5();
+                    break;
+                case "#6":
+                    regraDasLinguagem.regra6();
+                    break;
+                case "#7":
+                    regraDasLinguagem.regra7();
+                    break;
+                case "#8":
+                    regraDasLinguagem.regra8();
+                    break;
+                case "#9":
+                    regraDasLinguagem.regra9();
+                    break;
+                case "#10":
+                    regraDasLinguagem.regra10(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#11":
+                    regraDasLinguagem.regra11(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#12":
+                    regraDasLinguagem.regra12();
+                    break;
+                case "#13":
+                    regraDasLinguagem.regra13(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
+                    break;
+                case "#14":
+                    regraDasLinguagem.regra14();
+                    break;
+                case "#15":
+                    regraDasLinguagem.regra15();
+                    break;
+                case "#16":
+                    regraDasLinguagem.regra16();
+                    break;
+                case "#17":
+                    regraDasLinguagem.regra17();
+                    break;
+                case "#18":
+                    regraDasLinguagem.regra18(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#19":
+                    regraDasLinguagem.regra19();
+                    break;
+                case "#20":
+                    regraDasLinguagem.regra20(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
+                    break;
+                case "#21":
+                    regraDasLinguagem.regra21(Float.parseFloat(lista_parametros_dentro_funcao.get(0)));
+                    break;
+                case "#22":
+                    regraDasLinguagem.regra22(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#23":
+                    regraDasLinguagem.regra23();
+                    break;
+                case "#24":
+                    regraDasLinguagem.regra24();
+                    break;
+                case "#25":
+                    regraDasLinguagem.regra25();
+                    break;
+                case "#26":
+                    regraDasLinguagem.regra26();
+                    break;
+               case "#27":
+                    regraDasLinguagem.regra27();
+                    break;
+               case "#28":
+                    regraDasLinguagem.regra28();
+                    break;
+               case "#29":
+                    regraDasLinguagem.regra29();
+                    break;
+               case "#30":
+                    regraDasLinguagem.regra30();
+                    break;
+               case "#31":
+                    regraDasLinguagem.regra31();
+                    break;
+               case "#32":
+                    regraDasLinguagem.regra32();
+                    break;
+               case "#33":
+                    regraDasLinguagem.regra33();
+                    break;
+               case "#34":
+                    regraDasLinguagem.regra34();
+                    break;
+               case "#35":
+                    regraDasLinguagem.regra35();
+                    break;
+               case "#36":
+                    regraDasLinguagem.regra36();
+                    break;
+               case "#37":
+                    regraDasLinguagem.regra37();
+                    break;
+               case "#38":
+                    regraDasLinguagem.regra38();
+                    break;
+               case "#39":
+                    regraDasLinguagem.regra39();
+                    break;
+               case "#40":
+                    regraDasLinguagem.regra40();
+                    break;
+               case "#41":
+                    regraDasLinguagem.regra41();
+                    break;
+               case "#42":
+                    regraDasLinguagem.regra42();
+                    break;
+               case "#43":
+                    regraDasLinguagem.regra43();
+                    break;
+               case "#44":
+                    regraDasLinguagem.regra44();
+                    break;
+               case "#45":
+                    regraDasLinguagem.regra45();
+                    break;
+               case "#46":
+                    regraDasLinguagem.regra46();
+                    break;
+               case "#47":
+                    regraDasLinguagem.regra47();
+                    break;
+               case "#48":
+                    regraDasLinguagem.regra48();
+                    break;
+               case "#49":
+                    regraDasLinguagem.regra49();
+                    break;
+               default :
+                  break;
+        }
     }
 
     public static ArrayList<ErrorStruct> checkSyntax(String stream) {
@@ -135,6 +316,7 @@ public class LanguageParser implements LanguageParserConstants {
     try {
       try {
         jj_consume_token(IDENTIFIER);
+        adicionar_regra("#3");
         jj_consume_token(IS);
         enum_values();
         inner_enum_decla_cont();
@@ -151,6 +333,7 @@ public class LanguageParser implements LanguageParserConstants {
   final public void inner_enum_decla_cont() throws ParseException {
     trace_call("inner_enum_decla_cont");
     try {
+      adicionar_regra("#4");
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
         jj_consume_token(COMMA);
@@ -207,7 +390,9 @@ public class LanguageParser implements LanguageParserConstants {
     trace_call("identifiers");
     try {
       jj_consume_token(IDENTIFIER);
+      adicionar_regra("#24");
       index();
+      adicionar_regra("#25");
     } finally {
       trace_return("identifiers");
     }
@@ -218,6 +403,7 @@ public class LanguageParser implements LanguageParserConstants {
     try {
       try {
         identifiers();
+        adicionar_regra("#23");
         label_2:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -245,18 +431,23 @@ public class LanguageParser implements LanguageParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER:
         jj_consume_token(INTEGER);
+        adicionar_regra("#13");
         break;
       case REAL:
         jj_consume_token(REAL);
+        adicionar_regra("#14");
         break;
       case STRING:
         jj_consume_token(STRING);
+        adicionar_regra("#15");
         break;
       case LOGIC:
         jj_consume_token(LOGIC);
+        adicionar_regra("#16");
         break;
       case ENUM:
         jj_consume_token(ENUM);
+        adicionar_regra("#17");
         break;
       default:
         jj_la1[5] = jj_gen;
@@ -271,6 +462,7 @@ public class LanguageParser implements LanguageParserConstants {
   final public void variable_declaration() throws ParseException {
     trace_call("variable_declaration");
     try {
+      adicionar_regra("#8");
       identifiers_list();
       jj_consume_token(IS);
       type_declaration();
@@ -360,11 +552,14 @@ public class LanguageParser implements LanguageParserConstants {
   final public void constant_declaration() throws ParseException {
     trace_call("constant_declaration");
     try {
+      adicionar_regra("#5");
       identifiers_list();
       jj_consume_token(IS);
       type_constant();
+      adicionar_regra("#6");
       jj_consume_token(ASSIGN);
       constant_result();
+      adicionar_regra("#7");
       jj_consume_token(DOT);
     } finally {
       trace_return("constant_declaration");
@@ -452,6 +647,7 @@ public class LanguageParser implements LanguageParserConstants {
     try {
       try {
         jj_consume_token(AS);
+        adicionar_regra("#5");
         start_declaration(r);
       } catch (ParseException e) {
         consumeUntil(r, e, "Error: Invalid declaration body.\n");
@@ -513,6 +709,7 @@ public class LanguageParser implements LanguageParserConstants {
         case TRUE:
           jj_consume_token(TRUE);
           jj_consume_token(RESULT);
+          adicionar_regra("#32");
           jj_consume_token(OPEN_BRACKET);
           list_of_commands(g);
           jj_consume_token(CLOSE_BRACKET);
@@ -521,6 +718,7 @@ public class LanguageParser implements LanguageParserConstants {
         case UNTRUE:
           jj_consume_token(UNTRUE);
           jj_consume_token(RESULT);
+          adicionar_regra("#32");
           jj_consume_token(OPEN_BRACKET);
           list_of_commands(g);
           jj_consume_token(CLOSE_BRACKET);
@@ -549,6 +747,7 @@ public class LanguageParser implements LanguageParserConstants {
         case UNTRUE:
           jj_consume_token(UNTRUE);
           jj_consume_token(RESULT);
+          adicionar_regra("#31");
           jj_consume_token(OPEN_BRACKET);
           list_of_commands(g);
           jj_consume_token(CLOSE_BRACKET);
@@ -580,6 +779,7 @@ public class LanguageParser implements LanguageParserConstants {
         case TRUE:
           jj_consume_token(TRUE);
           jj_consume_token(RESULT);
+          adicionar_regra("#30");
           jj_consume_token(OPEN_BRACKET);
           list_of_commands(g);
           jj_consume_token(CLOSE_BRACKET);
@@ -736,26 +936,32 @@ public class LanguageParser implements LanguageParserConstants {
         case EQUAL_TO:
           jj_consume_token(EQUAL_TO);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#36");
           break;
         case DIFF_THAN:
           jj_consume_token(DIFF_THAN);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#37");
           break;
         case LESS_THAN:
           jj_consume_token(LESS_THAN);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#38");
           break;
         case GREATER_THAN:
           jj_consume_token(GREATER_THAN);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#39");
           break;
         case LESS_THAN_OR_EQ_TO:
           jj_consume_token(LESS_THAN_OR_EQ_TO);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#40");
           break;
         case GREATER_THAN_OR_EQ_TO:
           jj_consume_token(GREATER_THAN_OR_EQ_TO);
           arithmetic_or_logic_expression(g);
+          adicionar_regra("#41");
           break;
         default:
           jj_la1[23] = jj_gen;
@@ -802,18 +1008,23 @@ public class LanguageParser implements LanguageParserConstants {
         break;
       case NUM:
         jj_consume_token(NUM);
+        adicionar_regra("#26");
         break;
       case NUMBER_REAL:
         jj_consume_token(NUMBER_REAL);
+        adicionar_regra("#27");
         break;
       case STRING_LITERAL:
         jj_consume_token(STRING_LITERAL);
+        adicionar_regra("#28");
         break;
       case TRUE:
         jj_consume_token(TRUE);
+        adicionar_regra("#52");
         break;
       case UNTRUE:
         jj_consume_token(UNTRUE);
+        adicionar_regra("#53");
         break;
       case OPEN_PARENTHESIS:
         jj_consume_token(OPEN_PARENTHESIS);
@@ -825,6 +1036,7 @@ public class LanguageParser implements LanguageParserConstants {
         jj_consume_token(OPEN_PARENTHESIS);
         expression(g);
         jj_consume_token(CLOSE_PARENTHESIS);
+        adicionar_regra("#54");
         break;
       default:
         jj_la1[25] = jj_gen;
@@ -843,6 +1055,7 @@ public class LanguageParser implements LanguageParserConstants {
       case OPEN_CURLY_BRACKETS:
         jj_consume_token(OPEN_CURLY_BRACKETS);
         jj_consume_token(NUM);
+        adicionar_regra("#17");
         jj_consume_token(CLOSE_CURLY_BRACKETS);
         break;
       default:
@@ -869,6 +1082,7 @@ public class LanguageParser implements LanguageParserConstants {
         }
         jj_consume_token(POWER);
         element(g);
+        adicionar_regra("#50");
       }
     } finally {
       trace_return("top_priority_operators");
@@ -896,22 +1110,27 @@ public class LanguageParser implements LanguageParserConstants {
         case MULTIPLY:
           jj_consume_token(MULTIPLY);
           first_term(g);
+          adicionar_regra("#45");
           break;
         case DIV:
           jj_consume_token(DIV);
           first_term(g);
+          adicionar_regra("#46");
           break;
         case WHOLE_DIV:
           jj_consume_token(WHOLE_DIV);
           first_term(g);
+          adicionar_regra("#47");
           break;
         case REST_DIV:
           jj_consume_token(REST_DIV);
           first_term(g);
+          adicionar_regra("#48");
           break;
         case LOGICAL_AND:
           jj_consume_token(LOGICAL_AND);
           first_term(g);
+          adicionar_regra("#49");
           break;
         default:
           jj_la1[29] = jj_gen;
@@ -943,14 +1162,17 @@ public class LanguageParser implements LanguageParserConstants {
         case PLUS:
           jj_consume_token(PLUS);
           second_term(g);
+          adicionar_regra("#42");
           break;
         case MINUS:
           jj_consume_token(MINUS);
           second_term(g);
+          adicionar_regra("#43");
           break;
         case LOGICAL_OR:
           jj_consume_token(LOGICAL_OR);
           second_term(g);
+          adicionar_regra("#44");
           break;
         default:
           jj_la1[31] = jj_gen;
@@ -971,10 +1193,13 @@ public class LanguageParser implements LanguageParserConstants {
       try {
         jj_consume_token(REPEAT);
         jj_consume_token(THIS);
+        adicionar_regra("#33");
         expression(g);
+        adicionar_regra("#34");
         jj_consume_token(OPEN_BRACKET);
         list_of_commands(h);
         jj_consume_token(CLOSE_BRACKET);
+        adicionar_regra("#35");
         jj_consume_token(DOT);
       } catch (ParseException e) {
        consumeUntil(r, e, "");
@@ -1125,9 +1350,11 @@ public class LanguageParser implements LanguageParserConstants {
       try {
         jj_consume_token(DESIGNATE);
         jj_consume_token(THIS);
+        adicionar_regra("#18");
         identifiers_list();
         jj_consume_token(AS);
         expression(h);
+        adicionar_regra("#19");
         jj_consume_token(DOT);
       } catch (ParseException e) {
        consumeUntil(r, e, "");
@@ -1144,6 +1371,7 @@ public class LanguageParser implements LanguageParserConstants {
       try {
         jj_consume_token(READ);
         jj_consume_token(THIS);
+        adicionar_regra("#20");
         jj_consume_token(OPEN_BRACKET);
         identifiers_list();
         jj_consume_token(CLOSE_BRACKET);
@@ -1163,6 +1391,7 @@ public class LanguageParser implements LanguageParserConstants {
         jj_consume_token(DO);
         jj_consume_token(THIS);
         jj_consume_token(IDENTIFIER);
+        adicionar_regra("#1");
         jj_consume_token(OPEN_BRACKET);
         jj_consume_token(CLOSE_BRACKET);
       } catch (ParseException e) {
@@ -1226,11 +1455,47 @@ public class LanguageParser implements LanguageParserConstants {
         declarations(h);
         body(r.union(l));
         desc(r);
+        adicionar_regra("#2");
       } catch (ParseException e) {
         consumeUntil(r, e, "main");
       }
     } finally {
       trace_return("main");
+    }
+  }
+
+  final public void adicionar_regra(String regra) throws ParseException {
+    trace_call("adicionar_regra");
+    try {
+      try {
+        adicionar_regra2(regra, null);
+      } catch (ParseException e) {
+        output.add(new ErrorStruct("", null));
+      }
+    } finally {
+      trace_return("adicionar_regra");
+    }
+  }
+
+  final public void adicionar_regra2(String regra, List<String> lista_parametros) throws ParseException {
+    trace_call("adicionar_regra2");
+    try {
+      try {
+        Empty();
+      } catch (ParseException e) {
+        output.add(new ErrorStruct("", null));
+      }
+    } finally {
+      trace_return("adicionar_regra2");
+    }
+  }
+
+  final public void Empty() throws ParseException {
+    trace_call("Empty");
+    try {
+
+    } finally {
+      trace_return("Empty");
     }
   }
 

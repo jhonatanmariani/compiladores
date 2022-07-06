@@ -3,6 +3,7 @@ package gui;
 import classes.ParseException;
 //import classes.Sintatico;
 //import classes.ParseEOFException;
+import maquinavirtual.VirtualMachineK;
 import util.AlertFactory;
 import util.Operation;
 import maquinavirtual.DataTypeK;
@@ -295,6 +296,17 @@ public class Controller {
         }
         checkLexical();
         checkSyntax();
+    }
+
+    public void runButton(ActionEvent actionEvent) {
+        // TODO implementar ação do botão
+//        if (handleVMmaybeRunning() == Operation.SUCCESS) {
+//            if (compileProgram()) {
+//                this.vm = new VirtualMachineK(insList);
+//                this.isReadingConsole = false;
+//                runVirtualMachine();
+//            }
+//        }
     }
 
     private void checkSyntax(){
