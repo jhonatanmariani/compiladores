@@ -1,8 +1,8 @@
 package gui;
 
 import classes.ErrorStruct;
-import classes.LanguageParser;
-import classes.LanguageParserConstants;
+import classes.Language20221;
+import classes.Language20221Constants;
 import classes.Token;
 import util.AlertFactory;
 import util.Operation;
@@ -271,16 +271,38 @@ public class Controller {
         }
     }
 
-    public void compileProgram(ActionEvent actionEvent) {
+    /*public void compileProgram(ActionEvent actionEvent) {
         if (this.inputTextArea.getText().length() == 0) {
             return;
         }
         checkLexical();
         checkSyntax();
+    }*/
+
+    public void compileProgram(ActionEvent actionEvent) {
+        actionEvent.consume();
+        if (inputTextArea.getText().length() == 0) {
+            Alert alert = AlertFactory.create
+                    (
+                            Alert.AlertType.ERROR,
+                            "Erro",
+                            "Arquivo vazio",
+                            "Um arquivo vazio nao pode ser compilado"
+                    );
+            alert.show();
+            return;
+        }
+        String[] args = new String[0];
+        java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
+        Language20221 tokenizer = new Language20221(targetStream);
+        String result = tokenizer.getTokens(args, inputTextArea.getText());
+        messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
+            + "\n" + tokenizer.getLexicalErrors()); //result);
+        System.out.println(result);
     }
 
-    private void checkSyntax(){
-        ArrayList<ErrorStruct> output = LanguageParser.checkSyntax(this.inputTextArea.getText());
+    /*private void checkSyntax(){
+        ArrayList<ErrorStruct> output = Language20221.checkSyntax(this.inputTextArea.getText());
         if (output.size() == 0) {
             this.messageTextArea.appendText("Compilado com sucesso!\n");
             return;
@@ -293,9 +315,9 @@ public class Controller {
             this.messageTextArea.appendText("Linha: " + err.getError().currentToken.beginLine);
             this.messageTextArea.appendText("; Coluna: " + err.getError().currentToken.endColumn + "\n");
         }
-    }
+    }*/
 
-    private void checkLexical(){
+    /*private void checkLexical(){
         this.messageTextArea.clear();
         ArrayList<Token> tokens = (ArrayList<Token>) LanguageParser.getTokens(this.inputTextArea.getText());
         int counter = 0;
@@ -339,7 +361,7 @@ public class Controller {
         else {
             this.messageTextArea.appendText("\nErros(s) lexicos encontrados 0\n");
         }
-    }
+    }*/
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();

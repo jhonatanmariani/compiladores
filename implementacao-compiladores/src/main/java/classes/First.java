@@ -9,22 +9,22 @@ public class First {
     static public final RecoverySet selection_command = new RecoverySet();
 
     static {
-        main.add(LanguageParserConstants.DECLARATION);
-        main.add(LanguageParserConstants.BODY);
+        main.add(Language20221Constants.PALAVRA_RESERVADA_DECLARATION);
+        main.add(Language20221Constants.PALAVRA_RESERVADA_BODY);
 
-        body.add(LanguageParserConstants.BODY);
+        body.add(Language20221Constants.PALAVRA_RESERVADA_BODY);
 
-        list_of_commands.add(LanguageParserConstants.READ);
-        list_of_commands.add(LanguageParserConstants.WRITE);
-        list_of_commands.add(LanguageParserConstants.DESIGNATE);
-        list_of_commands.add(LanguageParserConstants.AVALIATE);
-        list_of_commands.add(LanguageParserConstants.REPEAT);
+        list_of_commands.add(Language20221Constants.PALAVRA_RESERVADA_READ);
+        list_of_commands.add(Language20221Constants.PALAVRA_RESERVADA_WRITE);
+        list_of_commands.add(Language20221Constants.PALAVRA_RESERVADA_DESIGNATE);
+        list_of_commands.add(Language20221Constants.PALAVRA_RESERVADA_AVALIATE);
+        list_of_commands.add(Language20221Constants.PALAVRA_RESERVADA_REPEAT);
 
-        end_of_file.add(LanguageParserConstants.EOF);
+        end_of_file.add(Language20221Constants.EOF);
 
-        selection_command.add(LanguageParserConstants.TRUE);
-        selection_command.add(LanguageParserConstants.UNTRUE);
+        selection_command.add(Language20221Constants.PALAVRA_RESERVADA_TRUE);
+        selection_command.add(Language20221Constants.PALAVRA_RESERVADA_UNTRUE);
 
-        enumDeclarations.add(LanguageParserConstants.DECLARATION);
+        enumDeclarations.add(Language20221Constants.PALAVRA_RESERVADA_DECLARATION);
     }
 }

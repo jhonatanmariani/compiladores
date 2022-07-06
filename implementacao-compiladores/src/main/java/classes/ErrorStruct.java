@@ -21,7 +21,7 @@ public class ErrorStruct {
         for (int i=0; i < this.error.expectedTokenSequences.length; i++){
             expectedMsg += " ( ";
             for (int j=0; j < this.error.expectedTokenSequences[i].length; j++){
-                expectedMsg += LanguageParserConstants.tokenImage[this.error.expectedTokenSequences[i][j]] + ", ";
+                expectedMsg += Language20221Constants.tokenImage[this.error.expectedTokenSequences[i][j]] + ", ";
             }
             expectedMsg += ") ";
         }
