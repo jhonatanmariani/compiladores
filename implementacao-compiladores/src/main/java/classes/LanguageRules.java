@@ -1,6 +1,6 @@
 package classes;
 
-import maquinavirtual.Instruction;
+import maquinavirtual.InstructionOLD;
 import maquinavirtual.SymbolTable;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class LanguageRules {
     private Boolean variavel_indexada;//Valor lógico que indica ou não a ocorrência de uma variável indexada;
     private List<String> pilha_de_desvios; //Pilha de endereços para resolução de desvios com operandos inicialmente desconhecidos, quando da análise dos comandos de seleção e de repetição;
     private List<SymbolTable> pilha_de_simbolos;
-    private List<Instruction> pilha_de_instrucoes;
+    private List<InstructionOLD> pilha_de_instrucoes;
     private List<String> error;
     private String identificadorAcao11;
     private String identificadorAcao18;
@@ -52,7 +52,7 @@ public class LanguageRules {
         return pilha_de_simbolos;
     }
 
-    public List<Instruction> getPilha_de_instrucoes() {
+    public List<InstructionOLD> getPilha_de_instrucoes() {
         return pilha_de_instrucoes;
     }
 
@@ -79,7 +79,7 @@ public class LanguageRules {
 
     public void regra1(String identificador){
         pilha_de_simbolos.add(new SymbolTable(identificador, 0, "-", "-"));
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "STP", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STP", "0"));
     }
 
     public void regra2(){
@@ -91,31 +91,31 @@ public class LanguageRules {
         VP = VP + VIT;
         switch(tipo.toString()){
             case "1":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALI", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALI", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "2":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALR", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALR", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "3":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALS", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALS", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "4":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALB", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALB", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "5":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALI", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALI", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "6":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALR", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALR", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             case "7":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "ALS", VP.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ALS", VP.toString()));
                 ponteiro = ponteiro + 1;
                 break;
             default :
@@ -135,7 +135,7 @@ public class LanguageRules {
                 if(!roma.matcher(valor).matches()){
                     error.add("O valor (" + valor + ") é um inteiro inválido");
                 }
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "LDI", valor));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDI", valor));
                 ponteiro = ponteiro + 1;
                 break;
             case "6":
@@ -143,17 +143,17 @@ public class LanguageRules {
                 if(!romafloat.matcher(valor).matches()){
                     error.add("O valor (" + valor + ") é um float inválido");
                 }
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "LDR", valor));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDR", valor));
                 ponteiro = ponteiro + 1;
                 break;
             case "7":
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "LDS", valor));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDS", valor));
                 ponteiro = ponteiro + 1;
             default :
                 break;
         }
 
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "STC", VP.toString()));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STC", VP.toString()));
         ponteiro = ponteiro + 1;
         VP = 0;
     }
@@ -265,19 +265,19 @@ public class LanguageRules {
                         || tabelaSimbolo.getCategoria() == 2 || tabelaSimbolo.getCategoria() == 3 || tabelaSimbolo.getCategoria() == 4)){
                     if(tabelaSimbolo.getAtributo2().equals("-")){
                         if(!variavel_indexada){
-                            pilha_de_instrucoes.add(new Instruction(ponteiro, "REA", tabelaSimbolo.getCategoria().toString()));
+                            pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "REA", tabelaSimbolo.getCategoria().toString()));
                             ponteiro = ponteiro + 1;
-                            pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", tabelaSimbolo.getAtributo1()));
+                            pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STR", tabelaSimbolo.getAtributo1()));
                             ponteiro = ponteiro + 1;
                         }else{
                             error.add("Identificador (" + identificadorAcao11 + ") de variável não indexada");
                         }
                     }else{
                         if(variavel_indexada){
-                            pilha_de_instrucoes.add(new Instruction(ponteiro, "REA", tabelaSimbolo.getCategoria().toString()));
+                            pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "REA", tabelaSimbolo.getCategoria().toString()));
                             ponteiro = ponteiro + 1;
                             auxAtributo = Integer.parseInt(tabelaSimbolo.getAtributo1()) + constante_inteiraAcao13-1;
-                            pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", auxAtributo.toString()));
+                            pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STR", auxAtributo.toString()));
                             ponteiro = ponteiro + 1;
                         }else{
                             error.add("Identificador (" + identificadorAcao11 + ") de variável indexada exige índice");
@@ -327,9 +327,9 @@ public class LanguageRules {
 //                error.add("O valor (" + verificarAtribuicao + ") é diferente do tipo da variável boolean");
 //            }
             if(simbolo.getCategoria() == 4){
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", verificarAtribuicao));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STR", verificarAtribuicao));
             } else {
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", simbolo.getAtributo1()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "STR", simbolo.getAtributo1()));
             }
 
             ponteiro = ponteiro + 1;
@@ -342,7 +342,7 @@ public class LanguageRules {
     }
 
     public void regra17(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "WRT", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "WRT", "0"));
         ponteiro = ponteiro + 1;
     }
 
@@ -363,7 +363,7 @@ public class LanguageRules {
         Integer auxAtributo;
         if(!variavel_indexada){
             if(tabelaSimbolo.getAtributo2().equals("-")){
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "LDV", tabelaSimbolo.getAtributo1()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDV", tabelaSimbolo.getAtributo1()));
                 ponteiro = ponteiro + 1;
             }else{
                 error.add("Identificador (" + identificadorAcao18 + ") de variável indexada exige índice");
@@ -371,7 +371,7 @@ public class LanguageRules {
         }else{
             if(!tabelaSimbolo.getAtributo2().equals("-")){
                 auxAtributo = Integer.parseInt(tabelaSimbolo.getAtributo1()) + constante_inteiraAcao13-1;
-                pilha_de_instrucoes.add(new Instruction(ponteiro, "LDV", auxAtributo.toString()));
+                pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDV", auxAtributo.toString()));
                 ponteiro = ponteiro + 1;
             }else{
                 error.add("Identificador (" + identificadorAcao18 + ") de constante ou de variável não indexada");
@@ -381,19 +381,19 @@ public class LanguageRules {
 
     public void regra20(Integer constante_inteira){
         verificarAtribuicao = constante_inteira.toString();
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "LDI", constante_inteira.toString()));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDI", constante_inteira.toString()));
         ponteiro = ponteiro + 1;
     }
 
     public void regra21(Float constante_real){
         verificarAtribuicao = constante_real.toString();
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "LDR", constante_real.toString()));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDR", constante_real.toString()));
         ponteiro = ponteiro + 1;
     }
 
     public void regra22(String constante_literal){
         verificarAtribuicao = constante_literal;
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "LDS", constante_literal));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDS", constante_literal));
         ponteiro = ponteiro + 1;
     }
 
@@ -409,13 +409,13 @@ public class LanguageRules {
     }
 
     public void regra24(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMF", "?"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMF", "?"));
         pilha_de_desvios.add(ponteiro.toString());
         ponteiro = ponteiro + 1;
     }
 
     public void regra25(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMT", "?"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMT", "?"));
         pilha_de_desvios.add(ponteiro.toString());
         ponteiro = ponteiro + 1;
     }
@@ -432,7 +432,7 @@ public class LanguageRules {
                 break;
             }
         }
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMP", "?"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMP", "?"));
         pilha_de_desvios.add(ponteiro.toString());
         ponteiro = ponteiro + 1;
     }
@@ -444,7 +444,7 @@ public class LanguageRules {
     public void regra28(){
         String topoPilhaDesvio = pilha_de_desvios.get(pilha_de_desvios.size()-1);
         pilha_de_desvios.remove(pilha_de_desvios.size()-1);
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMT", topoPilhaDesvio));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMT", topoPilhaDesvio));
         ponteiro = ponteiro + 1;
     }
 
@@ -453,7 +453,7 @@ public class LanguageRules {
     }
 
     public void regra30(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMF", "?"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMF", "?"));
         pilha_de_desvios.add(ponteiro.toString());
         ponteiro = ponteiro + 1;
     }
@@ -471,100 +471,106 @@ public class LanguageRules {
         }
         topoPilhaDesvio = pilha_de_desvios.get(pilha_de_desvios.size()-1);
         pilha_de_desvios.remove(pilha_de_desvios.size()-1);
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "JMP", topoPilhaDesvio.toString()));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "JMP", topoPilhaDesvio.toString()));
         ponteiro = ponteiro + 1;
     }
 
     public void regra32(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "EQL", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "EQL", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra33(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "DIF", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "DIF", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra34(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "SMR", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "SMR", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra35(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "BGR", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "BGR", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra36(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "SME", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "SME", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra37(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "BGE", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "BGE", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra38(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "ADD", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "ADD", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra39(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "SUB", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "SUB", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra40(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "OR", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "OR", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra41(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "MUL", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "MUL", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra42(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "DIV", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "DIV", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra43(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "DVI", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "DVI", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra44(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "MOD", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "MOD", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra45(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "AND", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "AND", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra46(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "POT", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "POT", "0"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra47(){
         verificarAtribuicao = "TRUE";
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "LDB", "TRUE"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDB", "TRUE"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra48(){
         verificarAtribuicao = "FALSE";
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "LDB", "FALSE"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "LDB", "FALSE"));
         ponteiro = ponteiro + 1;
     }
 
     public void regra49(){
-        pilha_de_instrucoes.add(new Instruction(ponteiro, "NOT", "0"));
+        pilha_de_instrucoes.add(new InstructionOLD(ponteiro, "NOT", "0"));
         ponteiro = ponteiro + 1;
     }
+
+//    public void mostraRegrasPilhaDeInstrucoes() {
+//        for (InstructionOLD pilha: pilha_de_instrucoes){
+//            pilha.getInstrucao();
+//        }
+//    }
 
 }

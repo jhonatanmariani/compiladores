@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class VirtualMachine {
 
     private List<SymbolTable> pilha_de_simbolos;
-    private List<Instruction> pilha_de_instrucoes;
+    private List<InstructionOLD> pilha_de_instrucoes;
     private List<String> pilha;
     private List<String> error;
     private Integer ponteiro;
@@ -28,7 +28,7 @@ public class VirtualMachine {
         return roma.matcher(value).matches();
     }
 
-    public VirtualMachine(List<SymbolTable> pilha_de_simbolos, List<Instruction> pilha_de_instrucoes) {
+    public VirtualMachine(List<SymbolTable> pilha_de_simbolos, List<InstructionOLD> pilha_de_instrucoes) {
         this.pilha_de_simbolos = pilha_de_simbolos;
         this.pilha_de_instrucoes = pilha_de_instrucoes;
         pilha = new ArrayList<>();
@@ -48,11 +48,11 @@ public class VirtualMachine {
         this.pilha_de_simbolos = pilha_de_simbolos;
     }
 
-    public List<Instruction> getPilha_de_instrucoes() {
+    public List<InstructionOLD> getPilha_de_instrucoes() {
         return pilha_de_instrucoes;
     }
 
-    public void setPilha_de_instrucoes(List<Instruction> pilha_de_instrucoes) {
+    public void setPilha_de_instrucoes(List<InstructionOLD> pilha_de_instrucoes) {
         this.pilha_de_instrucoes = pilha_de_instrucoes;
     }
 
@@ -68,7 +68,7 @@ public class VirtualMachine {
         loop = true;
     }
 
-    private void chamarInstruction(Instruction instrucao){
+    private void chamarInstruction(InstructionOLD instrucao){
         switch(instrucao.getInstrucao()){
             case "ADD":
                 instrucaoADD();

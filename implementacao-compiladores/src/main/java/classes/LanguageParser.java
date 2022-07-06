@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
-import java.lang.StringBuilder;
-import java.lang.StringBuilder;
-import maquinavirtual.Instruction;
-import maquinavirtual.VirtualMachine;
+import maquinavirtual.InstructionK;
+import maquinavirtual.InstructionOLD;
+import maquinavirtual.VirtualMachineK;
 import maquinavirtual.SymbolTable;
 
 public class LanguageParser implements LanguageParserConstants {
@@ -21,8 +20,8 @@ public class LanguageParser implements LanguageParserConstants {
     static List<String> listaComandos = new ArrayList<String>();
     static List<String> listaParametros = new ArrayList<String>();
     static LanguageRules regraDasLinguagem = new LanguageRules();
-    static VirtualMachine maquina;
-    static Instruction instrucoes;
+    static VirtualMachineK maquina;
+    static InstructionK instrucoes;
 
     public static List<Token> getTokens(String stream){
         InputStream target =  new ByteArrayInputStream(stream.getBytes());
@@ -40,7 +39,7 @@ public class LanguageParser implements LanguageParserConstants {
         switch(regra){
             case "#1":
                 regraDasLinguagem.regra1(lista_parametros_dentro_funcao.get(0));
-                for(Instruction instrucao: regraDasLinguagem.getPilha_de_instrucoes()){
+                for(InstructionOLD instrucao: regraDasLinguagem.getPilha_de_instrucoes()){
                     System.out.println(instrucao.getPonteiro() + " | "
                         + instrucao.getInstrucao()
                         + " | " + instrucao.getEndereco());
@@ -1750,6 +1749,142 @@ public class LanguageParser implements LanguageParserConstants {
       System.out.println(" at line " + t1.beginLine + " column " + t1.beginColumn + ">; Expected token: <" + tokenImage[t2] + ">");
     }
   }
+
+//    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+//        StringBuilder sb = new StringBuilder("");
+//        Sintatico sintatico = this.readInput(args, textToAnalyze);
+//
+//        this.handleToken();
+//        tokens.append("<EOF>");
+//
+//        try {
+//            if(!hasLexicalErrors){
+//                sintatico.program();
+//            } else {
+//                sb.append(errorListToString("Lexic errors found!", lexicalErrors));
+//                return sb.toString();
+//            }
+//        } catch (ParseException ex) {
+//            System.out.println(ex);
+//            return ex.getMessage();
+//        }
+//        if(syntacticErrors.size() > 0){
+//            sb.append(errorListToString("Syntax errors found!", syntacticErrors));
+//            return sb.toString();
+//        }
+//        sb.append("Syntax OK!\n");
+//        this.semanticErrors = acoesSemanticas.getListaErros();
+//        if (semanticErrors.size() > 0) {
+//            sb.append(errorListToString("Semantic errors found!", semanticErrors));
+//            return sb.toString();
+//        }
+//        this.instructionList = acoesSemanticas.getInstructionList();
+//        sb.append("Semantics OK!\n");
+//        return sb.toString();
+//    }
+//
+
+//    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+//        StringBuilder sb = new StringBuilder("");
+//        Sintatico sintatico = this.readInput(args, textToAnalyze);
+//
+//        this.handleToken();
+//        tokens.append("<EOF>");
+//
+//        try {
+//            if(!hasLexicalErrors){
+//                sintatico.program();
+//            } else {
+//                sb.append(errorListToString("Lexic errors found!", lexicalErrors));
+//                return sb.toString();
+//            }
+//        } catch (ParseException ex) {
+//            System.out.println(ex);
+//            return ex.getMessage();
+//        }
+//        if(syntacticErrors.size() > 0){
+//            sb.append(errorListToString("Syntax errors found!", syntacticErrors));
+//            return sb.toString();
+//        }
+//        sb.append("Syntax OK!\n");
+//        this.semanticErrors = acoesSemanticas.getListaErros();
+//        if (semanticErrors.size() > 0) {
+//            sb.append(errorListToString("Semantic errors found!", semanticErrors));
+//            return sb.toString();
+//        }
+//        this.instructionList = acoesSemanticas.getInstructionList();
+//        sb.append("Semantics OK!\n");
+//        return sb.toString();
+//    }
+//
+
+//    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+//        StringBuilder sb = new StringBuilder("");
+//        Sintatico sintatico = this.readInput(args, textToAnalyze);
+//
+//        this.handleToken();
+//        tokens.append("<EOF>");
+//
+//        try {
+//            if(!hasLexicalErrors){
+//                sintatico.program();
+//            } else {
+//                sb.append(errorListToString("Lexic errors found!", lexicalErrors));
+//                return sb.toString();
+//            }
+//        } catch (ParseException ex) {
+//            System.out.println(ex);
+//            return ex.getMessage();
+//        }
+//        if(syntacticErrors.size() > 0){
+//            sb.append(errorListToString("Syntax errors found!", syntacticErrors));
+//            return sb.toString();
+//        }
+//        sb.append("Syntax OK!\n");
+//        this.semanticErrors = acoesSemanticas.getListaErros();
+//        if (semanticErrors.size() > 0) {
+//            sb.append(errorListToString("Semantic errors found!", semanticErrors));
+//            return sb.toString();
+//        }
+//        this.instructionList = acoesSemanticas.getInstructionList();
+//        sb.append("Semantics OK!\n");
+//        return sb.toString();
+//    }
+//
+
+//    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+//        StringBuilder sb = new StringBuilder("");
+//        Sintatico sintatico = this.readInput(args, textToAnalyze);
+//
+//        this.handleToken();
+//        tokens.append("<EOF>");
+//
+//        try {
+//            if(!hasLexicalErrors){
+//                sintatico.program();
+//            } else {
+//                sb.append(errorListToString("Lexic errors found!", lexicalErrors));
+//                return sb.toString();
+//            }
+//        } catch (ParseException ex) {
+//            System.out.println(ex);
+//            return ex.getMessage();
+//        }
+//        if(syntacticErrors.size() > 0){
+//            sb.append(errorListToString("Syntax errors found!", syntacticErrors));
+//            return sb.toString();
+//        }
+//        sb.append("Syntax OK!\n");
+//        this.semanticErrors = acoesSemanticas.getListaErros();
+//        if (semanticErrors.size() > 0) {
+//            sb.append(errorListToString("Semantic errors found!", semanticErrors));
+//            return sb.toString();
+//        }
+//        this.instructionList = acoesSemanticas.getInstructionList();
+//        sb.append("Semantics OK!\n");
+//        return sb.toString();
+//    }
+//
 
 //    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
 //        StringBuilder sb = new StringBuilder("");

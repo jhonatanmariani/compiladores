@@ -348,6 +348,10 @@ public class Controller {
         }
     }
 
+    public void chamaPilha() {
+
+    }
+
     public Operation handleVMmaybeRunning() {
         if (vm == null || vm.getStatus() == VirtualMachineStatusK.HALTED) {
             return Operation.SUCCESS;
@@ -439,6 +443,7 @@ public class Controller {
         ArrayList<ErrorStruct> output = LanguageParser.checkSyntax(this.inputTextArea.getText());
         if (output.size() == 0) {
             this.messageTextArea.appendText("Compilado com sucesso!\n");
+
             return true;
         }
         this.messageTextArea.appendText("\n");
