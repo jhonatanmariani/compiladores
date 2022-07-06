@@ -27,8 +27,8 @@
                     <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compilacao">
-                    <MenuItem text="Compilar" onAction="#compileProgram"/>
-                    <MenuItem disable="true" text="Executar"/>
+                    <MenuItem fx:id="compileMenuItem" text="Compilar" onAction="#compileProgram"/>
+                    <MenuItem fx:id="runMenuItem" disable="true" text="Executar"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -107,7 +107,7 @@
                         <Tooltip text="Compilar"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="runBtn" onAction="#runButton">
+                <Button fx:id="runBtn" onAction="#runButton" disable="true" >
                     <graphic>
                         <ImageView>
                             <Image url="@icones/executar.png"/>

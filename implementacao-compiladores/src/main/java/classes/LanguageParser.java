@@ -1751,4 +1751,37 @@ public class LanguageParser implements LanguageParserConstants {
     }
   }
 
+//    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+//        StringBuilder sb = new StringBuilder("");
+//        Sintatico sintatico = this.readInput(args, textToAnalyze);
+//
+//        this.handleToken();
+//        tokens.append("<EOF>");
+//
+//        try {
+//            if(!hasLexicalErrors){
+//                sintatico.program();
+//            } else {
+//                sb.append(errorListToString("Lexic errors found!", lexicalErrors));
+//                return sb.toString();
+//            }
+//        } catch (ParseException ex) {
+//            System.out.println(ex);
+//            return ex.getMessage();
+//        }
+//        if(syntacticErrors.size() > 0){
+//            sb.append(errorListToString("Syntax errors found!", syntacticErrors));
+//            return sb.toString();
+//        }
+//        sb.append("Syntax OK!\n");
+//        this.semanticErrors = acoesSemanticas.getListaErros();
+//        if (semanticErrors.size() > 0) {
+//            sb.append(errorListToString("Semantic errors found!", semanticErrors));
+//            return sb.toString();
+//        }
+//        this.instructionList = acoesSemanticas.getInstructionList();
+//        sb.append("Semantics OK!\n");
+//        return sb.toString();
+//    }
+//
 }
