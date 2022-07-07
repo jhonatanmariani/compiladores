@@ -512,12 +512,13 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
 }
 
 void enum_values(): {} {
-    constant_result() | <IDENTIFICADOR>
+    <IDENTIFICADOR> {acoesSemanticas.acao4();} constant_result()
 }
 
 void inner_enum_declaration(RecoverySet r) : {} {
     try {
-        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <IDENTIFICADOR> {acoesSemanticas.acao3());} <PALAVRA_RESERVADA_IS> enum_values()
+        inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }
     catch (ParseException e){
            consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
@@ -543,13 +544,11 @@ void enum_declaration(RecoverySet r) : {} {
 
 void identifiers() : {} {
     <IDENTIFICADOR> index()
-
-
 }
 
 void identifiers_list() : {} {
     try {
-        identifiers() (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+        identifiers() {acoesSemanticas.acao10();} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
     }catch (ParseException e){
         syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
     }
@@ -577,7 +576,7 @@ void type_constant() : {} {
 }
 
 void end_constant() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5()} (constant_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5();} (constant_declaration())+
 }
 
 void start_variable() : {} {
@@ -585,15 +584,16 @@ void start_variable() : {} {
 }
 
 void constant_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() {acoesSemanticas.acao6();}
+    <OPERADOR_ATRIBUICAO> constant_result() {acoesSemanticas.acao7(getToken(0).image);} <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void end_variable() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8()} (variable_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8();} (variable_declaration())+
 }
 
 void start_constant() : {} {
-    <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+ (end_variable())?
+    <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5();} (constant_declaration())+ (end_variable())?
 }
 
 void start_declaration(RecoverySet r) : {} {
@@ -616,7 +616,8 @@ void inner_declaration(RecoverySet r) : {} {
 
 void declaration_constants_and_variables(RecoverySet r) : {} {
     try{
-       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE>
+       <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }
     catch (ParseException e){
         consumeUntil(r, e, "declaration_constants_and_variables");
@@ -625,16 +626,17 @@ void declaration_constants_and_variables(RecoverySet r) : {} {
 }
 
 void constant_result() : {} {
-        <CONSTANTE_LITERAL>
-    |   <CONSTANTE_NUMERICA_INTEIRA>
-    |   <CONSTANTE_NUMERICA_REAL>
+    <IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao25(getToken(0));}
+    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
+    |   <CONSTANTE_NUMERICA_INTEIRA>    {acoesSemanticas.acao26(getToken(0));}
+    |   <CONSTANTE_NUMERICA_REAL>   {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
 }
 
 void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
-            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> {acoesSemanticas.acao30();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> true_result_cont()
-        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT>  {acoesSemanticas.acao31();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> untrue_result_cont()
     }catch (ParseException e){
         consumeUntil(r, e, "");
@@ -645,7 +647,7 @@ void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESP
 void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
         (
-            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> {acoesSemanticas.acao32();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
         |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
@@ -658,7 +660,7 @@ void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECH
 void untrue_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
         (
-            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT>  {acoesSemanticas.acao32();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
         |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
@@ -713,12 +715,12 @@ void arithmetic_or_logic_expression(RecoverySet g) : {} {
 
 void expression_cont(RecoverySet g) : {} {
     (
-            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))
+            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao36();}
+        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao37();}
+        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao38();}
+        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao39();}
+        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))   {acoesSemanticas.acao40();}
+        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))   {acoesSemanticas.acao41();}
     )?
 }
 
@@ -731,39 +733,40 @@ void second_term(RecoverySet g) : {} {
 }
 
 void element(RecoverySet g) : {} {
-        (<IDENTIFICADOR> {acoesSemanticas.acao24()} index() {acoesSemanticas.acao51()})
-    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26()}
-    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27()}
+        (<IDENTIFICADOR> {acoesSemanticas.acao24();} index() {acoesSemanticas.acao51();})
+    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26();}
+    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27();}
     |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28();}
     |   <PALAVRA_RESERVADA_TRUE> {acoesSemanticas.acao52();}
-    |   <PALAVRA_RESERVADA_UNTRUE> {acoesSemanticas.acao53()}
+    |   <PALAVRA_RESERVADA_UNTRUE> {acoesSemanticas.acao53();}
     |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
-    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES> {acoesSemanticas.acao54()})
+    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES> {acoesSemanticas.acao54();})
 }
 
 void index() : {} {
-    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao12(g)} <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
+    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao12(getToken(0));}
+    <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?   {acoesSemanticas.acao11(getToken(0));}
 }
 
 void top_priority_operators(RecoverySet g) : {} {
-    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*
+    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*  {acoesSemanticas.acao50();}
 }
 
 void medium_priority_operators(RecoverySet g) : {} {
     (
-            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g))
-        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))
-        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))
-        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g))
-        |   (<OPERADOR_LOGICO_E> first_term(g))
+            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g)) {acoesSemanticas.acao45();}
+        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))   {acoesSemanticas.acao46();}
+        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))   {acoesSemanticas.acao47();}
+        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g)) {acoesSemanticas.acao48();}
+        |   (<OPERADOR_LOGICO_E> first_term(g)) {acoesSemanticas.acao49();}
     )*
 }
 
 void lesser_priority_operators(RecoverySet g) : {} {
     (
-            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))
-        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))
-        |   (<OPERADOR_LOGICO_OU> second_term(g))
+            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))   {acoesSemanticas.acao42();}
+        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))    {acoesSemanticas.acao43();}
+        |   (<OPERADOR_LOGICO_OU> second_term(g))      {acoesSemanticas.acao44();}
     )*
 }
 
@@ -786,7 +789,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
     try {
         <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS>
         expression(First.selection_command)
-        logic_result(g)
+        logic_result(g) {acoesSemanticas.acao29();}
     }catch (ParseException e){
            consumeUntil(r, e, "");
            syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
@@ -795,7 +798,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
 
 void write(RecoverySet g) : {} {
     try {
-        <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao22(g)} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao22();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
