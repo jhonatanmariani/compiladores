@@ -337,7 +337,6 @@ public class Controller {
         //    + "\n" + language20221.getLexicalErrors()); //result);
         messageTextArea.setText(result);
         System.out.println(result);
-        //language20221.limpaClasse();
 
         if (language20221.hasAnyErrors()) {
             System.out.println("Ha erros!");

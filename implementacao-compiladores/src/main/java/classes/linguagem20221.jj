@@ -519,7 +519,7 @@ void enum_values(): {} {
 
 void inner_enum_declaration(RecoverySet r) : {} {
     try {
-        <IDENTIFICADOR> {acoesSemanticas.acao3());} <PALAVRA_RESERVADA_IS> enum_values()
+        <IDENTIFICADOR> {acoesSemanticas.acao3();} <PALAVRA_RESERVADA_IS> enum_values()
         inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }
     catch (ParseException e){
@@ -736,7 +736,7 @@ void second_term(RecoverySet g) : {} {
 
 void element(RecoverySet g) : {} {
         (<IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao51(getToken(0));})
-    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
+    |   <CONSTANTE_NUMERICA_INTEIRA>  {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
     |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
     |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
     |   <PALAVRA_RESERVADA_TRUE> {acoesSemanticas.acao52();}
