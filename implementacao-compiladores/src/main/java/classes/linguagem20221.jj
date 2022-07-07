@@ -511,6 +511,8 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 ("")(<LETRA>|<DIGITO>|(""))*>
 }
 
+////////// INICIO DAS ACOES SEMANTICAS
+
 void enum_values(): {} {
     <IDENTIFICADOR> {acoesSemanticas.acao4();} constant_result()
 }
@@ -548,7 +550,7 @@ void identifiers() : {} {
 
 void identifiers_list() : {} {
     try {
-        identifiers() {acoesSemanticas.acao10();} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+        identifiers() {acoesSemanticas.acao10(getToken(0));} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
     }catch (ParseException e){
         syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
     }
@@ -558,8 +560,8 @@ void type_declaration() : {} {
     <PALAVRA_RESERVADA_INTEGER>  {acoesSemanticas.acao13();}
     | <PALAVRA_RESERVADA_REAL> {acoesSemanticas.acao14();}
     | <PALAVRA_RESERVADA_STRING>  {acoesSemanticas.acao15();}
-    | <PALAVRA_RESERVADA_LOGIC> {acoesSemanticas.acao16();}
-    | <IDENTIFICADOR> {acoesSemanticas.acao17();}
+    | <PALAVRA_RESERVADA_LOGIC> {acoesSemanticas.acao16(getToken(0));}
+    | <IDENTIFICADOR> {acoesSemanticas.acao17(getToken(0));}
 
 }
 
@@ -733,10 +735,10 @@ void second_term(RecoverySet g) : {} {
 }
 
 void element(RecoverySet g) : {} {
-        (<IDENTIFICADOR> {acoesSemanticas.acao24();} index() {acoesSemanticas.acao51();})
-    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26();}
-    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27();}
-    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28();}
+        (<IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao51(getToken(0));})
+    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
+    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
+    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
     |   <PALAVRA_RESERVADA_TRUE> {acoesSemanticas.acao52();}
     |   <PALAVRA_RESERVADA_UNTRUE> {acoesSemanticas.acao53();}
     |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
@@ -775,10 +777,10 @@ void repeat(RecoverySet r) : {
         RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
 }{
     try {
-        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao33()} expression(g)
-        {acoesSemanticas.acao34()} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao33();} expression(g)
+        {acoesSemanticas.acao34();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(h)
-        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> {acoesSemanticas.acao35(g)} <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> {acoesSemanticas.acao35();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
@@ -858,7 +860,7 @@ void read(RecoverySet r) : {} {
 
 void header(RecoverySet r) : {} {
     try {
-        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> {acoesSemanticas.acao1(getToken(0))} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> {acoesSemanticas.acao1(getToken(0));} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }catch (ParseException e){
         consumeUntil(r, e, "header");
@@ -898,7 +900,7 @@ void main(RecoverySet r) : {
             declarations(h)
             body(r.union(l))
             desc(r)
-            {acoesSemanticas.acao2()}
+            {acoesSemanticas.acao2();}
     }catch (ParseException e){
         consumeUntil(r, e, "main");
     }
