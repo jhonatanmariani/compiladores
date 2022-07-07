@@ -10,9 +10,6 @@ options {
 PARSER_BEGIN(Language20221)
 package classes;
 
-//import org.javacc.parser.Token;
-//import org.javacc.parser.ParseException;
-//import javax.swing.text.html.parser.Parser;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.InputStream;
@@ -24,12 +21,10 @@ public class Language20221{
     private StringBuilder lexicalErrors = new StringBuilder();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
-    //final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
     static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
     boolean debugRecovery = true;
     boolean eof;
     private int contSyntaticsErrors = 0;
-
 
     public void leituraDeTokens()  {
         contLexicalErrors = 0;
@@ -215,15 +210,6 @@ public class Language20221{
             return ex.getMessage().toString();
         }
         if(language20221.getContSyntaticsErrors() > 0){
-            /*return "Esse programa possui + " + language20221.getContSyntaticsErrors() +
-             //" erros sintaticos: \n" + language20221.getSyntacticErrors();"
-             " erros sintaticos: \n" + language20221.getSyntacticErrors();
-             //ArrayList<ErrorStruct> output = checkSyntax(textToAnalyze);*/
-
-             /*if (output.size() == 0) {
-                 this.errosLexicos.appendText("Compilado com sucesso!\n");
-                 return;
-             }*/
              errosSintaticos.append("\n");
              errosSintaticos.append(syntaticsErrors.size() + " Erros sintaticos encontrados :\n");
              for (ErrorStruct err: syntaticsErrors){
@@ -263,78 +249,6 @@ public class Language20221{
             return sintatico;
         }
 
-    public String getTokens(String args[], String textoParaAnalisar) {
-        Language20221 language20221;
-        if(args.length == 0){
-            System.out.println("#####################################");
-            System.out.println("### Iniciando leitura dos tokens ...");
-            System.out.println("#####################################");
-            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textoParaAnalisar.getBytes());
-            language20221 = new Language20221(targetStream);
-        }else if(args.length == 1){
-            try{
-                language20221 = new Language20221(new java.io.FileInputStream(args[0]));
-            }catch(java.io.FileNotFoundException e){
-                System.err.println(args[0] + " não foi encontrado." );
-                System.err.println(e);
-                return args[0] + " não foi encontrado.";
-            }
-        }else{
-            System.out.println("Use:\njava Language2021 < inputFile");
-            System.out.println("ou java Language2021 inputFile");
-            return "Use:java Language2021 < inputFile";
-        }
-        this.leituraDeTokens();
-        tokens.append("<EOF>");
-        return tokens.toString();
-    }
-
-    public static void main(String args[]) throws TokenMgrError, ParseException {
-        Language20221 parser = null;
-        if (args.length == 0) {
-            parser = new Language20221(System.in);
-        }else if (args.length == 1) {
-            try {
-                parser = new Language20221(new java.io.FileInputStream(args[0]));
-            }catch (java.io.FileNotFoundException e) {
-                System.out.println("Language20221: file " + args[0] + " was not found.");
-                return;
-            }
-        }
-    }
-
-    public static List<Token> getTokens(String stream){
-        InputStream target =  new ByteArrayInputStream(stream.getBytes());
-        Language20221 parser = new Language20221(target);
-        return tokenize(parser);
-    }
-
-    public static List<Token> tokenize(Language20221 parser){
-        List<Token> tokens = new ArrayList<Token>();
-
-        Token token = parser.getNextToken();
-        while (token.kind != Language20221Constants.EOF){
-            tokens.add(token);
-            token = parser.getNextToken();
-        }
-
-        if (!TokenHandler.isClosed()){
-            tokens.add(TokenHandler.createToken());
-        }
-        return tokens;
-    }
-
-    //VERIFICAR SE AINDA É UTILIZADO
-    static public String im(int x){
-        String s = tokenImage[x];
-        int k = s.lastIndexOf("\"");
-        try {
-            s = s.substring(1, k);
-        }catch (StringIndexOutOfBoundsException e){
-        }
-        return s;
-    }
-
     public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
         Token tok;
         if (g == null){
@@ -355,22 +269,6 @@ public class Language20221{
         contSyntaticsErrors++;
     }
 
-    /*public static ArrayList<ErrorStruct> checkSyntax(String stream) {
-        InputStream target =  new ByteArrayInputStream(stream.getBytes());
-        Language20221 parser = new Language20221(target);
-        try {
-            parser.begin_program();
-        }catch (ParseException e){
-            lexicalErrors.add(new ErrorStruct("Error parsing the program.\n", e));
-        }
-        ArrayList tmp = new ArrayList<ErrorStruct>(lexicalErrors);
-        lexicalErrors.clear();
-        return tmp;
-    }*/
-
-    public String getTokens(){
-        return tokens.toString();
-    }
     public int getContLexicalErrors(){
         return contLexicalErrors;
     }
@@ -386,11 +284,6 @@ public class Language20221{
     public String getSyntacticErrors() {
         return this.syntaticsErrors.toString();
     }
-
-    public ErrorStruct getSyntaticErrorsObject(){
-        return (ErrorStruct) syntaticsErrors;
-    }
-
 }
 
 PARSER_END(Language20221)
