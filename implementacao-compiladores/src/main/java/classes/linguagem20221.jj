@@ -24,7 +24,11 @@ public class Language20221{
     private StringBuilder lexicalErrors = new StringBuilder();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
-    //final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    boolean debugRecovery = true;
+    boolean eof;
+    private int contSyntaticsErrors = 0;
+
 
     public void leituraDeTokens()  {
         try {
@@ -188,6 +192,52 @@ public class Language20221{
         }
     }
 
+    public String analyze(String args[], String textToAnalyze) throws ParseException  {
+        Language20221 language20221 = this.readInput(args, textToAnalyze);
+
+        this.leituraDeTokens();
+        tokens.append("<EOF>");
+
+        try {
+            if(!hasLexicalErrors){
+                language20221.begin_program();
+            } else {
+                return lexicalErrors.toString();
+            }
+        }catch (ParseException ex) {
+            return ex.getMessage().toString();
+        }
+        if(language20221.getContSyntaticsErrors() > 0){
+            return "Esse programa possui + " + language20221.getContSyntaticsErrors() +
+             //" erros sintaticos: \n" + language20221.getSyntacticErrors();"
+             " erros sintaticos: \n" + language20221.getSyntacticErrors();
+        }
+        return "Sintaticamente correto! correct!";
+    }
+
+        private Language20221 readInput(String args[], String textToAnalyze) {
+            Language20221 sintatico = null;
+            if(args.length == 0){
+                System.out.println("Reading from received text!");
+                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+                sintatico = new Language20221(targetStream);
+            }
+            else if(args.length == 1){
+                try{
+                    sintatico = new Language20221(new java.io.FileInputStream(args[0]));
+                }
+                catch(java.io.FileNotFoundException e){
+                    System.err.println(args[0] + " was not found." );
+                    System.err.println(e);
+                }
+            }
+            else{
+                System.out.println("Use:\njava Sintatico < inputFile");
+                System.out.println("or java Sintatico inputFile");
+            }
+            return sintatico;
+        }
+
     public String getTokens(String args[], String textoParaAnalisar) {
         Language20221 language20221;
         if(args.length == 0){
@@ -214,6 +264,85 @@ public class Language20221{
         return tokens.toString();
     }
 
+    public static void main(String args[]) throws TokenMgrError, ParseException {
+        Language20221 parser = null;
+        if (args.length == 0) {
+            parser = new Language20221(System.in);
+        }else if (args.length == 1) {
+            try {
+                parser = new Language20221(new java.io.FileInputStream(args[0]));
+            }catch (java.io.FileNotFoundException e) {
+                System.out.println("Language20221: file " + args[0] + " was not found.");
+                return;
+            }
+        }
+    }
+
+    public static List<Token> getTokens(String stream){
+        InputStream target =  new ByteArrayInputStream(stream.getBytes());
+        Language20221 parser = new Language20221(target);
+        return tokenize(parser);
+    }
+
+    public static List<Token> tokenize(Language20221 parser){
+        List<Token> tokens = new ArrayList<Token>();
+
+        Token token = parser.getNextToken();
+        while (token.kind != Language20221Constants.EOF){
+            tokens.add(token);
+            token = parser.getNextToken();
+        }
+
+        if (!TokenHandler.isClosed()){
+            tokens.add(TokenHandler.createToken());
+        }
+        return tokens;
+    }
+
+    //VERIFICAR SE AINDA É UTILIZADO
+    static public String im(int x){
+        String s = tokenImage[x];
+        int k = s.lastIndexOf("\"");
+        try {
+            s = s.substring(1, k);
+        }catch (StringIndexOutOfBoundsException e){
+        }
+        return s;
+    }
+
+    public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
+        Token tok;
+        if (g == null){
+            throw e;
+        }
+        tok = getToken(1); // Current token
+        while (!eof){
+            /* found a token in set */
+            if (g.contains(tok.kind)) {
+                break;
+            }
+            getNextToken();
+            tok = getToken(1);
+            if (tok.kind == EOF && !g.contains(EOF)){
+                eof = true;
+            }
+        }
+        contSyntaticsErrors++;
+    }
+
+    /*public static ArrayList<ErrorStruct> checkSyntax(String stream) {
+        InputStream target =  new ByteArrayInputStream(stream.getBytes());
+        Language20221 parser = new Language20221(target);
+        try {
+            parser.begin_program();
+        }catch (ParseException e){
+            lexicalErrors.add(new ErrorStruct("Error parsing the program.\n", e));
+        }
+        ArrayList tmp = new ArrayList<ErrorStruct>(lexicalErrors);
+        lexicalErrors.clear();
+        return tmp;
+    }*/
+
     public String getTokens(){
         return tokens.toString();
     }
@@ -224,6 +353,19 @@ public class Language20221{
     public String getLexicalErrors(){
         return lexicalErrors.toString();
     }
+
+    public int getContSyntaticsErrors() {
+        return this.contSyntaticsErrors;
+    }
+
+    public String getSyntacticErrors() {
+        return this.syntaticsErrors.toString();
+    }
+
+    public ErrorStruct getSyntaticErrorsObject(){
+        return (ErrorStruct) syntaticsErrors;
+    }
+
 }
 
 PARSER_END(Language20221)
@@ -409,14 +551,14 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 (<DIGITO>)+(<LETRA>|<DIGITO>|("_"))* |
                 ("")(<LETRA>|<DIGITO>|(""))*>
 }
-/*
+
 void enum_values(): {} {
     constant_result() | <IDENTIFICADOR>
 }
 
 void inner_enum_declaration(RecoverySet r) : {} {
     try {
-        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_VIRGULA>
+        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }
     catch (ParseException e){
            consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
@@ -459,7 +601,7 @@ void type_declaration() : {} {
 }
 
 void variable_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_VIRGULA>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void type_constant() : {} {
@@ -475,7 +617,7 @@ void start_variable() : {} {
 }
 
 void constant_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_VIRGULA>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void end_variable() : {} {
@@ -536,9 +678,9 @@ void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECH
     try {
         (
             <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
-            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
-        |   <SIMBOLO_ESPECIAL_VIRGULA>
+        |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
         syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
@@ -549,9 +691,9 @@ void untrue_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FE
     try {
         (
             <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
-            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
-        |   <SIMBOLO_ESPECIAL_VIRGULA>
+        |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "");
         syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
@@ -664,14 +806,14 @@ void repeat(RecoverySet r) : {
     try {
         <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> expression(g) <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(h)
-        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
     }
 }
 
-void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_VIRGULA);} {
+void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
         <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS>
         expression(First.selection_command)
@@ -685,7 +827,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
 void write(RecoverySet g) : {} {
     try {
         <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
-        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
         syntaticsErrors.add(new ErrorStruct("Erro: Comando write incorreto.\n", e));
@@ -695,7 +837,7 @@ void write(RecoverySet g) : {} {
 void write_all(RecoverySet g) : {} {
     try {
         <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
-        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(g, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: no comando write all.\n", e));
@@ -723,10 +865,10 @@ void write_body_cont() : {} {
     }
 }
 
-void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_VIRGULA);} {
+void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
-        <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
-        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_VIRGULA>
+        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
+        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
@@ -736,7 +878,7 @@ void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIA
 void read(RecoverySet r) : {} {
     try {
         <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
-        identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(r, e, "read");
     }
@@ -797,4 +939,3 @@ void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
         syntaticsErrors.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
     }
 }
-*/

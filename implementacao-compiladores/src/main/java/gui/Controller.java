@@ -1,9 +1,6 @@
 package gui;
 
-import classes.ErrorStruct;
-import classes.Language20221;
-import classes.Language20221Constants;
-import classes.Token;
+import classes.*;
 import util.AlertFactory;
 import util.Operation;
 import javafx.application.Platform;
@@ -279,7 +276,7 @@ public class Controller {
         checkSyntax();
     }*/
 
-    public void compileProgram(ActionEvent actionEvent) {
+    public void compileProgram(ActionEvent actionEvent) throws ParseException {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create
@@ -295,9 +292,10 @@ public class Controller {
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
         Language20221 tokenizer = new Language20221(targetStream);
-        String result = tokenizer.getTokens(args, inputTextArea.getText());
-        messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
-            + "\n" + tokenizer.getLexicalErrors()); //result);
+        String result = tokenizer.analyze(args, inputTextArea.getText());
+        //messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
+        //    + "\n" + tokenizer.getLexicalErrors()); //result);
+        messageTextArea.setText(result);
         System.out.println(result);
     }
 
