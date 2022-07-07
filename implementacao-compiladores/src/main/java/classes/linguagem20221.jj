@@ -24,7 +24,8 @@ public class Language20221{
     private StringBuilder lexicalErrors = new StringBuilder();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
-    final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    //final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
     boolean debugRecovery = true;
     boolean eof;
     private int contSyntaticsErrors = 0;
@@ -194,6 +195,7 @@ public class Language20221{
 
     public String analyze(String args[], String textToAnalyze) throws ParseException  {
         Language20221 language20221 = this.readInput(args, textToAnalyze);
+        StringBuilder errosSintaticos = new StringBuilder("");
 
         this.leituraDeTokens();
         tokens.append("<EOF>");
@@ -208,11 +210,29 @@ public class Language20221{
             return ex.getMessage().toString();
         }
         if(language20221.getContSyntaticsErrors() > 0){
-            return "Esse programa possui + " + language20221.getContSyntaticsErrors() +
+            /*return "Esse programa possui + " + language20221.getContSyntaticsErrors() +
              //" erros sintaticos: \n" + language20221.getSyntacticErrors();"
              " erros sintaticos: \n" + language20221.getSyntacticErrors();
+             //ArrayList<ErrorStruct> output = checkSyntax(textToAnalyze);*/
+
+             /*if (output.size() == 0) {
+                 this.errosLexicos.appendText("Compilado com sucesso!\n");
+                 return;
+             }*/
+             errosSintaticos.append("\n");
+             errosSintaticos.append(syntaticsErrors.size() + " Erros sintaticos encontrados :\n");
+             for (ErrorStruct err: syntaticsErrors){
+                 errosSintaticos.append(err.getMsg());
+                 errosSintaticos.append("Esperado(s):" + err.expected());
+                 errosSintaticos.append("Linha: " + err.getError().currentToken.beginLine);
+                 errosSintaticos.append("; Coluna: " + err.getError().currentToken.endColumn + "\n");
+             }
+             language20221 = null;
+             return errosSintaticos.toString();
         }
-        return "Sintaticamente correto! correct!";
+        errosSintaticos.append("Sintaticamente correto!");
+        language20221 = null;
+        return errosSintaticos.toString();
     }
 
         private Language20221 readInput(String args[], String textToAnalyze) {
