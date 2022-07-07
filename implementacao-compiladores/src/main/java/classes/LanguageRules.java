@@ -40,6 +40,15 @@ public class LanguageRules { // AcoesSemanticas
 
 /////// REGRAS DAS AÇÕES SEMANTICAS
 
+    /*
+    regras faltantes:
+    3
+    4
+    9   parcial
+    10  parcial
+    25  talvez de problema
+     */
+
     public void acao1(Token token){
         System.out.println("reconhecimento do identificador do programa (identificador, 0, -, -)");
         Simbolo simbolo = new Simbolo(token.image, 0);
@@ -253,74 +262,6 @@ public class LanguageRules { // AcoesSemanticas
         this.variavelIndexada = true;
     }
 
-//    public void acao13k(Token token){ // TODO implementar depois
-//        System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
-//        switch (this.contexto){
-//            case "variável": {
-//                if(!this.variavelIndexada){
-//                    this.VT= this.VT + 1;
-//                    this.VP= this.VP + 1;
-//                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT);
-//                    tabelaDeSimbolos.add(simbolo);
-//                }else{
-//                    this.VIT = this.VIT + this.constanteInteira;
-//                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT+1, this.constanteInteira);
-//                    tabelaDeSimbolos.add(simbolo);
-//                    this.VT = this.VT + this.constanteInteira;
-//                }
-//                break;
-//            }
-//            case "atribuição": {
-//                Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
-//                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
-//                    if(exist.getAtributo2() == 0){
-//                        if(!this.variavelIndexada){
-//                            this.listaAtributos.add(exist.getAtributo1());
-//                        }else{
-//                            this.listaErros.add("13 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                        }
-//                    } else{
-//                        if(this.variavelIndexada){
-//                            this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
-//                        }else{
-//                            this.listaErros.add("13 - Indexed variables require an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                        }
-//                    }
-//                }else{
-//                    this.listaErros.add("13 - Use of undeclared variable or constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                }
-//                break;
-//            }
-//            case "entrada dados": {
-//                Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
-//                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
-//                    if(exist.getAtributo2() == 0){
-//                        if(!this.variavelIndexada){
-//                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
-//                            this.ponteiro = this.ponteiro + 1;
-//                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
-//                            this.ponteiro = this.ponteiro + 1;
-//                        }else{
-//                            this.listaErros.add("13 - Identifier of non-indexed variable - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                        }
-//                    } else{
-//                        if(this.variavelIndexada){
-//                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
-//                            this.ponteiro = this.ponteiro + 1;
-//                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
-//                            this.ponteiro = this.ponteiro + 1;
-//                        }else{
-//                            this.listaErros.add("13 - Indexed variables requires an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                        }
-//                    }
-//                }else{
-//                    this.listaErros.add("13 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//                }
-//                break;
-//            }
-//        }
-//    }
-
     public void acao13(){
         System.out.println(": reconhecimento da palavra reservada integer");
         if(this.contexto.equals("as variable")){
@@ -471,7 +412,6 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao29(){
-        //ACHO que é isso
         System.out.println("reconhecimento de fim de comando de seleção");
         this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro);
     }
@@ -510,17 +450,6 @@ public class LanguageRules { // AcoesSemanticas
         this.pilhaDeDesvios.add(this.ponteiro-1);
     }
 
-//    //rever - Não entendi bem o que é para fazer nessa função;
-//    public void acao35(){
-//        System.out.println("reconhecimento do fim do comando de repetição");
-//        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
-//        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-//        p = ponteiro + 1;
-//        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-//        instructionList.add(new InstructionK(InstructionK.Mnemonic.JMP, new DataFrameK(DataTypeK.INTEGER, p)));
-//    }
-
-// essa aqui deve ser a correta
     public void acao35(){
         System.out.println("reconhecimento do fim do comando de repetição");
         Integer desvioAcao34 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
