@@ -556,19 +556,28 @@ void identifiers_list() : {} {
 }
 
 void type_declaration() : {} {
-    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+    <PALAVRA_RESERVADA_INTEGER>  {acoesSemanticas.acao13();}
+    | <PALAVRA_RESERVADA_REAL> {acoesSemanticas.acao14();}
+    | <PALAVRA_RESERVADA_STRING>  {acoesSemanticas.acao15();}
+    | <PALAVRA_RESERVADA_LOGIC> {acoesSemanticas.acao16();}
+    | <IDENTIFICADOR> {acoesSemanticas.acao17();}
+
 }
 
 void variable_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() {acoesSemanticas.acao6();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void type_constant() : {} {
-    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+    <PALAVRA_RESERVADA_INTEGER> {acoesSemanticas.acao13();}
+    |<PALAVRA_RESERVADA_REAL>   {acoesSemanticas.acao14();}
+    | <PALAVRA_RESERVADA_STRING>    {acoesSemanticas.acao15();}
+    | <PALAVRA_RESERVADA_LOGIC>     {acoesSemanticas.acao16(getToken(0));}
+    | <IDENTIFICADOR>
 }
 
 void end_constant() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5()} (constant_declaration())+
 }
 
 void start_variable() : {} {
@@ -580,7 +589,7 @@ void constant_declaration() : {} {
 }
 
 void end_variable() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8()} (variable_declaration())+
 }
 
 void start_constant() : {} {
@@ -722,18 +731,18 @@ void second_term(RecoverySet g) : {} {
 }
 
 void element(RecoverySet g) : {} {
-        (<IDENTIFICADOR> index())
-    |   <CONSTANTE_NUMERICA_INTEIRA>
-    |   <CONSTANTE_NUMERICA_REAL>
-    |   <CONSTANTE_LITERAL>
-    |   <PALAVRA_RESERVADA_TRUE>
-    |   <PALAVRA_RESERVADA_UNTRUE>
+        (<IDENTIFICADOR> {acoesSemanticas.acao24()} index() {acoesSemanticas.acao51()})
+    |   <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao26()}
+    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27()}
+    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28();}
+    |   <PALAVRA_RESERVADA_TRUE> {acoesSemanticas.acao52();}
+    |   <PALAVRA_RESERVADA_UNTRUE> {acoesSemanticas.acao53()}
     |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
-    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
+    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES> {acoesSemanticas.acao54()})
 }
 
 void index() : {} {
-    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
+    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao12(g)} <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
 }
 
 void top_priority_operators(RecoverySet g) : {} {
@@ -763,9 +772,10 @@ void repeat(RecoverySet r) : {
         RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
 }{
     try {
-        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> expression(g) <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao33()} expression(g)
+        {acoesSemanticas.acao34()} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(h)
-        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> {acoesSemanticas.acao35(g)} <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
@@ -785,7 +795,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
 
 void write(RecoverySet g) : {} {
     try {
-        <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao22(g)} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
@@ -795,7 +805,7 @@ void write(RecoverySet g) : {} {
 
 void write_all(RecoverySet g) : {} {
     try {
-        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao21();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(g, e, "");
@@ -826,8 +836,8 @@ void write_body_cont() : {} {
 
 void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
-        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
-        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao18();} identifiers_list()
+        <PALAVRA_RESERVADA_AS> expression(h) {acoesSemanticas.acao19();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
@@ -836,7 +846,7 @@ void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIA
 
 void read(RecoverySet r) : {} {
     try {
-        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao20();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(r, e, "read");
