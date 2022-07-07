@@ -19,7 +19,6 @@ public class InstructionK implements Comparable<InstructionK> {
         this.parameter = parameter;
     }
 
-    // These are needed for TableView to bind and display the object
     public Integer getNumber() {
         return number;
     }
@@ -44,7 +43,7 @@ public class InstructionK implements Comparable<InstructionK> {
 
     @Override
     public String toString() {
-        return String.format("Instruction %s -  %s - %s", number, mnemonic, parameter);
+        return String.format("Instrucao %s -  %s - %s", number, mnemonic, parameter);
     }
 
     @Override

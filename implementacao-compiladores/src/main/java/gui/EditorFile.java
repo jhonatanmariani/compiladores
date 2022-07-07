@@ -70,7 +70,7 @@ public class EditorFile {
         if (hasValidExt) {
             return true;
         }
-        System.err.printf("File doesn't have a valid extension, want %s, have %s\n", FILE_EXT, FilenameUtils.getExtension(file.getName()));
+        System.err.printf("Arquivo com extensao invalida", FILE_EXT, FilenameUtils.getExtension(file.getName()));
         return false;
     }
 

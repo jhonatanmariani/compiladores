@@ -1,7 +1,6 @@
 package maquinavirtual;
 
 import java.util.*;
-import maquinavirtual.InstructionK;
 
 public class VirtualMachineK {
     private final List<InstructionK> instructions;
@@ -57,7 +56,7 @@ public class VirtualMachineK {
                 stack.push(new DataFrameK(syscallDataTypeK, syscallData));
                 System.out.println(printStack());
             } catch (NumberFormatException e) {
-                throw new RuntimeException(String.format("Invalid input read! Reason: cannot interpret %s as %s\n", syscallData.toString(), this.syscallDataTypeK.toString()));
+                throw new RuntimeException(String.format("Leitura de entrada invalida, nao é possivel interpretar %s as %s\n", syscallData.toString(), this.syscallDataTypeK.toString()));
             }
         }
         this.syscallData = null;
@@ -95,7 +94,6 @@ public class VirtualMachineK {
     }
 
     public void executeStep() {
-        // TODO
         status = VirtualMachineStatusK.RUNNING;
         InstructionK ins = instructions.get(instructionPointer);
         System.out.printf("Instruction Pointer: %d\n", instructionPointer+1);
@@ -165,7 +163,7 @@ public class VirtualMachineK {
     private void divide(InstructionK ins) {
         DataFrameK x = stack.pop();
         DataFrameK y = stack.pop();
-        var divideByZeroEx = new RuntimeException(String.format("Division by Zero on Instruction %s\n ->> top: %s\n --> subTop: %s", ins, x, y));
+        var divideByZeroEx = new RuntimeException(String.format("Divisao por zero na instrucao %s\n ->> top: %s\n --> subTop: %s", ins, x, y));
         var type = checkType(DataTypeK.getNumericDataTypes(), ins, x, y);
         if (type == DataTypeK.INTEGER) {
             var x_val = (Integer) x.content;
@@ -547,7 +545,7 @@ public class VirtualMachineK {
     }
 
     private static DataTypeK checkType(List<DataTypeK> compatibleTypes, InstructionK ins, DataFrameK x, DataFrameK y) {
-        var runtimeException = new RuntimeException(String.format("Incompatible stack data types for instruction %s!\n --> top: %s\n --> subTop: %s", ins, x.toDebugString(), y.toDebugString()));
+        var runtimeException = new RuntimeException(String.format("Tipos de pilha de dados incompativeis para instrucao %s!\n --> top: %s\n --> subTop: %s", ins, x.toDebugString(), y.toDebugString()));
         DataTypeK effectiveOutputDataTypeK = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
         if (!compatibleTypesFlag) {
@@ -593,6 +591,6 @@ public class VirtualMachineK {
     }
 
     private static void invalidInstructionParameter(List<DataTypeK> expected, DataTypeK got) {
-        throw new RuntimeException(String.format("Invalid instruction, expected %s parameter, got: %s", expected, got));
+        throw new RuntimeException(String.format("Instrucao insvalida, parametro %s esperado, recebido: %s", expected, got));
     }
 }

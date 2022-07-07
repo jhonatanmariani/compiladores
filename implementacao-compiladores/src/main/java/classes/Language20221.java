@@ -713,7 +713,7 @@ public class Language20221 implements Language20221Constants {
         break;
       case CONSTANTE_NUMERICA_INTEIRA:
         jj_consume_token(CONSTANTE_NUMERICA_INTEIRA);
-                                         acoesSemanticas.acao26(getToken(0));
+                                         acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));
         break;
       case CONSTANTE_NUMERICA_REAL:
         jj_consume_token(CONSTANTE_NUMERICA_REAL);

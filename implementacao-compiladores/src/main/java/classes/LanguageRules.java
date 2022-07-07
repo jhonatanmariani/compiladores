@@ -153,7 +153,7 @@ public class LanguageRules { // AcoesSemanticas
         Simbolo exist;
         exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
-            this.listaErros.add("9 - Identifier already declared: '" + token.image + "'  - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("9 - Identificador já declarado: '" + token.image + "'  - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
         }else{
             this.VT = this.VT + 1;
             this.VP = this.VP + 1;
@@ -169,7 +169,7 @@ public class LanguageRules { // AcoesSemanticas
             case "as variable": {
                 Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
                 if (!(exist == null)) {
-                    this.listaErros.add("10 - Identifier already declared: '" + token.image + "' - Line/Column: " + token.beginLine + "/" + token.beginColumn);
+                    this.listaErros.add("10 - Identificador ja declarado: '" + token.image + "' - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
                 } else {
                     this.variavelIndexada = false;
                     this.identificadorReconhecido = token.image;
@@ -210,17 +210,17 @@ public class LanguageRules { // AcoesSemanticas
                         if(!this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1());
                         }else{
-                            this.listaErros.add("11 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                            this.listaErros.add("11 - Identificador de variavel nao indexada: '" + this.identificadorReconhecido + "' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                         }
                     } else{
                         if(this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
                         }else{
-                            this.listaErros.add("11 - Indexed variables require an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                            this.listaErros.add("11 - Variavel indexada precisa de index - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                         }
                     }
                 }else{
-                    this.listaErros.add("11 - Use of undeclared variable or constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                    this.listaErros.add("11 - Uso de variavel ou constante nao declarada - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                 }
                 break;
             }
@@ -234,7 +234,7 @@ public class LanguageRules { // AcoesSemanticas
                             instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("11 - Identifier of non-indexed variable - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                            this.listaErros.add("11 - Identificador de variavel nao indexado - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                         }
                     } else{
                         if(this.variavelIndexada){
@@ -243,11 +243,11 @@ public class LanguageRules { // AcoesSemanticas
                             instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("11 - Indexed variables requires an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                            this.listaErros.add("11 - Variavel indexada precisa de um index - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                         }
                     }
                 }else{
-                    this.listaErros.add("11 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                    this.listaErros.add("11 - Uso de variavel ou constante nao declarada: '"+this.identificadorReconhecido+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                 }
                 break;
             }
@@ -293,7 +293,7 @@ public class LanguageRules { // AcoesSemanticas
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("16 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("16 - Tipo invalido para constante - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
@@ -304,7 +304,7 @@ public class LanguageRules { // AcoesSemanticas
             this.tipo = 1;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("17 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("17 - Tipo invalido para constante - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
@@ -351,7 +351,7 @@ public class LanguageRules { // AcoesSemanticas
             this.variavelIndexada = false;
             this.identificadorReconhecido = token.image;
         }else{
-            this.listaErros.add("24 - Use of non-declared identifier: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("24 - Uso de identificador nao declarado: '"+token.image+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
@@ -372,7 +372,7 @@ public class LanguageRules { // AcoesSemanticas
                     instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
                     this.ponteiro = this.ponteiro + 1;
                 } else {
-                    this.listaErros.add("25 - Indexed variables requires an index: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                    this.listaErros.add("25 - Variavel indexada precisa de um index: '"+token.image+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                 }
             } else {
                 if(exist.getAtributo2() != 0) {
@@ -385,7 +385,7 @@ public class LanguageRules { // AcoesSemanticas
                     instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                     this.ponteiro = this.ponteiro + 1;
                 }else{
-                    this.listaErros.add("25 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                    this.listaErros.add("25 - Identificador de variavel ou constante nao indexada: '"+this.identificadorReconhecido+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
                 }
             }
         }
@@ -555,14 +555,14 @@ public class LanguageRules { // AcoesSemanticas
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("51 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                this.listaErros.add("51 - Variavel indexada precisa de um index: '"+this.identificadorReconhecido+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
             }
         }else{
             if(exist.getAtributo2() != 0){
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("51 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                this.listaErros.add("51 - Identificador de constante ou variavel nao indexada: '"+this.identificadorReconhecido+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
             }
         }
     }

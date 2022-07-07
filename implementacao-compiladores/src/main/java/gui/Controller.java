@@ -1,9 +1,6 @@
 package gui;
 
-//import classes.Sintatico;
-//import classes.ParseEOFException;
 import classes.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import maquinavirtual.*;
@@ -26,7 +23,6 @@ import org.fxmisc.richtext.LineNumberFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 import classes.Language20221;
 
@@ -145,7 +141,7 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        System.out.println("Save as called");
+        System.out.println("Salvar como");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -355,7 +351,6 @@ public class Controller {
     }
 
     public void runButton(ActionEvent actionEvent) throws ParseException {
-        // TODO implementar ação do botão
         if (handleVMmaybeRunning() == Operation.SUCCESS) {
             if (compileProgram()) {
                 this.vm = new VirtualMachineK(insList);
@@ -415,7 +410,7 @@ public class Controller {
                     case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
                 }
             }
-            statusBar.setText("Marquina virtual terminada, programa encerrado");
+            statusBar.setText("Maquina virtual terminada, programa encerrado");
         } catch (Exception e) {
             statusBar.setText("Erro em tempo de execução da VM, finalizando VM!");
             this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
@@ -433,7 +428,7 @@ public class Controller {
     private void handleSyscallRead(DataTypeK o) {
         consoleInput.setDisable(false);
         isReadingConsole = true;
-        statusBar.setText("Waiting for input of " + o.toString());
+        statusBar.setText("Aguardando entrada de " + o.toString());
         consoleInput.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 vm.setSyscallData(consoleInput.getText().trim());

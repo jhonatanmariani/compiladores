@@ -19,9 +19,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
         Parent root = fxmlLoader.load();
-        //root.getStylesheets().add("/main.css");
         primaryStage.setTitle("Compilador");
-        //primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/image.png"))));)
         primaryStage.setScene(new Scene(root));
 
         Controller controller = fxmlLoader.getController();
