@@ -277,6 +277,7 @@ public class Controller {
     }*/
 
     public void compileProgram(ActionEvent actionEvent) throws ParseException {
+        //messageTextArea.clear();
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create
@@ -297,69 +298,9 @@ public class Controller {
         //    + "\n" + tokenizer.getLexicalErrors()); //result);
         messageTextArea.setText(result);
         System.out.println(result);
+        //tokenizer.limpaClasse();
     }
 
-    /*private void checkSyntax(){
-        ArrayList<ErrorStruct> output = Language20221.checkSyntax(this.inputTextArea.getText());
-        if (output.size() == 0) {
-            this.messageTextArea.appendText("Compilado com sucesso!\n");
-            return;
-        }
-        this.messageTextArea.appendText("\n");
-        this.messageTextArea.appendText(output.size() + " Erros sintaticos encontrados :\n");
-        for (ErrorStruct err: output){
-            this.messageTextArea.appendText(err.getMsg());
-            this.messageTextArea.appendText("Esperado(s):" + err.expected());
-            this.messageTextArea.appendText("Linha: " + err.getError().currentToken.beginLine);
-            this.messageTextArea.appendText("; Coluna: " + err.getError().currentToken.endColumn + "\n");
-        }
-    }*/
-
-    /*private void checkLexical(){
-        this.messageTextArea.clear();
-        ArrayList<Token> tokens = (ArrayList<Token>) LanguageParser.getTokens(this.inputTextArea.getText());
-        int counter = 0;
-        if (tokens.size() > 0) {
-            this.messageTextArea.appendText("Erro(s) lexicos encontrados: ");
-            for (Token token : tokens) {
-                if (token.kind == LanguageParserConstants.OTHER || token.kind == LanguageParserConstants.INVALID_IDENTIFIER) {
-                    counter++;
-                    switch (token.kind) {
-                        case 61:
-                            this.messageTextArea.appendText("\nSimbolo invalido " + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 62:
-                            this.messageTextArea.appendText("\nIdentificador invalido, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 74:
-                            this.messageTextArea.appendText("\nString literal invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 75:
-                            this.messageTextArea.appendText("\nConstante numerica inteira invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 76:
-                            this.messageTextArea.appendText("\nConstante numerica real invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 77:
-                            this.messageTextArea.appendText("\nComentario facultativo invalido, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        default:
-                            this.messageTextArea.appendText("\nToken invalido, linha " + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                    }
-                } else if (token.kind == 5) {
-                    counter++;
-                    this.messageTextArea.appendText("\nErro lexico: Comentario de bloco nao encerrado (" + token.kind + ")");
-                }
-            }
-            if (counter == 0){
-                this.messageTextArea.appendText("0\n");
-            }
-        }
-        else {
-            this.messageTextArea.appendText("\nErros(s) lexicos encontrados 0\n");
-        }
-    }*/
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();
