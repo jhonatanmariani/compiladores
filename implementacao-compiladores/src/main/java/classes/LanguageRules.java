@@ -9,11 +9,14 @@ public class LanguageRules { // AcoesSemanticas
     private String contexto = "";
     private int VT = 0; // contador para número total de constantes e de variáveis
     private int VP = 0; // contador para número de constantes ou variáveis de um determinado tipo;
-    private int VIT = 0; // contador para o tamanho das variáveis indexadas de um determinado tipo;
-    private int tipo; // 1 variável natural, 2 variável real, 3 variável char, 4 variável boolean, 5 constante natural, 6 constante real, 7 constante char;
+    private int VI = 0; // contador para o número das variáveis indexadas de um determinado tipo;
+    private int TVI = 0; // contador para o tamanho das variáveis indexadas de um determinado tipo;
+    private int tipo;   // 1 variável integer ou enumerado, 2 variável float, 3 variável string, 4 variável boolean
+                        // 5 constante integer, 6 constante float, 7 constante string;
     private int ponteiro = 1;  // indicador da posição onde será gerada a próxima instrução na área de instruções;
-    boolean variavelIndexada = false;
+    boolean variavelIndexada = false; // valor lógico que indica ou não ocorrência de uma variável indexada
     private List<Integer> pilhaDeDesvios = new ArrayList<>(); //Lembrar de controlar para trabalhar como LIFO
+    private String saida = "";
     private List<Simbolo> tabelaDeSimbolos = new ArrayList<>();
     private static List<InstructionK> instructionList = new ArrayList<>();
     private String identificadorReconhecido;
@@ -57,7 +60,7 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao3(){
         System.out.println("reconhecimento de identificador do tipo enumerado");
-        // TODO implementar depois
+        //if (tabelaDeSimbolos.contains());
     }
 
     public void acao4() {
@@ -67,12 +70,15 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao5() {
         System.out.println("reconhecimento das palavras reservadas as constant");
-        // TODO implementar
+        // TODO validar implementação
+        this.contexto = "as constant";
+        this.VI = 0;
+        this.TVI = 0;
     }
 
     public void acao6(){
         System.out.println("reconhecimento do término da declaração de constantes ou variáveis de um determinado tipo");
-        this.VP = this.VP + this.VIT;
+        this.VP = this.VP + this.TVI;
         switch (this.tipo){
             case 1: case 5: {
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.ALI, new DataFrameK(DataTypeK.INTEGER, this.VP));
@@ -99,7 +105,8 @@ public class LanguageRules { // AcoesSemanticas
         }
         if(this.tipo == 1 || this.tipo == 2 || this.tipo == 3 || this.tipo == 4){
             this.VP = 0;
-            this.VIT = 0;
+            this.VI = 0;
+            this.TVI = 0;
         }
     }
 
@@ -130,22 +137,114 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao8(){
         System.out.println("reconhecimento das palavras reservadas as variable");
-        this.contexto = "variável";
+        this.contexto = "as variable";
     }
 
-    public void acao9() {
+    public void acao9(Token token) {
         System.out.println("reconhecimento de identificador de constante");
-        // TODO implementar depois
+        // TODO validar implementação, não pesquisa se existe na tabela de tipos enumerados e lista de identificadores
+        Simbolo exist;
+        exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
+        if(!(exist == null)){
+            this.listaErros.add("9 - Identifier already declared: '" + token.image + "'  - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+        }else{
+            this.VT = this.VT + 1;
+            this.VP = this.VP + 1;
+            Simbolo simbolo = new Simbolo(token.image, this.tipo, this.VT);
+            tabelaDeSimbolos.add(simbolo);
+        }
     }
 
-    public void acao10() {
+    public void acao10(Token token) {
         System.out.println("reconhecimento de identificador de variável");
-        // TODO implementar depois
+        // TODO validar implementação, não pesquisa se existe na tabela de tipos enumerados e lista de identificadores
+        switch (this.contexto){
+            case "as variable": {
+                Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
+                if (!(exist == null)) {
+                    this.listaErros.add("10 - Identifier already declared: '" + token.image + "' - Line/Column: " + token.beginLine + "/" + token.beginColumn);
+                } else {
+                    this.variavelIndexada = false;
+                    this.identificadorReconhecido = token.image;
+                }
+                break;
+            }
+            case "atribuicao": case "entrada dados": {
+                variavelIndexada = false;
+                this.identificadorReconhecido = token.image;
+                break;
+            }
+        }
     }
 
-    public void acao11(){
+    public void acao11(Token token){
         System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
-        // TODO implementar depois
+        // TODO validar implementação
+        switch (this.contexto){
+            case "as variable": {
+                if(!this.variavelIndexada){
+                    this.VT= this.VT + 1;
+                    this.VP= this.VP + 1;
+                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT);
+                    tabelaDeSimbolos.add(simbolo);
+                }else{
+                    this.VI = this.VI + 1;
+                    this.TVI = this.TVI + this.constanteInteira;
+                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT+1, this.constanteInteira);
+                    tabelaDeSimbolos.add(simbolo);
+                    this.VT = this.VT + this.constanteInteira;
+                }
+                break;
+            }
+            case "atribuicao": case "atribuição": {
+                Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
+                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
+                    if(exist.getAtributo2() == 0){
+                        if(!this.variavelIndexada){
+                            this.listaAtributos.add(exist.getAtributo1());
+                        }else{
+                            this.listaErros.add("11 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                        }
+                    } else{
+                        if(this.variavelIndexada){
+                            this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
+                        }else{
+                            this.listaErros.add("11 - Indexed variables require an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                        }
+                    }
+                }else{
+                    this.listaErros.add("11 - Use of undeclared variable or constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                }
+                break;
+            }
+            case "entrada dados": {
+                Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
+                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
+                    if(exist.getAtributo2() == 0){
+                        if(!this.variavelIndexada){
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
+                            this.ponteiro = this.ponteiro + 1;
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
+                            this.ponteiro = this.ponteiro + 1;
+                        }else{
+                            this.listaErros.add("11 - Identifier of non-indexed variable - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                        }
+                    } else{
+                        if(this.variavelIndexada){
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
+                            this.ponteiro = this.ponteiro + 1;
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
+                            this.ponteiro = this.ponteiro + 1;
+                        }else{
+                            this.listaErros.add("11 - Indexed variables requires an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                        }
+                    }
+                }else{
+                    this.listaErros.add("11 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                }
+                break;
+            }
+        }
     }
 
     public void acao12(Token token){
@@ -224,7 +323,7 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao13(){
         System.out.println(": reconhecimento da palavra reservada integer");
-        if(this.contexto.equals("variável")){
+        if(this.contexto.equals("as variable")){
             this.tipo = 1;
         }else{
             this.tipo = 5;
@@ -233,7 +332,7 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao14(){
         System.out.println("reconhecimento da palavra reservada float");
-        if(this.contexto.equals("variável")){
+        if(this.contexto.equals("as variable")){
             this.tipo = 2;
         }else{
             this.tipo = 6;
@@ -242,7 +341,7 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao15(){
         System.out.println(": reconhecimento da palavra reservada string");
-        if(this.contexto.equals("variável")){
+        if(this.contexto.equals("as variable")){
             this.tipo = 3;
         }else{
             this.tipo = 7;
@@ -251,19 +350,24 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao16(Token token){
         System.out.println(" reconhecimento da palavra reservada boolean"+ token.image);
-        if(this.contexto.equals("variável")){
+        if(this.contexto.equals("as variable")){
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("10 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("16 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
-    public void acao17(){
+    public void acao17(Token token){
         System.out.println("reconhecimento de identificador do tipo enumerado");
         // TODO implementar depois
+        if(this.contexto.equals("as variable")){
+            this.tipo = 1;
+        }else{
+            //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
+            this.listaErros.add("17 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+        }
     }
-
 
     public void acao18(){
         System.out.println("reconhecimento do início do comando de atribuição");
@@ -285,12 +389,14 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao21() {
         System.out.println("reconhecimento das palavras reservadas write all this");
-        // TODO implementar depois
+        // TODO validar implementação
+        saida = "write this all";
     }
 
     public void acao22() {
         System.out.println("reconhecimento das palavras reservadas write all");
-        // TODO implementar depois
+        // TODO validar imeplementação
+        saida = "write this";
     }
 
     public void acao23(){
@@ -306,13 +412,44 @@ public class LanguageRules { // AcoesSemanticas
             this.variavelIndexada = false;
             this.identificadorReconhecido = token.image;
         }else{
-            this.listaErros.add("19 - Use of non-declared identifier: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            this.listaErros.add("24 - Use of non-declared identifier: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
-    public void acao25() {
+    public void acao25(Token token) {
         System.out.println("reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em comando de saída");
-        // TODO implementar depois
+        // TODO aqui acho que vai dar ruim
+
+        Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
+        if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
+            if (!variavelIndexada) {
+                if (exist.getAtributo2() == 0) {
+                    if (saida.equals("write all this")) {
+                        instructionList.add(new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.ADDRESS, "identificador=")));
+                        this.ponteiro = this.ponteiro + 1;
+                        instructionList.add(new InstructionK(InstructionK.Mnemonic.WRT, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
+                        this.ponteiro = this.ponteiro + 1;
+                    }
+                    instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
+                    this.ponteiro = this.ponteiro + 1;
+                } else {
+                    this.listaErros.add("25 - Indexed variables requires an index: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                }
+            } else {
+                if(exist.getAtributo2() != 0) {
+                    if(saida.equals("write this all")) {
+                        instructionList.add(new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.ADDRESS, "identificador=")));
+                        this.ponteiro = this.ponteiro + 1;
+                        instructionList.add(new InstructionK(InstructionK.Mnemonic.WRT, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
+                        this.ponteiro = this.ponteiro + 1;
+                    }
+                    instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
+                    this.ponteiro = this.ponteiro + 1;
+                }else{
+                    this.listaErros.add("25 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                }
+            }
+        }
     }
 
     public void acao26(Integer constInt){
@@ -386,10 +523,10 @@ public class LanguageRules { // AcoesSemanticas
 // essa aqui deve ser a correta
     public void acao35(){
         System.out.println("reconhecimento do fim do comando de repetição");
-        Integer desvioAcao31 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-        instructionList.get(desvioAcao31).setParameter(new DataFrameK(DataTypeK.ADDRESS, this.ponteiro + 1));
-        Integer desvioAcao30 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-        instructionList.add(new InstructionK(InstructionK.Mnemonic.JMP, new DataFrameK(DataTypeK.ADDRESS, desvioAcao30)));
+        Integer desvioAcao34 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.get(desvioAcao34).setParameter(new DataFrameK(DataTypeK.ADDRESS, this.ponteiro + 1));
+        Integer desvioAcao33 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.add(new InstructionK(InstructionK.Mnemonic.JMP, new DataFrameK(DataTypeK.ADDRESS, desvioAcao33)));
         this.ponteiro++;
     }
 
@@ -491,14 +628,14 @@ public class LanguageRules { // AcoesSemanticas
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                this.listaErros.add("51 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
             }
         }else{
             if(exist.getAtributo2() != 0){
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+                this.listaErros.add("51 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
             }
         }
     }
