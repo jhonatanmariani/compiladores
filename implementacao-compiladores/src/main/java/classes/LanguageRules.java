@@ -36,9 +36,16 @@ public class LanguageRules { // AcoesSemanticas
         return tmp;
     }
 
-    // OK
+/////// REGRAS DAS AÇÕES SEMANTICAS
+
+    public void acao1(Token token){
+        System.out.println("reconhecimento do identificador do programa (identificador, 0, -, -)");
+        Simbolo simbolo = new Simbolo(token.image, 0);
+        tabelaDeSimbolos.add(simbolo);
+    }
+
     public void acao2(){
-        System.out.println("gerar instrução: (ponteiro, STP, 0)");
+        System.out.println("reconhecimento de fim de programa (ponteiro, STP, 0)");
         Instruction instruction = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.INTEGER, 0));
         instructionList.add(instruction);
         Instruction.enumerateInstructions(instructionList);
@@ -49,20 +56,21 @@ public class LanguageRules { // AcoesSemanticas
         }
     }
 
-    // OK
-    public void acao1(Token token){
-        System.out.println("inserir na tabela de símbolos a tupla (identificador, 0, -, -)");
-        Simbolo simbolo = new Simbolo(token.image, 0);
-        tabelaDeSimbolos.add(simbolo);
+    public void acao3(){
+        System.out.println("reconhecimento de identificador do tipo enumerado");
+        // TODO implementar depois
     }
 
-//    public void acao3(){ // TODO implementar
-//        System.out.println("reconhecimento da palavra reservada not variable");
-//        this.contexto = "constante";
-//        this.VIT = 0;
-//    }
+    public void acao4() {
+        System.out.println("reconhecimento de identificador de constante de tipo enumerado");
+        // TODO implementar
+    }
 
-    //OK
+    public void acao5() {
+        System.out.println("reconhecimento das palavras reservadas as constant");
+        // TODO implementar
+    }
+
     public void acao6(){
         System.out.println("reconhecimento do término da declaração de constantes ou variáveis de um determinado tipo");
         this.VP = this.VP + this.VIT;
@@ -96,7 +104,6 @@ public class LanguageRules { // AcoesSemanticas
         }
     }
 
-    // OK
     public void acao7(String valor){
         System.out.println("reconhecimento de valor na declaração de constante");
         switch (this.tipo){
@@ -122,86 +129,35 @@ public class LanguageRules { // AcoesSemanticas
         this.VP = 0;
     }
 
-    //OK
     public void acao8(){
-        System.out.println("reconhecimento da palavra reservada variable");
+        System.out.println("reconhecimento das palavras reservadas as variable");
         this.contexto = "variável";
     }
 
-    //OK
-    public void acao13(){
-        System.out.println(": reconhecimento da palavra reservada natural");
-        if(this.contexto.equals("variável")){
-            this.tipo = 1;
-        }else{
-            this.tipo = 5;
-        }
+    public void acao9() {
+        System.out.println("reconhecimento de identificador de constante");
+        // TODO implementar depois
     }
 
-    //OK
-    public void acao14(){
-        System.out.println("reconhecimento da palavra reservada real");
-        if(this.contexto.equals("variável")){
-            this.tipo = 2;
-        }else{
-            this.tipo = 6;
-        }
+    public void acao10() {
+        System.out.println("reconhecimento de identificador de variável");
+        // TODO implementar depois
     }
 
-    //OK
-    public void acao15(){
-        System.out.println(": reconhecimento da palavra reservada char");
-        if(this.contexto.equals("variável")){
-            this.tipo = 3;
-        }else{
-            this.tipo = 7;
-        }
+    public void acao11(){
+        System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
+        // TODO implementar depois
     }
 
-    //OK
-    public void acao16(Token token){
-        System.out.println(" reconhecimento da palavra reservada boolean"+ token.image);
-        if(this.contexto.equals("variável")){
-            this.tipo = 4;
-        }else{
-            //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("10 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-        }
+    public void acao12(Token token){
+        System.out.println(" reconhecimento de constante inteira como tamanho da variável indexada");
+        this.constanteInteira = Integer.parseInt(token.image);
+        this.variavelIndexada = true;
     }
 
-    //OK
-    public void acao11(Token token){ // TODO implementar depois
-//        System.out.println("reconhecimento de identificador de constante");
-//        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
-//        if(!(exist == null)){
-//            this.listaErros.add("11 - Identifier already declared: '" + token.image + "'  - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//        }else{
-//            this.VT = this.VT + 1;
-//            this.VP = this.VP + 1;
-//            Simbolo simbolo = new Simbolo(token.image, this.tipo, this.VT);
-//            tabelaDeSimbolos.add(simbolo);
-//        }
-    }
 
-    //OK
-    public void acao12(Token token){  // TODO implementar depois
-//        System.out.println("reconhecimento de identificador de variável");
-//        if(this.contexto.equals("variável")){
-//            Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
-//            if(!(exist == null)){
-//                this.listaErros.add("12 - Identifier already declared: '" + token.image + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-//            }else{
-//                this.variavelIndexada = false;
-//                this.identificadorReconhecido = token.image;
-//            }
-//        }else{
-//            this.tipo = 7;
-//            this.identificadorReconhecido = token.image;
-//        }
-    }
 
-    //OK
-    public void acao13(Token token){ // TODO implementar depois
+//    public void acao13k(Token token){ // TODO implementar depois
 //        System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
 //        switch (this.contexto){
 //            case "variável": {
@@ -267,16 +223,54 @@ public class LanguageRules { // AcoesSemanticas
 //                break;
 //            }
 //        }
+//    }
+
+    public void acao13(){
+        System.out.println(": reconhecimento da palavra reservada integer");
+        if(this.contexto.equals("variável")){
+            this.tipo = 1;
+        }else{
+            this.tipo = 5;
+        }
     }
 
     //OK
-    public void acao12(Token token){
-        System.out.println(" reconhecimento de constante inteira como tamanho da variável indexada ou como índice");
-        this.constanteInteira = Integer.parseInt(token.image);
-        this.variavelIndexada = true;
+    public void acao14(){
+        System.out.println("reconhecimento da palavra reservada float");
+        if(this.contexto.equals("variável")){
+            this.tipo = 2;
+        }else{
+            this.tipo = 6;
+        }
     }
 
     //OK
+    public void acao15(){
+        System.out.println(": reconhecimento da palavra reservada string");
+        if(this.contexto.equals("variável")){
+            this.tipo = 3;
+        }else{
+            this.tipo = 7;
+        }
+    }
+
+    //OK
+    public void acao16(Token token){
+        System.out.println(" reconhecimento da palavra reservada boolean"+ token.image);
+        if(this.contexto.equals("variável")){
+            this.tipo = 4;
+        }else{
+            //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
+            this.listaErros.add("10 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+        }
+    }
+
+    public void acao17(){
+        System.out.println("reconhecimento de identificador do tipo enumerado");
+        // TODO implementar depois
+    }
+
+
     public void acao18(){
         System.out.println("reconhecimento do início do comando de atribuição");
         this.contexto = "atribuição";
@@ -291,11 +285,20 @@ public class LanguageRules { // AcoesSemanticas
         }
     }
 
-    //OK
-//    public void acao17(){ // TODO implementar depois
-//        System.out.println("reconhecimento do comando de entrada de dados");
-//        this.contexto = "entrada dados";
-//    }
+    public void acao20(){
+        System.out.println("reconhecimento do comando de entrada de dados");
+        this.contexto = "entrada dados";
+    }
+
+    public void acao21() {
+        System.out.println("reconhecimento das palavras reservadas write all this");
+        // TODO implementar depois
+    }
+
+    public void acao22() {
+        System.out.println("reconhecimento das palavras reservadas write all");
+        // TODO implementar depois
+    }
 
     //OK
     public void acao23(){
@@ -316,25 +319,9 @@ public class LanguageRules { // AcoesSemanticas
         }
     }
 
-    //OK
-    public void acao51(Token token){
-        System.out.println(" reconhecimento de índice de variável indexada em comando de saída");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
-        if(!this.variavelIndexada){
-            if(exist.getAtributo2() == 0){
-                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
-                this.ponteiro = this.ponteiro + 1;
-            }else{
-                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-            }
-        }else{
-            if(exist.getAtributo2() != 0){
-                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
-                this.ponteiro = this.ponteiro + 1;
-            }else{
-                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
-            }
-        }
+    public void acao25() {
+        System.out.println("reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em comando de saída");
+        // TODO implementar depois
     }
 
     //OK
@@ -373,37 +360,20 @@ public class LanguageRules { // AcoesSemanticas
         this.pilhaDeDesvios.add(this.ponteiro -1);
     }
 
-    //OK
-//    public void acao26(){ // TODO implementar depois
-//        System.out.println(" reconhecimento da palavra reservada false");
-//        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.ADDRESS, '?')));
-//        this.ponteiro = this.ponteiro + 1;
-//        this.pilhaDeDesvios.add(this.ponteiro -1);
-//    }
-//
-//    //OK
-//    public void acao27(){ // TODO implementar depois
-//        System.out.println("reconhecimento da palavra reservada false (ou true)");
-//        this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro+1);
-//        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.NONE, '?')));
-//        this.ponteiro = this.ponteiro + 1;
-//        this.pilhaDeDesvios.add(this.ponteiro -1);
-//    }
-//
-//    //OK
-//    public void acao28(){ // TODO implementar depois
-//        System.out.println("reconhecimento do comando de repetição");
-//        this.pilhaDeDesvios.add(this.ponteiro);
-//    }
-//
-//    //OK
-//    public void acao29(){ // TODO implementar depois
-//        System.out.println("reconhecimento do fim do comando de repetição");
-//        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
-//        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-//        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.ADDRESS, p)));
-//        this.ponteiro = this.ponteiro + 1;
-//    }
+    public void acao31(){
+        System.out.println(" reconhecimento da palavra reservada untrue");
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.ADDRESS, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro -1);
+    }
+
+    public void acao32(){
+        System.out.println("reconhecimento da palavra reservada untrue (ou true)");
+        this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro+1);
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.NONE, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro -1);
+    }
 
     //OK
     public void acao33(){
@@ -541,6 +511,26 @@ public class LanguageRules { // AcoesSemanticas
         this.ponteiro = ponteiro + 1;
     }
 
+    public void acao51(Token token){
+        System.out.println(" reconhecimento de índice de variável indexada em comando de saída");
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
+        if(!this.variavelIndexada){
+            if(exist.getAtributo2() == 0){
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
+                this.ponteiro = this.ponteiro + 1;
+            }else{
+                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            }
+        }else{
+            if(exist.getAtributo2() != 0){
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
+                this.ponteiro = this.ponteiro + 1;
+            }else{
+                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
+            }
+        }
+    }
+
     //OK
     public void acao52(){
         System.out.println("reconhecimento de constante lógica true");
@@ -550,14 +540,14 @@ public class LanguageRules { // AcoesSemanticas
 
     //OK
     public void acao53(){
-        System.out.println("reconhecimento de constante lógica false");
+        System.out.println("reconhecimento de constante lógica untrue");
         instructionList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, false)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     //OK
     public void acao54(){
-        System.out.println("reconhecimento de operação lógica NÃO ( ! )");
+        System.out.println("reconhecimento de operação lógica não ( ! )");
         instructionList.add(new Instruction(Instruction.Mnemonic.NOT, new DataFrame(DataType.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
