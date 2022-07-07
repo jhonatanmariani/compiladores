@@ -1,12 +1,9 @@
 package gui;
 
-import classes.ParseException;
 //import classes.Sintatico;
 //import classes.ParseEOFException;
 import util.AlertFactory;
 import util.Operation;
-import maquinavirtual.DataTypeK;
-import maquinavirtual.Instruction;
 //import maquinavirtual.VirtualMachineK;
 import classes.ErrorStruct;
 import classes.LanguageParser;
