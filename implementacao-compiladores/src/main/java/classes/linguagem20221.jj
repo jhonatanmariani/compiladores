@@ -32,6 +32,11 @@ public class Language20221{
 
 
     public void leituraDeTokens()  {
+        contLexicalErrors = 0;
+        contSyntaticsErrors = 0;
+        for(int i = 0 ; i < syntaticsErrors.size(); i++){
+            syntaticsErrors.remove(i);
+        }
         try {
             Token t = null;
             t = getNextToken();
