@@ -712,7 +712,7 @@ public class Language20221 implements Language20221Constants {
         break;
       case CONSTANTE_NUMERICA_INTEIRA:
         jj_consume_token(CONSTANTE_NUMERICA_INTEIRA);
-          acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));
+                                         acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));
         break;
       case CONSTANTE_NUMERICA_REAL:
         jj_consume_token(CONSTANTE_NUMERICA_REAL);
@@ -1323,21 +1323,21 @@ public class Language20221 implements Language20221Constants {
             write_body_cont();
           }
           break;
-//          identifiers();
-//          label_12:
-//          while (true) {
-//            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-//            case SIMBOLO_ESPECIAL_VIRGULA:
-//              ;
-//              break;
-//            default:
-//              jj_la1[32] = jj_gen;
-//              break label_12;
-//            }
-//            jj_consume_token(SIMBOLO_ESPECIAL_VIRGULA);
-//            write_body_cont();
-//          }
-//          break;
+          /*identifiers();
+          label_12:
+          while (true) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case SIMBOLO_ESPECIAL_VIRGULA:
+              ;
+              break;
+            default:
+              jj_la1[32] = jj_gen;
+              break label_12;
+            }
+            jj_consume_token(SIMBOLO_ESPECIAL_VIRGULA);
+            write_body_cont();
+          }
+          break;*/
         default:
           jj_la1[33] = jj_gen;
           jj_consume_token(-1);
@@ -1361,8 +1361,9 @@ public class Language20221 implements Language20221Constants {
         case CONSTANTE_NUMERICA_INTEIRA:
         case CONSTANTE_NUMERICA_REAL:
           constant_result();
-            break;
-//            identifiers();
+          break;/*
+          identifiers();
+          break;*/
         default:
           jj_la1[34] = jj_gen;
           jj_consume_token(-1);
