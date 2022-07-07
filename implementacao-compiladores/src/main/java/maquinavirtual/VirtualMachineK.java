@@ -591,6 +591,6 @@ public class VirtualMachineK {
     }
 
     private static void invalidInstructionParameter(List<DataTypeK> expected, DataTypeK got) {
-        throw new RuntimeException(String.format("Instrucao insvalida, parametro %s esperado, recebido: %s", expected, got));
+        throw new RuntimeException(String.format("Instrucao invalida, parametro %s esperado, recebido: %s", expected, got));
     }
 }

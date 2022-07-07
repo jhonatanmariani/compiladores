@@ -31,7 +31,6 @@ public class Language20221 implements Language20221Constants {
             Token t = null;
             t = getNextToken();
             if (t.kind == EOF) return;
-            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
             switch(t.kind){
                 case PALAVRA_RESERVADA_ALL        :
                 case PALAVRA_RESERVADA_AND        :
@@ -206,7 +205,7 @@ public class Language20221 implements Language20221Constants {
                 language20221.begin_program();
             } else {
                 language20221 = null;
-                errosLexicos.append(errorListToString("Lexic errors found!", lexicalErrors));
+                errosLexicos.append(errorListToString("Erros lexicos encontrados", lexicalErrors));
                 return lexicalErrors.toString();
             }
         }catch (ParseException ex) {
@@ -228,7 +227,7 @@ public class Language20221 implements Language20221Constants {
 
         this.semanticErrors = acoesSemanticas.getListaErros();
         if (semanticErrors.size() > 0) {
-            errosSemanticos.append(errorListToString("Semantic errors found!", semanticErrors));
+            errosSemanticos.append(errorListToString("Erros semanticos encontrados", semanticErrors));
             language20221 = null;
             return errosSemanticos.toString();
         }
@@ -252,7 +251,7 @@ public class Language20221 implements Language20221Constants {
     private Language20221 readInput(String args[], String textToAnalyze) {
         Language20221 sintatico = null;
         if(args.length == 0){
-            System.out.println("Reading from received text!");
+            System.out.println("Lendo do texto recebido!");
             java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
             sintatico = new Language20221(targetStream);
         }
@@ -261,7 +260,7 @@ public class Language20221 implements Language20221Constants {
                 sintatico = new Language20221(new java.io.FileInputStream(args[0]));
             }
             catch(java.io.FileNotFoundException e){
-                System.err.println(args[0] + " was not found." );
+                System.err.println(args[0] + " nao foi encontrado." );
                 System.err.println(e);
             }
         }
@@ -337,7 +336,7 @@ public class Language20221 implements Language20221Constants {
         inner_enum_decla_cont();
         jj_consume_token(SIMBOLO_ESPECIAL_PONTO_FINAL);
       } catch (ParseException e) {
-           consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+           consumeUntil(r, e, "Erro: declaracao de sintaxe de enum invalida");
            syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
       }
     } finally {
@@ -392,7 +391,7 @@ public class Language20221 implements Language20221Constants {
           ;
         }
       } catch (ParseException e) {
-       consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+       consumeUntil(r, e, "Erro: sintaxe de declaracao de enum invalida");
        syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
       }
     } finally {
@@ -655,7 +654,7 @@ public class Language20221 implements Language20221Constants {
           throw new ParseException();
         }
       } catch (ParseException e) {
-         consumeUntil(r, e, "Error: Invalid declaration body.\n");
+         consumeUntil(r, e, "Erro: declaracao de corpo do programa invalido.\n");
          syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
       }
     } finally {
@@ -670,8 +669,8 @@ public class Language20221 implements Language20221Constants {
         jj_consume_token(PALAVRA_RESERVADA_AS);
         start_declaration(r);
       } catch (ParseException e) {
-        consumeUntil(r, e, "Error: Invalid declaration body.\n");
-        syntaticsErrors.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
+        consumeUntil(r, e, "Erro: declaracao de corpo do programa invalido.\n");
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao interna incorreta\n", e));
       }
     } finally {
       trace_return("inner_declaration");
@@ -690,7 +689,7 @@ public class Language20221 implements Language20221Constants {
         jj_consume_token(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
       } catch (ParseException e) {
         consumeUntil(r, e, "declaration_constants_and_variables");
-        syntaticsErrors.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Forma geral de declaracao de constante e variaval incorreta.\n", e));
       }
     } finally {
       trace_return("declaration_constants_and_variables");
@@ -713,7 +712,7 @@ public class Language20221 implements Language20221Constants {
         break;
       case CONSTANTE_NUMERICA_INTEIRA:
         jj_consume_token(CONSTANTE_NUMERICA_INTEIRA);
-                                         acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));
+          acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));
         break;
       case CONSTANTE_NUMERICA_REAL:
         jj_consume_token(CONSTANTE_NUMERICA_REAL);
@@ -1324,21 +1323,21 @@ public class Language20221 implements Language20221Constants {
             write_body_cont();
           }
           break;
-          identifiers();
-          label_12:
-          while (true) {
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case SIMBOLO_ESPECIAL_VIRGULA:
-              ;
-              break;
-            default:
-              jj_la1[32] = jj_gen;
-              break label_12;
-            }
-            jj_consume_token(SIMBOLO_ESPECIAL_VIRGULA);
-            write_body_cont();
-          }
-          break;
+//          identifiers();
+//          label_12:
+//          while (true) {
+//            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+//            case SIMBOLO_ESPECIAL_VIRGULA:
+//              ;
+//              break;
+//            default:
+//              jj_la1[32] = jj_gen;
+//              break label_12;
+//            }
+//            jj_consume_token(SIMBOLO_ESPECIAL_VIRGULA);
+//            write_body_cont();
+//          }
+//          break;
         default:
           jj_la1[33] = jj_gen;
           jj_consume_token(-1);
@@ -1362,9 +1361,8 @@ public class Language20221 implements Language20221Constants {
         case CONSTANTE_NUMERICA_INTEIRA:
         case CONSTANTE_NUMERICA_REAL:
           constant_result();
-          break;
-          identifiers();
-          break;
+            break;
+//            identifiers();
         default:
           jj_la1[34] = jj_gen;
           jj_consume_token(-1);

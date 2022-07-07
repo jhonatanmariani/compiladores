@@ -303,17 +303,15 @@ public class Controller {
         }
     }
 
-    /*public void compileProgram(ActionEvent actionEvent) {
-        if (this.inputTextArea.getText().length() == 0) {
-            return;
-        }
-        checkLexical();
-        checkSyntax();
-    }*/
+    public void disableRunBtn() {
+        consoleInput.setDisable(true);
+        runMenuItem.setDisable(true);
+        runBtn.setDisable(true);
+    }
 
     public boolean compileProgram() throws ParseException {
         //messageTextArea.clear();
-//        actionEvent.consume();
+        disableRunBtn();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create
                     (
@@ -447,97 +445,6 @@ public class Controller {
         instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
         instructionTable.setItems(getObservableListOf(instructions));
     }
-
-
-    /*
-    public void handleRunButton() throws ParseEOFException, ParseException {
-        if (handleVMmaybeRunning() == Operation.SUCCESS) {
-            if (compileProgram()) {
-                this.vm = new VirtualMachineK.java(insList);
-                this.isReadingConsole = false;
-                runVirtualMachine();
-            }
-        }
-    }
-       public Operation handleVMmaybeRunning() {
-        if (vm == null || vm.getStatus() == VMStatus.HALTED) {
-            return Operation.SUCCESS;
-        }
-        var confirm = AlertFactory.create(Alert.AlertType.CONFIRMATION, "Confirmation", "", "VM is still running, do you wish to stop the VM and continue this operation?");
-        Optional<ButtonType> optional = Optional.empty();
-        var op = Operation.CANCELED;
-        if (vm.getStatus() == VMStatus.RUNNING || vm.getStatus() == VMStatus.SYSCALL_IO_READ || vm.getStatus() == VMStatus.SYSCALL_IO_WRITE) {
-            optional = confirm.showAndWait();
-        }
-        if (optional.isEmpty()) {
-            return Operation.CANCELED;
-        }
-        var buttonData = optional.get().getButtonData();
-        if (buttonData.equals(ButtonType.OK.getButtonData())) {
-            vm = null;
-            this.messageTextArea.clear();
-            setStatusMsg("Forcefully closed VM!");
-            return Operation.SUCCESS;
-        }
-        if (buttonData.equals(ButtonType.CANCEL.getButtonData())) {
-            return Operation.CANCELED;
-        }
-        return op;
-    }
-
-    public void runVirtualMachine() {
-        try {
-            while (vm.getStatus() != VMStatus.HALTED) {
-                if (isReadingConsole) {
-                    return;
-                }
-                statusBar.setText("Running Virtual Machine...");
-                vm.executeAll();
-                switch (vm.getStatus()) {
-                    case SYSCALL_IO_READ -> {
-                        handleSyscallRead(vm.getSyscallDataType());
-                    }
-                    case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
-                }
-            }
-            statusBar.setText("Virtual Machine halted, program terminated!");
-        } catch (Exception e) {
-            statusBar.setText("Runtime error when executing VM, aborting!!");
-            this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
-            e.printStackTrace();
-            this.vm.setStatus(VMStatus.HALTED);
-            this.isReadingConsole = false;
-            this.consoleInput.setDisable(true);
-        }
-    }
-
-    private void handleSyscallWrite(Object o) {
-        messageTextArea.appendText("\n" + o.toString());
-    }
-
-    private void handleSyscallRead(DataType o) {
-        consoleInput.setDisable(false);
-        isReadingConsole = true;
-        statusBar.setText("Waiting for input of " + o.toString());
-        consoleInput.setOnKeyReleased(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                vm.setSyscallData(consoleInput.getText().trim());
-                messageTextArea.appendText("\n--> " + consoleInput.getText().trim());
-                consoleInput.setDisable(true);
-                consoleInput.clear();
-                isReadingConsole = false;
-                runVirtualMachine();
-            }
-        });
-    }
-
-    private void displayInstructions(List<InstructionK.java> instructions) {
-        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
-        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
-        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
-        instructionTable.setItems(getObservableListOf(instructions));
-    }
-    */
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();

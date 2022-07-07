@@ -453,7 +453,7 @@ TOKEN :
     |   < OPERADOR_LOGICO_NAO: "!">
 }
 
-//Operador Atribuição
+//Operador Atribuicao
 TOKEN :
 {
     < OPERADOR_ATRIBUICAO: "=">
