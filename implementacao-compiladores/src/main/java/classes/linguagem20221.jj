@@ -250,6 +250,7 @@ public class Language20221{
 
     public String errorListToString(String message, List<String> errors) {
         StringBuilder sb = new StringBuilder(message);
+        System.out.println("tamanho da lista de erros:  " + errors.size());
         sb.append(String.format(" Count %s", errors.size())).append("\u005cn");
         for (String s : errors) {
             sb.append(s).append("\u005cn");
@@ -844,7 +845,7 @@ void read(RecoverySet r) : {} {
 
 void header(RecoverySet r) : {} {
     try {
-        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> {acoesSemanticas.acao1(getToken(0))} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }catch (ParseException e){
         consumeUntil(r, e, "header");
@@ -884,6 +885,7 @@ void main(RecoverySet r) : {
             declarations(h)
             body(r.union(l))
             desc(r)
+            {acoesSemanticas.acao2()}
     }catch (ParseException e){
         consumeUntil(r, e, "main");
     }
@@ -896,4 +898,5 @@ void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
         consumeUntil(r, e, "begin_program");
         syntaticsErrors.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
     }
+
 }

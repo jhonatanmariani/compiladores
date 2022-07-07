@@ -241,6 +241,7 @@ public class Language20221 implements Language20221Constants {
 
     public String errorListToString(String message, List<String> errors) {
         StringBuilder sb = new StringBuilder(message);
+        System.out.println("tamanho da lista de erros:  " + errors.size());
         sb.append(String.format(" Count %s", errors.size())).append("\n");
         for (String s : errors) {
             sb.append(s).append("\n");

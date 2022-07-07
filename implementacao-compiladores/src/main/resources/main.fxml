@@ -28,7 +28,7 @@
                 </Menu>
                 <Menu text="Compilacao">
                     <MenuItem fx:id="compileMenuItem" text="Compilar" onAction="#compileProgram"/>
-                    <MenuItem fx:id="runMenuItem" disable="true" text="Executar"/>
+                    <MenuItem fx:id="runMenuItem" disable="true" text="Executar" onAction="#runButton"/>
                 </Menu>
             </MenuBar>
         </HBox>

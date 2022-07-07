@@ -331,19 +331,21 @@ public class Controller {
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
-        Language20221 tokenizer = new Language20221(targetStream);
-        String result = tokenizer.analyze(args, inputTextArea.getText());
-        //messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
-        //    + "\n" + tokenizer.getLexicalErrors()); //result);
+        Language20221 language20221 = new Language20221(targetStream);
+        String result = language20221.analyze(args, inputTextArea.getText());
+        //messageTextArea.setText("Qtd Erros Lexicos: " + language20221.getContLexicalErrors()
+        //    + "\n" + language20221.getLexicalErrors()); //result);
         messageTextArea.setText(result);
         System.out.println(result);
-        //tokenizer.limpaClasse();
+        //language20221.limpaClasse();
 
-        if (tokenizer.hasAnyErrors()) {
-            System.out.println("Has errors!");
+        if (language20221.hasAnyErrors()) {
+            System.out.println("Ha erros!");
             return false;
         } else {
-            this.insList = tokenizer.getInstructions();
+            this.insList = language20221.getInstructions();
+            System.out.println("tamanho da lista: " + insList.size());
+            System.out.println("ENTROU NA PARTE DE MOSTRAR AS INSTRUÇÕES");
             displayInstructions(this.insList);
             System.out.println(result);
         }
@@ -351,10 +353,6 @@ public class Controller {
         runMenuItem.setDisable(false);
         runBtn.setDisable(false);
         return true;
-    }
-
-    public void chamaPilha() {
-
     }
 
     public void runButton(ActionEvent actionEvent) throws ParseException {
@@ -374,8 +372,8 @@ public class Controller {
         }
         var confirm = AlertFactory.create(
                 Alert.AlertType.CONFIRMATION,
-                "Confirmation", "",
-                "VM is still running, do you wish to stop the VM and continue this operation?"
+                "Confirmação", "",
+                "Máquina virtual ainda está rodando, você deseja para a operação?"
         );
         Optional<ButtonType> optional = Optional.empty();
         var op = Operation.CANCELED;
@@ -389,11 +387,11 @@ public class Controller {
         if (optional.isEmpty()) {
             return Operation.CANCELED;
         }
-        var buttonData = optional.get().getButtonData(); // todo aquiiiiii
+        var buttonData = optional.get().getButtonData();
         if (buttonData.equals(ButtonType.OK.getButtonData())) {
             vm = null;
             this.messageTextArea.clear();
-            setStatusMsg("Forcefully closed VM!");
+            setStatusMsg("VM fechada de forma forçada");
             return Operation.SUCCESS;
         }
         if (buttonData.equals(ButtonType.CANCEL.getButtonData())) {
@@ -408,7 +406,8 @@ public class Controller {
                 if (isReadingConsole) {
                     return;
                 }
-                statusBar.setText("Running Virtual Machine...");
+                statusBar.setText("Executando maquina virtual");
+                System.out.println("Executando maquina virtual");
                 vm.executeAll();
                 switch (vm.getStatus()) {
                     case SYSCALL_IO_READ -> {
@@ -417,9 +416,9 @@ public class Controller {
                     case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
                 }
             }
-            statusBar.setText("Virtual Machine halted, program terminated!");
+            statusBar.setText("Marquina virtual terminada, programa encerrado");
         } catch (Exception e) {
-            statusBar.setText("Runtime error when executing VM, aborting!!");
+            statusBar.setText("Erro em tempo de execução da VM, finalizando VM!");
             this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
             e.printStackTrace();
             this.vm.setStatus(VirtualMachineStatusK.HALTED);
