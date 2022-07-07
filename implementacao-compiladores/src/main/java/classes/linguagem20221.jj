@@ -24,6 +24,7 @@ public class Language20221{
     private StringBuilder lexicalErrors = new StringBuilder();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
+    //final static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
 
     public void leituraDeTokens()  {
         try {
@@ -352,6 +353,12 @@ TOKEN :
     |   < OPERADOR_LOGICO_NAO: "!">
 }
 
+//Operador Atribuição
+TOKEN :
+{
+    < OPERADOR_ATRIBUICAO: "=">
+}
+
 //SÍMBOLOS INVÁLIDOS
 TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
         < SIMBOLO_INVALIDO :
@@ -402,3 +409,392 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 (<DIGITO>)+(<LETRA>|<DIGITO>|("_"))* |
                 ("")(<LETRA>|<DIGITO>|(""))*>
 }
+/*
+void enum_values(): {} {
+    constant_result() | <IDENTIFICADOR>
+}
+
+void inner_enum_declaration(RecoverySet r) : {} {
+    try {
+        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_VIRGULA>
+    }
+    catch (ParseException e){
+           consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+           syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
+        }
+}
+
+void inner_enum_decla_cont() : {} {
+    (<SIMBOLO_ESPECIAL_VIRGULA> enum_values() inner_enum_decla_cont())?
+}
+void enum_declaration(RecoverySet r) : {} {
+    try {
+        <PALAVRA_RESERVADA_TYPE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            (inner_enum_declaration(r))+
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+        (<PALAVRA_RESERVADA_DECLARATION> declaration_constants_and_variables(r))?
+    }
+    catch (ParseException e){
+       consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+       syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
+    }
+}
+
+void identifiers() : {} {
+    <IDENTIFICADOR> index()
+
+
+}
+
+void identifiers_list() : {} {
+    try {
+        identifiers() (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
+    }
+}
+
+void type_declaration() : {} {
+    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+}
+
+void variable_declaration() : {} {
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_VIRGULA>
+}
+
+void type_constant() : {} {
+    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+}
+
+void end_constant() : {} {
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+
+}
+
+void start_variable() : {} {
+    <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+ (end_constant())?
+}
+
+void constant_declaration() : {} {
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_VIRGULA>
+}
+
+void end_variable() : {} {
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+
+}
+
+void start_constant() : {} {
+    <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+ (end_variable())?
+}
+
+void start_declaration(RecoverySet r) : {} {
+    try{
+        start_variable() | start_constant()
+    }catch (ParseException e){
+         consumeUntil(r, e, "Error: Invalid declaration body.\n");
+         syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
+     }
+}
+
+void inner_declaration(RecoverySet r) : {} {
+    try {
+        <PALAVRA_RESERVADA_AS> start_declaration(r)
+    }catch (ParseException e){
+        consumeUntil(r, e, "Error: Invalid declaration body.\n");
+        syntaticsErrors.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
+    }
+}
+
+void declaration_constants_and_variables(RecoverySet r) : {} {
+    try{
+       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+    }
+    catch (ParseException e){
+        consumeUntil(r, e, "declaration_constants_and_variables");
+        syntaticsErrors.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
+    }
+}
+
+void constant_result() : {} {
+        <CONSTANTE_LITERAL>
+    |   <CONSTANTE_NUMERICA_INTEIRA>
+    |   <CONSTANTE_NUMERICA_REAL>
+}
+
+void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
+    try {
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> true_result_cont()
+        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> untrue_result_cont()
+    }catch (ParseException e){
+        consumeUntil(r, e, "");
+        syntaticsErrors.add(new ErrorStruct("Erro: Verificacao de resultado logico incorreto.\n", e));
+    }
+}
+
+void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
+    try {
+        (
+            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        )
+        |   <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+        consumeUntil(g, e, "list_of_commands");
+        syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
+    }
+}
+
+void untrue_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
+    try {
+        (
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+        )
+        |   <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+        consumeUntil(g, e, "");
+        syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
+    }
+}
+
+void declarations(RecoverySet r) : {} {
+    try {
+        (
+            <PALAVRA_RESERVADA_DECLARATION>
+                (
+                        enum_declaration(r)
+                    |   declaration_constants_and_variables(r)
+                )
+        )?
+    }catch (ParseException e) {
+        consumeUntil(r, e, "declarations");
+        syntaticsErrors.add(new ErrorStruct("Erro de declaracao de enum/variable\n", e));
+    }
+}
+
+void list_of_commands(RecoverySet r) : {RecoverySet g = First.list_of_commands ;} {
+    try {
+        (
+                repeat(g)
+            |   avaliate(g)
+            |   (<PALAVRA_RESERVADA_WRITE> (write(g) | write_all(g)))
+            |   designate(g)
+            |   read(g)
+        )+
+    }catch (ParseException e){
+        consumeUntil(r, e, "list_of_commands");
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de comando incorreta.\n", e));
+    }
+}
+
+void expression(RecoverySet g) : {} {
+    try {
+        arithmetic_or_logic_expression(g) expression_cont(g)
+   }catch (ParseException e){
+       consumeUntil(g, e, "list_of_commands");
+       syntaticsErrors.add(new ErrorStruct("Erro: Expressao incorreta.\n", e));
+   }
+}
+
+void arithmetic_or_logic_expression(RecoverySet g) : {} {
+    second_term(g) lesser_priority_operators(g)
+}
+
+void expression_cont(RecoverySet g) : {} {
+    (
+            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))
+    )?
+}
+
+void first_term(RecoverySet g) : {} {
+    element(g) top_priority_operators(g)
+}
+
+void second_term(RecoverySet g) : {} {
+    first_term(g) medium_priority_operators(g)
+}
+
+void element(RecoverySet g) : {} {
+        (<IDENTIFICADOR> index())
+    |   <CONSTANTE_NUMERICA_INTEIRA>
+    |   <CONSTANTE_NUMERICA_REAL>
+    |   <CONSTANTE_LITERAL>
+    |   <PALAVRA_RESERVADA_TRUE>
+    |   <PALAVRA_RESERVADA_UNTRUE>
+    |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
+    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
+}
+
+void index() : {} {
+    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
+}
+
+void top_priority_operators(RecoverySet g) : {} {
+    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*
+}
+
+void medium_priority_operators(RecoverySet g) : {} {
+    (
+            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g))
+        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))
+        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))
+        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g))
+        |   (<OPERADOR_LOGICO_E> first_term(g))
+    )*
+}
+
+void lesser_priority_operators(RecoverySet g) : {} {
+    (
+            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))
+        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))
+        |   (<OPERADOR_LOGICO_OU> second_term(g))
+    )*
+}
+
+void repeat(RecoverySet r) : {
+        RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_ABRE_COLCHETES);
+        RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
+}{
+    try {
+        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> expression(g) <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(h)
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+       consumeUntil(r, e, "");
+       syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
+    }
+}
+
+void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_VIRGULA);} {
+    try {
+        <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS>
+        expression(First.selection_command)
+        logic_result(g)
+    }catch (ParseException e){
+           consumeUntil(r, e, "");
+           syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
+    }
+}
+
+void write(RecoverySet g) : {} {
+    try {
+        <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+        consumeUntil(g, e, "list_of_commands");
+        syntaticsErrors.add(new ErrorStruct("Erro: Comando write incorreto.\n", e));
+    }
+}
+
+void write_all(RecoverySet g) : {} {
+    try {
+        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+       consumeUntil(g, e, "");
+       syntaticsErrors.add(new ErrorStruct("Erro: no comando write all.\n", e));
+    }
+
+}
+
+void write_body() : {} {
+    try {
+         (
+            constant_result()
+                    (<SIMBOLO_ESPECIAL_VIRGULA> write_body_cont())*
+                |   identifiers()  (<SIMBOLO_ESPECIAL_VIRGULA> write_body_cont())*
+         )
+    }catch (ParseException e){
+       syntaticsErrors.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
+    }
+}
+
+void write_body_cont() : {} {
+    try {
+        constant_result() | identifiers()
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
+    }
+}
+
+void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_VIRGULA);} {
+    try {
+        <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
+        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+       consumeUntil(r, e, "");
+       syntaticsErrors.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
+    }
+}
+
+void read(RecoverySet r) : {} {
+    try {
+        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_VIRGULA>
+    }catch (ParseException e){
+        consumeUntil(r, e, "read");
+    }
+}
+
+void header(RecoverySet r) : {} {
+    try {
+        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+    }catch (ParseException e){
+        consumeUntil(r, e, "header");
+        syntaticsErrors.add(new ErrorStruct("Erro: Cabecalho principal incorreto.\n", e));
+    }
+}
+
+void body(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_ABRE_COLCHETES);} {
+    try {
+        <PALAVRA_RESERVADA_BODY>  <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        list_of_commands(g)
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+    }catch (ParseException e){
+        consumeUntil(r, e, "body");
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do corpo incorreto.\n", e));
+    }
+
+}
+
+void desc(RecoverySet r) : {} {
+    try {
+        (<PALAVRA_RESERVADA_DESCRIPTION> <CONSTANTE_LITERAL>)?
+    }catch (ParseException e){
+        consumeUntil(r, e, "description");
+        syntaticsErrors.add(new ErrorStruct("Erro: Descricao do programa incorreto\n", e));
+    }
+}
+
+void main(RecoverySet r) : {
+        RecoverySet h = new RecoverySet(PALAVRA_RESERVADA_BODY);
+        RecoverySet g = new RecoverySet(PALAVRA_RESERVADA_DECLARATION);
+        RecoverySet i = g.union(h);
+        RecoverySet l = new RecoverySet(PALAVRA_RESERVADA_DESCRIPTION);
+        } {
+    try {
+            header(i)
+            declarations(h)
+            body(r.union(l))
+            desc(r)
+    }catch (ParseException e){
+        consumeUntil(r, e, "main");
+    }
+}
+
+void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
+    try {
+        [ main(r) ] <EOF>
+    }catch (ParseException e){
+        consumeUntil(r, e, "begin_program");
+        syntaticsErrors.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
+    }
+}
+*/
