@@ -13,6 +13,17 @@ public class SymbolTable {
     public SymbolTable() {
     }
 
+    public SymbolTable(String identificador, Integer categoria) {
+        this.identificador = identificador;
+        this.categoria = categoria;
+    }
+
+    public SymbolTable(String identificador, Integer categoria, String atributo1) {
+        this.identificador = identificador;
+        this.categoria = categoria;
+        this.atributo1 = atributo1;
+    }
+
     public SymbolTable(String identificador, Integer categoria, String atributo1, String atributo2) {
         this.identificador = identificador;
         this.categoria = categoria;
