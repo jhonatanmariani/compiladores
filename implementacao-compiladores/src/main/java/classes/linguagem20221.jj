@@ -1,5 +1,5 @@
 options {
-    IGNORE_CASE = true;
+    //IGNORE_CASE = true;
     JAVA_UNICODE_ESCAPE = true;
     STATIC = false;
     DEBUG_PARSER = true;
@@ -7,95 +7,247 @@ options {
     DEBUG_LOOKAHEAD = true;
 }
 
-PARSER_BEGIN(LanguageParser)
+PARSER_BEGIN(Language20221)
 package classes;
 
-//import javax.swing.text.html.parser.Parser;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
-import java.lang.StringBuilder;
 
-public class LanguageParser {
-    int contParseError = 0;
+public class Language20221{
+    private StringBuilder tokens = new StringBuilder();
+    private StringBuilder lexicalErrors = new StringBuilder();
+    private Boolean hasLexicalErrors = false;
+    private int contLexicalErrors = 0;
+    static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
     boolean debugRecovery = true;
-    final static List<ErrorStruct> output = new ArrayList<ErrorStruct>();
     boolean eof;
+    private int contSyntaticsErrors = 0;
 
-    public static List<Token> getTokens(String stream){
-        InputStream target =  new ByteArrayInputStream(stream.getBytes());
-        LanguageParser parser = new LanguageParser(target);
-        return tokenize(parser);
-    }
-
-    public static ArrayList<ErrorStruct> checkSyntax(String stream) {
-        InputStream target =  new ByteArrayInputStream(stream.getBytes());
-        LanguageParser parser = new LanguageParser(target);
+    public void leituraDeTokens()  {
+        contLexicalErrors = 0;
+        contSyntaticsErrors = 0;
+        for(int i = 0 ; i < syntaticsErrors.size(); i++){
+            syntaticsErrors.remove(i);
+        }
         try {
-            parser.begin_program();
+            Token t = null;
+            t = getNextToken();
+            if (t.kind == EOF) return;
+            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
+            switch(t.kind){
+                case PALAVRA_RESERVADA_ALL        :
+                case PALAVRA_RESERVADA_AND        :
+                case PALAVRA_RESERVADA_AS         :
+                case PALAVRA_RESERVADA_AVALIATE   :
+                case PALAVRA_RESERVADA_BODY       :
+                case PALAVRA_RESERVADA_CONSTANT   :
+                case PALAVRA_RESERVADA_DECLARATION:
+                case PALAVRA_RESERVADA_DESCRIPTION:
+                case PALAVRA_RESERVADA_DESIGNATE  :
+                case PALAVRA_RESERVADA_DO         :
+                case PALAVRA_RESERVADA_INTEGER    :
+                case PALAVRA_RESERVADA_IS         :
+                case PALAVRA_RESERVADA_LOGIC      :
+                case PALAVRA_RESERVADA_READ       :
+                case PALAVRA_RESERVADA_REAL       :
+                case PALAVRA_RESERVADA_REPEAT     :
+                case PALAVRA_RESERVADA_RESULT     :
+                case PALAVRA_RESERVADA_STRING     :
+                case PALAVRA_RESERVADA_THIS       :
+                case PALAVRA_RESERVADA_TRUE       :
+                case PALAVRA_RESERVADA_TYPE       :
+                case PALAVRA_RESERVADA_UNTRUE     :
+                case PALAVRA_RESERVADA_VARIABLE   :
+                case PALAVRA_RESERVADA_WRITE      :
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'PALAVRA-RESERVADA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'PALAVRA-RESERVADA' -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    break;
+                }
+                case IDENTIFICADOR:
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'IDENTIFICADOR'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'IDENTIFICADOR'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "']\n");
+                    break;
+                }
+                case CONSTANTE_LITERAL:
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_LITERAL'  -  " + "Id: ['" +  t.kind + "'] - Linha: ['" + t.beginLine + "']  -  Coluna: '" + t.beginColumn + "'\n");
+                    break;
+                }
+                case CONSTANTE_NUMERICA_INTEIRA:
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_INTEIRA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    break;
+                }
+                case CONSTANTE_NUMERICA_REAL:
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'CONSTANTE_NUMERICA_REAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    break;
+                }
+                //Símbolos especiais
+                case SIMBOLO_ESPECIAL_ABRE_CHAVES:
+                case SIMBOLO_ESPECIAL_FECHA_CHAVES:
+                case SIMBOLO_ESPECIAL_PONTO_FINAL:
+                case SIMBOLO_ESPECIAL_VIRGULA:
+                case SIMBOLO_ESPECIAL_ABRE_COLCHETES:
+                case SIMBOLO_ESPECIAL_FECHA_COLCHETES:
+                case SIMBOLO_ESPECIAL_ABRE_PARENTESES:
+                case SIMBOLO_ESPECIAL_FECHA_PARENTESES:
+                //Símbolos aritméticos
+                case OPERADOR_ARITMETICO_ADICAO:
+                case OPERADOR_ARITMETICO_SUBTRACAO:
+                case OPERADOR_ARITMETICO_MULTIPLICACAO:
+                case OPERADOR_ARITMETICO_DIVISAO:
+                case OPERADOR_ARITMETICO_POTENCIACAO:
+                case OPERADOR_ARITMETICO_DIVISAO_INTEIRA:
+                case OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA:
+                //Símbolos lógicos
+                case OPERADOR_RELACIONAL_IGUAL:
+                case OPERADOR_RELACIONAL_DIFERENTE:
+                case OPERADOR_RELACIONAL_MENOR:
+                case OPERADOR_RELACIONAL_MAIOR:
+                case OPERADOR_RELACIONAL_MENOR_IGUAL:
+                case OPERADOR_RELACIONAL_MAIOR_IGUAL:
+                {
+                    tokens.append("Token: '" + t.image + "' - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Token: ['" + t.image + "'] - Tipo: 'SIMBOLO_ESPECIAL'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    break;
+                }
+                case SIMBOLO_INVALIDO:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                }
+                case CONSTANTE_LITERAL_INVALIDA:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                }
+                case CONSTANTE_NUMERICA_INTEIRA_INVALIDA:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                }
+                case CONSTANTE_NUMERICA_REAL_INVALIDA:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                }
+                case COMENTARIO_FACULTATIVO_INVALIDO:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                }
+                 case IDENTIFICADOR_INVALIDO:
+                 {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    contLexicalErrors++;
+                    break;
+                 }
+                /*default:
+                {
+                    tokens.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    hasLexicalErrors = true;
+                    break;
+                }*/
             }
-        catch (ParseException e){
-            output.add(new ErrorStruct("Error parsing the program.\n", e));
+            leituraDeTokens();
+        }catch(Error erro){
+            hasLexicalErrors = true;
+            contLexicalErrors++;
+            tokens.append("Erro - " + erro.getMessage() + "\n");
+            System.out.println(erro.toString());
+            leituraDeTokens();
         }
-        ArrayList tmp = new ArrayList<ErrorStruct>(output);
-        output.clear();
-        return tmp;
     }
 
-   public static LanguageParser create(String stream){
-        InputStream target =  new ByteArrayInputStream(stream.getBytes());
-        LanguageParser parser = new LanguageParser(target);
-        return parser;
-   }
+    public String analyze(String args[], String textToAnalyze) throws ParseException  {
+        Language20221 language20221 = this.readInput(args, textToAnalyze);
+        StringBuilder errosSintaticos = new StringBuilder("");
 
-    public static void main(String args[]) throws TokenMgrError, ParseException {
-        LanguageParser parser = null;
-        if (args.length == 0) {
-            parser = new LanguageParser(System.in);
-        }
-        else if (args.length == 1) {
-            try {
-                parser = new LanguageParser(new java.io.FileInputStream(args[0]));
-            }
-            catch (java.io.FileNotFoundException e) {
-                System.out.println("LanguageParser: file " + args[0] + " was not found.");
-                return;
-            }
-        }
+        this.leituraDeTokens();
+        tokens.append("<EOF>");
 
-        //for (Token token: tokenize(parser)){
-        //    String name = LanguageParserConstants.tokenImage[token.kind];
-        //    System.out.println("Line " + token.beginLine + " | Column " + token.beginColumn + " | " + token + "\n");
-        //}
-    }
-
-    public static List<Token> tokenize(LanguageParser parser){
-        List<Token> tokens = new ArrayList<Token>();
-
-        Token token = parser.getNextToken();
-        while (token.kind != LanguageParserConstants.EOF){
-            tokens.add(token);
-            token = parser.getNextToken();
-        }
-
-        if (!TokenHandler.isClosed()){
-            tokens.add(TokenHandler.createToken());
-        }
-
-        return tokens;
-    }
-
-    static public String im(int x){
-        String s = tokenImage[x];
-        int k = s.lastIndexOf("\"");
         try {
-            s = s.substring(1, k);
+            if(!hasLexicalErrors){
+                language20221.begin_program();
+            } else {
+                return lexicalErrors.toString();
+            }
+        }catch (ParseException ex) {
+            return ex.getMessage().toString();
         }
-        catch (StringIndexOutOfBoundsException e){}
-        return s;
+        if(language20221.getContSyntaticsErrors() > 0){
+             errosSintaticos.append("\n");
+             errosSintaticos.append(syntaticsErrors.size() + " Erros sintaticos encontrados :\n");
+             for (ErrorStruct err: syntaticsErrors){
+                 errosSintaticos.append(err.getMsg());
+                 errosSintaticos.append("Esperado(s):" + err.expected());
+                 errosSintaticos.append("Linha: " + err.getError().currentToken.beginLine);
+                 errosSintaticos.append("; Coluna: " + err.getError().currentToken.endColumn + "\n");
+             }
+             language20221 = null;
+             return errosSintaticos.toString();
+        }
+        errosSintaticos.append("Sintaticamente correto!");
+        language20221 = null;
+        return errosSintaticos.toString();
     }
+
+        private Language20221 readInput(String args[], String textToAnalyze) {
+            Language20221 sintatico = null;
+            if(args.length == 0){
+                System.out.println("Reading from received text!");
+                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+                sintatico = new Language20221(targetStream);
+            }
+            else if(args.length == 1){
+                try{
+                    sintatico = new Language20221(new java.io.FileInputStream(args[0]));
+                }
+                catch(java.io.FileNotFoundException e){
+                    System.err.println(args[0] + " was not found." );
+                    System.err.println(e);
+                }
+            }
+            else{
+                System.out.println("Use:\njava Sintatico < inputFile");
+                System.out.println("or java Sintatico inputFile");
+            }
+            return sintatico;
+        }
 
     public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
         Token tok;
@@ -114,12 +266,29 @@ public class LanguageParser {
                 eof = true;
             }
         }
-        contParseError++;
+        contSyntaticsErrors++;
+    }
+
+    public int getContLexicalErrors(){
+        return contLexicalErrors;
+    }
+
+    public String getLexicalErrors(){
+        return lexicalErrors.toString();
+    }
+
+    public int getContSyntaticsErrors() {
+        return this.contSyntaticsErrors;
+    }
+
+    public String getSyntacticErrors() {
+        return this.syntaticsErrors.toString();
     }
 }
-PARSER_END(LanguageParser)
 
-SKIP: {
+PARSER_END(Language20221)
+
+SKIP: {     //caracteres que o javacc excluirá da linguagem para nao interpretar
     " "
     | "\n"
     | "\t"
@@ -133,296 +302,358 @@ SKIP: {
 }
 
 
-/* Keywords */
-TOKEN [IGNORE_CASE]: {
-    <INTEGER: "integer">
-    | <REAL: "real">
-    | <STRING: "string">
-    | <TRUE: "true">
-    | <UNTRUE: "untrue">
-    | <DO: "do">
-    | <THIS: "this">
-    | <DESCRIPTION: "description">
-    | <BODY: "body">
-    | <IS: "is">
-    | <AS: "as">
-    | <AND: "and">
-    | <CONSTANT: "constant">
-    | <VARIABLE: "variable">
-    | <DESIGNATE: "designate">
-    | <READ: "read">
-    | <WRITE: "write">
-    | <ALL: "all">
-    | <AVALIATE: "avaliate">
-    | <RESULT: "result">
-    | <REPEAT: "repeat">
-    | <DECLARATION: "declaration">
-    | <TYPE: "type">
-    | <ENUM: "enum">
-}
-
-/* Operators, relations, etc*/
-TOKEN: {
-    <PLUS : "+">
-    | <MINUS : "-">
-    | <MULTIPLY : "*">
-    | <DIV : "/">
-    | <POWER : "**">
-    | <WHOLE_DIV : "%">
-    | <REST_DIV: "%%">
-    | <EQUAL_TO: "==">
-    | <ASSIGN: "=">
-    | <DIFF_THAN: "!=">
-    | <LESS_THAN: "<<">
-    | <GREATER_THAN: ">>">
-    | <LESS_THAN_OR_EQ_TO: "<<=">
-    | <GREATER_THAN_OR_EQ_TO: ">>=">
-    | <OPEN_BRACKET: "[">
-    | <CLOSE_BRACKET: "]">
-    | <OPEN_PARENTHESIS: "(">
-    | <CLOSE_PARENTHESIS: ")">
-    | <OPEN_CURLY_BRACKETS: "{">
-    | <CLOSE_CURLY_BRACKETS: "}">
-    | <DOT: ".">
-    | <COMMA: ",">
-}
-
-/* Logical Operators */
-TOKEN: {
-    <LOGICAL_AND : "&" >
-    | <LOGICAL_OR : "|">
-    | <LOGICAL_NOT: "!">
-}
-TOKEN [IGNORE_CASE]: {
- <LOGIC: "logic">
+//palavras reservadas
+TOKEN [IGNORE_CASE]:
+{
+        < PALAVRA_RESERVADA_ALL: "all">
+    |   < PALAVRA_RESERVADA_AND: "and">
+    |   < PALAVRA_RESERVADA_AS:  "as">
+    |   < PALAVRA_RESERVADA_AVALIATE: "avaliate">
+    |   < PALAVRA_RESERVADA_BODY: "body">
+    |   < PALAVRA_RESERVADA_CONSTANT: "constant">
+    |   < PALAVRA_RESERVADA_DECLARATION: "declaration">
+    |   < PALAVRA_RESERVADA_DESCRIPTION: "description">
+    |   < PALAVRA_RESERVADA_DESIGNATE: "designate">
+    |   < PALAVRA_RESERVADA_DO: "do">
+    |   < PALAVRA_RESERVADA_INTEGER: "integer">
+    |   < PALAVRA_RESERVADA_IS: "is">
+    |   < PALAVRA_RESERVADA_LOGIC: "logic">
+    |   < PALAVRA_RESERVADA_READ: "read">
+    |   < PALAVRA_RESERVADA_REAL: "real">
+    |   < PALAVRA_RESERVADA_REPEAT: "repeat">
+    |   < PALAVRA_RESERVADA_RESULT: "result">
+    |   < PALAVRA_RESERVADA_STRING: "string">
+    |   < PALAVRA_RESERVADA_THIS: "this">
+    |   < PALAVRA_RESERVADA_TRUE: "true">
+    |   < PALAVRA_RESERVADA_TYPE: "type">
+    |   < PALAVRA_RESERVADA_UNTRUE: "untrue">
+    |   < PALAVRA_RESERVADA_VARIABLE: "variable">
+    |   < PALAVRA_RESERVADA_WRITE: "write">
 }
 
 //Tokens Auxiliares
 TOKEN : {
         < #LETRA_MINUSCULA: ["a"-"z"] >
     |   < #LETRA_MAIUSCULA: ["A"-"Z"]>
-    |   < #LETTER: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
+    |   < #LETRA: <LETRA_MAIUSCULA>| <LETRA_MINUSCULA> >
     |   < #ASCII : ~[] >      //any character
-    |   < #DIGITS: ["0"-"9"] >
+    |   < #DIGITO: ["0"-"9"] >
     |   < #UNDERLINE: "_" >
 
 }
 
-/* Identifiers */
-TOKEN: {
-     <IDENTIFIER: <LETRA_MAIUSCULA> ((<LETTER>)* (<IDENT1>)?
-                         | (("_")? (<LETTER>)+ (<IDENT2>)) | ( <DIGITS> (<DIGITS>)? (<IDENT1> | <IDENT2>))) >
-|    <#IDENT1: <DIGITS> (<DIGITS>)? ((<LETTER>)* "_" (<LETTER>)* <DIGITS> | (<LETTER>)+ <DIGITS> )*
-                                     ((<LETTER>)+ (<DIGITS> (<DIGITS>)?)? ("_")? | (<LETTER>)+ (<DIGITS> (<DIGITS>)?)?)+ >
-|    <#IDENT2: "_" ((<LETTER>)* <DIGITS> (<DIGITS>)? (<LETTER>)* "_" | (<DIGITS> (<DIGITS>)?)? (<LETTER>)+ ("_")?)* >
+//Identificadores
+TOKEN : {
+     <IDENTIFICADOR: <LETRA_MAIUSCULA> ((<LETRA>)* (<IDENT1>)?
+                         | (("_")? (<LETRA>)+ (<IDENT2>)) | ( <DIGITO> (<DIGITO>)? (<IDENT1> | <IDENT2>))) >
+|    <#IDENT1: <DIGITO> (<DIGITO>)? ((<LETRA>)* "_" (<LETRA>)* <DIGITO> | (<LETRA>)+ <DIGITO> )*
+                                     ((<LETRA>)+ (<DIGITO> (<DIGITO>)?)? ("_")? | (<LETRA>)+ (<DIGITO> (<DIGITO>)?)?)+ >
+|    <#IDENT2: "_" ((<LETRA>)* <DIGITO> (<DIGITO>)? (<LETRA>)* "_" | (<DIGITO> (<DIGITO>)?)? (<LETRA>)+ ("_")?)* >
+
 }
 
-/* Numbers  */
-TOKEN:  {
-    <NUM : (<MINUS>)?(<DIGIT> (<DIGIT>)? (<DIGIT>)?)+>
-    | <#NUMBER_REAL_DECIMAL: <DIGIT> (<DIGIT>)? (<DIGIT>)? >
-    | <NUMBER_REAL: (<MINUS>)? (<NUM> (<DIGIT>)? (<DIGIT>)? "." <NUMBER_REAL_DECIMAL>)>
-    | <#DIGIT : ["0" - "9"]>
-}
 
 //Constantes Literais
 TOKEN : {
 
-    < STRING_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
+    < CONSTANTE_LITERAL : ("\"" (~["\"","\n","\r"])* "\"") | ("'" (~["'","\n","\r"])* "'") >
     // ~["\""] => Qualquer caractere menos a aspa
     // ~["'"] => Qualquer caractere menos o apóstrofro
 }
 
-/* Catch all for undefined tokens */
+//Constantes Númericas (Real e Inteira)
 TOKEN : {
-    <OTHER: ~[]> |
-    <INVALID_IDENTIFIER:
-        <LETTER>(<LETTER>|<DIGITS>|(""))*<DIGITS>(<DIGITS>)+(<LETTER>|(""))* |
-        <LETTER>(<LETTER>|<DIGITS>|("_"))*(<DIGITS>)+ |
-        <LETTER>(<LETTER>|<DIGITS>)((""))+<DIGITS>(<LETTER>|<DIGITS>|("")) |
-        (<DIGITS>)+(<LETTER>|<DIGITS>|("_"))* |
-        ("")(<LETTER>|<DIGITS>|(""))*>
-    |< INVALID_STRING_LITERAL:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
-    |< INVALID_NUM: <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ >
-    |< INVALID_NUM_REAL: (<DIGIT> <DIGIT> <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ "." <NUMBER_REAL_DECIMAL>)                 // 6 casas inteiras ou +
-                                            | (<DIGIT> <DIGIT> <DIGIT> <DIGIT> <DIGIT> (<DIGIT>)+ "." <NUMBER_REAL_DECIMAL> (<DIGIT>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
-                                            | (<DIGIT> (<DIGIT>)? (<DIGIT>)? (<DIGIT>)? (<DIGIT>)? "." <NUMBER_REAL_DECIMAL> (<DIGIT>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
-     >
-    |< INVALID_FACULTATIVE_COMMENT : "description" <INVALID_STRING_LITERAL> >
+        < CONSTANTE_NUMERICA_INTEIRA: <DIGITO> (<DIGITO>)? (<DIGITO>)? >                  // 1 a 3 digitos
+    |   < #CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS: <DIGITO> (<DIGITO>)? (<DIGITO>)? >      // 1 A 3 digitos
+    |   < CONSTANTE_NUMERICA_REAL:   <CONSTANTE_NUMERICA_INTEIRA> (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> >
+}
 
+
+//Símbolos Especiais
+TOKEN :
+{
+        < SIMBOLO_ESPECIAL_ABRE_CHAVES: "{" >
+    |   < SIMBOLO_ESPECIAL_FECHA_CHAVES: "}" >
+    |   < SIMBOLO_ESPECIAL_PONTO_FINAL: "." >
+    |   < SIMBOLO_ESPECIAL_VIRGULA: "," >
+    |   < SIMBOLO_ESPECIAL_ABRE_COLCHETES: "[" >
+    |   < SIMBOLO_ESPECIAL_FECHA_COLCHETES: "]" >
+    |   < SIMBOLO_ESPECIAL_ABRE_PARENTESES: "(" >
+    |   < SIMBOLO_ESPECIAL_FECHA_PARENTESES: ")" >
+}
+
+//Operadores Aritméticos
+TOKEN :
+{
+        < OPERADOR_ARITMETICO_ADICAO: "+">
+    |   < OPERADOR_ARITMETICO_SUBTRACAO: "-">
+    |   < OPERADOR_ARITMETICO_MULTIPLICACAO: "*">
+    |   < OPERADOR_ARITMETICO_DIVISAO: "/">
+    |   < OPERADOR_ARITMETICO_POTENCIACAO: "**">
+    |   < OPERADOR_ARITMETICO_DIVISAO_INTEIRA: "%">
+    |   < OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA: "%%">
+}
+
+//Operadores Relacionais
+TOKEN :
+{
+        < OPERADOR_RELACIONAL_IGUAL: "==">
+    |   < OPERADOR_RELACIONAL_DIFERENTE: "!=">
+    |   < OPERADOR_RELACIONAL_MENOR: "<<">
+    |   < OPERADOR_RELACIONAL_MAIOR: ">>">
+    |   < OPERADOR_RELACIONAL_MENOR_IGUAL: "<<=">
+    |   < OPERADOR_RELACIONAL_MAIOR_IGUAL: ">>=">
+}
+
+//Operadores Lógicos
+TOKEN :
+{
+        < OPERADOR_LOGICO_E: "&">
+    |   < OPERADOR_LOGICO_OU: "|">
+    |   < OPERADOR_LOGICO_NAO: "!">
+}
+
+//Operador Atribuição
+TOKEN :
+{
+    < OPERADOR_ATRIBUICAO: "=">
+}
+
+//SÍMBOLOS INVÁLIDOS
+TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
+        < SIMBOLO_INVALIDO :
+            (~[             //Caracteres que não casam com esses descritos abaixam são considerados inválidos
+                "A"-"Z",
+                "a"-"z",
+                "0"-"9",
+                "\"",       //aspas
+                "\'",       //apóstrofo
+                "{",
+                "}",
+                ".",
+                ",",
+                "[",
+                "]",
+                "(",
+                ")",
+                "+",
+                "-",
+                "*",
+                "/",
+                "%",
+                "=",
+                "<",
+                ">",
+                "&",
+                "|",
+                "!",
+                " ",
+                "\t",
+                "\n",
+                "\r",
+                "\f"
+            ])+
+        >
+        |   < CONSTANTE_LITERAL_INVALIDA:    "\"" (~ ["\n", "\r", "\""])* | "\'" (~ ["\n", "\r", "\'"])* >
+        |   < CONSTANTE_NUMERICA_INTEIRA_INVALIDA : <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ >
+        |   < CONSTANTE_NUMERICA_REAL_INVALIDA :
+                    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS>)                 // 6 casas inteiras ou +
+               |    (<DIGITO> <DIGITO> <DIGITO> <DIGITO> <DIGITO> (<DIGITO>)+ "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // 6 casas inteiras ou + e com 4 casas decimais ou +
+               |    (<DIGITO> (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? (<DIGITO>)? "." <CONSTANTE_NUMERICA_REAL_CASAS_DECIMAIS> (<DIGITO>)+)     // Até 5 casas inteiras e com + de 3 casas decimais
+            >
+        |   < COMENTARIO_FACULTATIVO_INVALIDO : <PALAVRA_RESERVADA_DESCRIPTION> <CONSTANTE_LITERAL_INVALIDA> >
+        //|   < IDENTIFICADOR_INVALIDO : ( <LETRA_MINUSCULA> | <UNDERLINE> ) (~ ["\n", "\r", " ", "\t"])* (<LETRA>)* >
+        |       < IDENTIFICADOR_INVALIDO : <LETRA>(<LETRA>|<DIGITO>|(""))*<DIGITO>(<DIGITO>)+(<LETRA>|(""))* |
+                <LETRA>(<LETRA>|<DIGITO>|("_"))*(<DIGITO>)+ |
+                <LETRA>(<LETRA>|<DIGITO>)((""))+<DIGITO>(<LETRA>|<DIGITO>|("")) |
+                (<DIGITO>)+(<LETRA>|<DIGITO>|("_"))* |
+                ("")(<LETRA>|<DIGITO>|(""))*>
 }
 
 void enum_values(): {} {
-    constant_result() | <IDENTIFIER>
+    constant_result() | <IDENTIFICADOR>
 }
 
 void inner_enum_declaration(RecoverySet r) : {} {
     try {
-        <IDENTIFIER> <IS> enum_values() inner_enum_decla_cont() <DOT>
+        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }
     catch (ParseException e){
            consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
-           output.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
+           syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
         }
 }
 
 void inner_enum_decla_cont() : {} {
-    (<COMMA> enum_values() inner_enum_decla_cont())?
+    (<SIMBOLO_ESPECIAL_VIRGULA> enum_values() inner_enum_decla_cont())?
 }
 void enum_declaration(RecoverySet r) : {} {
     try {
-        <TYPE> <OPEN_BRACKET>
+        <PALAVRA_RESERVADA_TYPE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             (inner_enum_declaration(r))+
-        <CLOSE_BRACKET>
-        (<DECLARATION> declaration_constants_and_variables(r))?
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+        (<PALAVRA_RESERVADA_DECLARATION> declaration_constants_and_variables(r))?
     }
     catch (ParseException e){
        consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
-       output.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
+       syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
     }
 }
 
 void identifiers() : {} {
-    <IDENTIFIER> index()
+    <IDENTIFICADOR> index()
 
 
 }
 
 void identifiers_list() : {} {
     try {
-        identifiers() (<COMMA> identifiers())*
-       }
-      catch (ParseException e){
-              output.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
-          }
-
+        identifiers() (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
+    }
 }
 
 void type_declaration() : {} {
-    <INTEGER> | <REAL> | <STRING> | <LOGIC> | <ENUM>
+    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
 }
 
-
 void variable_declaration() : {} {
-    identifiers_list() <IS> type_declaration() <DOT>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void type_constant() : {} {
-    <INTEGER> | <REAL> | <STRING> | <LOGIC>
+    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
 }
 
 void end_constant() : {} {
-    <AS> <CONSTANT> (constant_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+
 }
 
 void start_variable() : {} {
-    <VARIABLE> (variable_declaration())+ (end_constant())?
+    <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+ (end_constant())?
 }
 
 void constant_declaration() : {} {
-    identifiers_list() <IS> type_constant() <ASSIGN> constant_result() <DOT>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void end_variable() : {} {
-    <AS> <VARIABLE> (variable_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+
 }
 
 void start_constant() : {} {
-    <CONSTANT> (constant_declaration())+ (end_variable())?
+    <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+ (end_variable())?
 }
 
 void start_declaration(RecoverySet r) : {} {
     try{
         start_variable() | start_constant()
-    }
-     catch (ParseException e){
+    }catch (ParseException e){
          consumeUntil(r, e, "Error: Invalid declaration body.\n");
-         output.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
+         syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
      }
 }
 
 void inner_declaration(RecoverySet r) : {} {
     try {
-        <AS> start_declaration(r)
-        }
-    catch (ParseException e){
+        <PALAVRA_RESERVADA_AS> start_declaration(r)
+    }catch (ParseException e){
         consumeUntil(r, e, "Error: Invalid declaration body.\n");
-        output.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
     }
 }
 
 void declaration_constants_and_variables(RecoverySet r) : {} {
     try{
-       <CONSTANT> <AND> <VARIABLE> <OPEN_BRACKET> inner_declaration(r) <CLOSE_BRACKET>
+       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }
     catch (ParseException e){
         consumeUntil(r, e, "declaration_constants_and_variables");
-        output.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
     }
 }
 
 void constant_result() : {} {
-    <STRING_LITERAL> | <NUM> | <NUMBER_REAL>
+        <CONSTANTE_LITERAL>
+    |   <CONSTANTE_NUMERICA_INTEIRA>
+    |   <CONSTANTE_NUMERICA_REAL>
 }
 
-void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
-        <TRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> true_result_cont() | <UNTRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> untrue_result_cont()
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> true_result_cont()
+        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> untrue_result_cont()
+    }catch (ParseException e){
+        consumeUntil(r, e, "");
+        syntaticsErrors.add(new ErrorStruct("Erro: Verificacao de resultado logico incorreto.\n", e));
     }
-   catch (ParseException e){
-           consumeUntil(r, e, "");
-           output.add(new ErrorStruct("Erro: Verificacao de resultado logico incorreto.\n", e));
-       }
 }
 
-void true_result_cont() : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
-        (<UNTRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> <DOT>) | <DOT>
+        (
+            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        )
+        |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
+        consumeUntil(g, e, "list_of_commands");
+        syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
     }
-   catch (ParseException e){
-           consumeUntil(g, e, "list_of_commands");
-           output.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
-       }
-
 }
 
-void untrue_result_cont() : {RecoverySet g = new RecoverySet(CLOSE_BRACKET);} {
+void untrue_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
-        (<TRUE> <RESULT> <OPEN_BRACKET> list_of_commands(g) <CLOSE_BRACKET> <DOT>) | <DOT>
-    }
-    catch (ParseException e){
+        (
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        )
+        |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
         consumeUntil(g, e, "");
-        output.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Clausula de teste incorreta.\n", e));
     }
 }
 
 void declarations(RecoverySet r) : {} {
-  try {
-      (<DECLARATION> (enum_declaration(r) | declaration_constants_and_variables(r)))?
-  }
-  catch (ParseException e) {
-       consumeUntil(r, e, "declarations");
-       output.add(new ErrorStruct("Erro de declaracao de enum/variable\n", e));
-  }
+    try {
+        (
+            <PALAVRA_RESERVADA_DECLARATION>
+                (
+                        enum_declaration(r)
+                    |   declaration_constants_and_variables(r)
+                )
+        )?
+    }catch (ParseException e) {
+        consumeUntil(r, e, "declarations");
+        syntaticsErrors.add(new ErrorStruct("Erro de declaracao de enum/variable\n", e));
+    }
 }
 
 void list_of_commands(RecoverySet r) : {RecoverySet g = First.list_of_commands ;} {
     try {
-        (repeat(g) | avaliate(g) | (<WRITE> (write(g) | write_all(g))) | designate(g) | read(g))+
-    }
-    catch (ParseException e){
+        (
+                repeat(g)
+            |   avaliate(g)
+            |   (<PALAVRA_RESERVADA_WRITE> (write(g) | write_all(g)))
+            |   designate(g)
+            |   read(g)
+        )+
+    }catch (ParseException e){
         consumeUntil(r, e, "list_of_commands");
-        output.add(new ErrorStruct("Erro: Declaracao de comando incorreta.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de comando incorreta.\n", e));
     }
 }
 
 void expression(RecoverySet g) : {} {
     try {
         arithmetic_or_logic_expression(g) expression_cont(g)
-   }
-   catch (ParseException e){
+   }catch (ParseException e){
        consumeUntil(g, e, "list_of_commands");
-       output.add(new ErrorStruct("Erro: Expressao incorreta.\n", e));
+       syntaticsErrors.add(new ErrorStruct("Erro: Expressao incorreta.\n", e));
    }
 }
 
@@ -431,8 +662,14 @@ void arithmetic_or_logic_expression(RecoverySet g) : {} {
 }
 
 void expression_cont(RecoverySet g) : {} {
-    ((<EQUAL_TO> arithmetic_or_logic_expression(g)) | (<DIFF_THAN> arithmetic_or_logic_expression(g)) | (<LESS_THAN> arithmetic_or_logic_expression(g)) | (<GREATER_THAN> arithmetic_or_logic_expression(g))
-    | (<LESS_THAN_OR_EQ_TO> arithmetic_or_logic_expression(g)) | (<GREATER_THAN_OR_EQ_TO> arithmetic_or_logic_expression(g)))?
+    (
+            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))
+        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))
+    )?
 }
 
 void first_term(RecoverySet g) : {} {
@@ -444,163 +681,170 @@ void second_term(RecoverySet g) : {} {
 }
 
 void element(RecoverySet g) : {} {
-    (<IDENTIFIER> index())
-    | <NUM> | <NUMBER_REAL> | <STRING_LITERAL>
-    | <TRUE> | <UNTRUE> | (<OPEN_PARENTHESIS> expression(g) <CLOSE_PARENTHESIS>)
-    | (<LOGICAL_NOT> <OPEN_PARENTHESIS> expression(g) <CLOSE_PARENTHESIS>)
+        (<IDENTIFICADOR> index())
+    |   <CONSTANTE_NUMERICA_INTEIRA>
+    |   <CONSTANTE_NUMERICA_REAL>
+    |   <CONSTANTE_LITERAL>
+    |   <PALAVRA_RESERVADA_TRUE>
+    |   <PALAVRA_RESERVADA_UNTRUE>
+    |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
+    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
 }
 
 void index() : {} {
-    (<OPEN_CURLY_BRACKETS> <NUM> <CLOSE_CURLY_BRACKETS>)?
+    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
 }
 
 void top_priority_operators(RecoverySet g) : {} {
-    (<POWER> element(g))*
+    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*
 }
 
 void medium_priority_operators(RecoverySet g) : {} {
-    ((<MULTIPLY> first_term(g)) | (<DIV> first_term(g)) | (<WHOLE_DIV> first_term(g)) | (<REST_DIV> first_term(g)) | (<LOGICAL_AND> first_term(g)))*
+    (
+            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g))
+        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))
+        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))
+        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g))
+        |   (<OPERADOR_LOGICO_E> first_term(g))
+    )*
 }
 
 void lesser_priority_operators(RecoverySet g) : {} {
-    ((<PLUS> second_term(g)) | (<MINUS> second_term(g)) | (<LOGICAL_OR> second_term(g)))*
+    (
+            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))
+        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))
+        |   (<OPERADOR_LOGICO_OU> second_term(g))
+    )*
 }
 
 void repeat(RecoverySet r) : {
-        RecoverySet g = new RecoverySet(OPEN_BRACKET);
-        RecoverySet h = new RecoverySet(CLOSE_BRACKET);
-        } {
+        RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_ABRE_COLCHETES);
+        RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
+}{
     try {
-        <REPEAT> <THIS> expression(g) <OPEN_BRACKET>
+        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> expression(g) <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(h)
-        <CLOSE_BRACKET> <DOT>
-    }
-    catch (ParseException e){
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
        consumeUntil(r, e, "");
-       output.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
+       syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
     }
 }
 
-void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(DOT);} {
+void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
-    <AVALIATE> <THIS> expression(First.selection_command)
+        <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS>
+        expression(First.selection_command)
         logic_result(g)
-    }
-    catch (ParseException e){
+    }catch (ParseException e){
            consumeUntil(r, e, "");
-           output.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
+           syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
     }
 }
 
 void write(RecoverySet g) : {} {
     try {
-        <THIS> <OPEN_BRACKET> write_body() <CLOSE_BRACKET> <DOT>
-    }
-    catch (ParseException e){
+        <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
-        output.add(new ErrorStruct("Erro: Comando write incorreto.\n", e));
-  }
+        syntaticsErrors.add(new ErrorStruct("Erro: Comando write incorreto.\n", e));
+    }
 }
 
 void write_all(RecoverySet g) : {} {
     try {
-        <ALL> <THIS> <OPEN_BRACKET> write_body() <CLOSE_BRACKET> <DOT>
-    }
-   catch (ParseException e){
+        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
        consumeUntil(g, e, "");
-       output.add(new ErrorStruct("Erro: no comando write all.\n", e));
-   }
+       syntaticsErrors.add(new ErrorStruct("Erro: no comando write all.\n", e));
+    }
 
 }
 
 void write_body() : {} {
     try {
-         (constant_result()  (<COMMA> write_body_cont())* | identifiers()  (<COMMA> write_body_cont())*)
+         (
+            constant_result()
+                    (<SIMBOLO_ESPECIAL_VIRGULA> write_body_cont())*
+                |   identifiers()  (<SIMBOLO_ESPECIAL_VIRGULA> write_body_cont())*
+         )
+    }catch (ParseException e){
+       syntaticsErrors.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
     }
-   catch (ParseException e){
-       output.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
-   }
-
 }
 
 void write_body_cont() : {} {
     try {
         constant_result() | identifiers()
-    }
-    catch (ParseException e){
-        output.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Erro no corpo do write.\n", e));
     }
 }
 
-void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(DOT);} {
+void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
-        <DESIGNATE> <THIS> identifiers_list() <AS> expression(h) <DOT>
-    }
-   catch (ParseException e){
+        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
+        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
        consumeUntil(r, e, "");
-       output.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
-   }
-
+       syntaticsErrors.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
+    }
 }
 
 void read(RecoverySet r) : {} {
     try {
-        <READ> <THIS> <OPEN_BRACKET> identifiers_list() <CLOSE_BRACKET> <DOT>
-    }
-    catch (ParseException e){
+        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    }catch (ParseException e){
         consumeUntil(r, e, "read");
     }
 }
 
-
 void header(RecoverySet r) : {} {
     try {
-        <DO> <THIS> <IDENTIFIER> <OPEN_BRACKET> <CLOSE_BRACKET>
-    }
-    catch (ParseException e){
+        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+    }catch (ParseException e){
         consumeUntil(r, e, "header");
-        output.add(new ErrorStruct("Erro: Cabecalho principal incorreto.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Cabecalho principal incorreto.\n", e));
     }
 }
 
-void body(RecoverySet r) : {RecoverySet g = new RecoverySet(OPEN_BRACKET);} {
+void body(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_ABRE_COLCHETES);} {
     try {
-            <BODY>  <OPEN_BRACKET>
-                list_of_commands(g)
-            <CLOSE_BRACKET>
-    }
-    catch (ParseException e){
+        <PALAVRA_RESERVADA_BODY>  <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        list_of_commands(g)
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+    }catch (ParseException e){
         consumeUntil(r, e, "body");
-        output.add(new ErrorStruct("Erro: Declaracao do corpo incorreto.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do corpo incorreto.\n", e));
     }
 
 }
 
 void desc(RecoverySet r) : {} {
     try {
-        (<DESCRIPTION> <STRING_LITERAL>)?
-    }
-    catch (ParseException e){
+        (<PALAVRA_RESERVADA_DESCRIPTION> <CONSTANTE_LITERAL>)?
+    }catch (ParseException e){
         consumeUntil(r, e, "description");
-        output.add(new ErrorStruct("Erro: Descricao do programa incorreto\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Descricao do programa incorreto\n", e));
     }
 }
 
-
-
 void main(RecoverySet r) : {
-        RecoverySet h = new RecoverySet(BODY);
-        RecoverySet g = new RecoverySet(DECLARATION);
+        RecoverySet h = new RecoverySet(PALAVRA_RESERVADA_BODY);
+        RecoverySet g = new RecoverySet(PALAVRA_RESERVADA_DECLARATION);
         RecoverySet i = g.union(h);
-        RecoverySet l = new RecoverySet(DESCRIPTION);
+        RecoverySet l = new RecoverySet(PALAVRA_RESERVADA_DESCRIPTION);
         } {
     try {
             header(i)
             declarations(h)
             body(r.union(l))
             desc(r)
-    }
-    catch (ParseException e){
+    }catch (ParseException e){
         consumeUntil(r, e, "main");
     }
 }
@@ -608,9 +852,8 @@ void main(RecoverySet r) : {
 void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
     try {
         [ main(r) ] <EOF>
-    }
-    catch (ParseException e){
+    }catch (ParseException e){
         consumeUntil(r, e, "begin_program");
-        output.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
     }
 }

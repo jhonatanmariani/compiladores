@@ -1,5 +1,6 @@
 package classes;
 
+
 public class TokenHandler {
     private static boolean closed = true;
     private static String token;
@@ -65,4 +66,3 @@ public class TokenHandler {
         TokenHandler.column = column;
     }
 }
-
