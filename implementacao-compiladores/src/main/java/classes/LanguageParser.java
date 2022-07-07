@@ -62,7 +62,7 @@ public class LanguageParser implements LanguageParserConstants {
                 case "#7":
                     regraDasLinguagem.regra7(lista_parametros_dentro_funcao.get(0));
                     break;
-                case "#5":
+                case "#8":
                     regraDasLinguagem.regra8();
                     break;
                 case "#13":
@@ -192,10 +192,10 @@ public class LanguageParser implements LanguageParserConstants {
                     regraDasLinguagem.regra52();
                     break;
                case "#53":
-                    regraDasLinguagem.regra48();
+                    regraDasLinguagem.regra53();
                     break;
                case "#54":
-                    regraDasLinguagem.regra49();
+                    regraDasLinguagem.regra54();
                     break;
                default :
                   break;

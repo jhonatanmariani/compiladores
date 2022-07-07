@@ -21,7 +21,7 @@ public class LanguageRules {
     private List<SymbolTable> pilha_de_simbolos;
     private List<Instruction> pilha_de_instrucoes;
     private List<String> error;
-    private String identificadorAcao11;
+    private String identificadorAcao10;
     private String identificadorAcao18;
     private Integer constante_inteiraAcao13;
     private List<SymbolTable> list_atributos;
@@ -32,7 +32,7 @@ public class LanguageRules {
         pilha_de_desvios = new ArrayList<>();
         error = new ArrayList<>();
         list_atributos = new ArrayList<>();
-        identificadorAcao11 = "";
+        identificadorAcao10 = "";
         identificadorAcao18 = "";
         constante_inteiraAcao13 = 0;
         ponteiro = 1;
@@ -207,11 +207,11 @@ public class LanguageRules {
                 error.add("Identificador (" + identificador + ") já declarado");
             }else{
                 variavel_indexada = false;
-                identificadorAcao11 = identificador; // TODO PAREI AQUI
+                identificadorAcao10 = identificador;
             }
         }else{
             variavel_indexada = false;
-            identificadorAcao11 = identificador;
+            identificadorAcao10 = identificador;
         }
     }
 
@@ -223,24 +223,24 @@ public class LanguageRules {
                 if(!variavel_indexada){
                     VT = VT + 1;
                     VP = VP + 1;
-                    pilha_de_simbolos.add(new SymbolTable(identificadorAcao11, tipo, VT.toString(), "-"));
+                    pilha_de_simbolos.add(new SymbolTable(identificadorAcao10, tipo, VT.toString(), "-"));
                 }else{
                     VIT = VIT + constante_inteiraAcao13;
                     auxVT = VT +1;
-                    pilha_de_simbolos.add(new SymbolTable(identificadorAcao11, tipo, auxVT.toString(), constante_inteiraAcao13.toString()));
+                    pilha_de_simbolos.add(new SymbolTable(identificadorAcao10, tipo, auxVT.toString(), constante_inteiraAcao13.toString()));
                     VT = VT + constante_inteiraAcao13;
                 }
                 break;
             case "ATRIBUICAO":
                 SymbolTable tabelaSimbolo;
-                tabelaSimbolo = RecuperarSinbolo(identificadorAcao11);
-                if(VerificarIdentificadorExistenteTabelaSimbolo(identificadorAcao11) && (tabelaSimbolo.getCategoria() == 1
+                tabelaSimbolo = RecuperarSinbolo(identificadorAcao10);
+                if(VerificarIdentificadorExistenteTabelaSimbolo(identificadorAcao10) && (tabelaSimbolo.getCategoria() == 1
                         || tabelaSimbolo.getCategoria() == 2 || tabelaSimbolo.getCategoria() == 3 || tabelaSimbolo.getCategoria() == 4)){
                     if(tabelaSimbolo.getAtributo2().equals("-")){
                         if(!variavel_indexada){
                             list_atributos.add(tabelaSimbolo);
                         }else{
-                            error.add("Identificador (" + identificadorAcao11 + ") de variável não indexada");
+                            error.add("Identificador (" + identificadorAcao10 + ") de variável não indexada");
                         }
                     }else{
                         if(variavel_indexada){
@@ -249,16 +249,16 @@ public class LanguageRules {
                             newSimbolo.setAtributo1(auxAtributo.toString());
                             list_atributos.add(newSimbolo);
                         }else{
-                            error.add("Identificador (" + identificadorAcao11 + ") de variável indexada exige índice");
+                            error.add("Identificador (" + identificadorAcao10 + ") de variável indexada exige índice");
                         }
                     }
                 }else{
-                    error.add("Identificador (" + identificadorAcao11 + ") não declarado ou de constante");
+                    error.add("Identificador (" + identificadorAcao10 + ") não declarado ou de constante");
                 }
                 break;
             case "ENTRADA DADOS":
-                tabelaSimbolo = RecuperarSinbolo(identificadorAcao11);
-                if(VerificarIdentificadorExistenteTabelaSimbolo(identificadorAcao11) && (tabelaSimbolo.getCategoria() == 1
+                tabelaSimbolo = RecuperarSinbolo(identificadorAcao10);
+                if(VerificarIdentificadorExistenteTabelaSimbolo(identificadorAcao10) && (tabelaSimbolo.getCategoria() == 1
                         || tabelaSimbolo.getCategoria() == 2 || tabelaSimbolo.getCategoria() == 3 || tabelaSimbolo.getCategoria() == 4)){
                     if(tabelaSimbolo.getAtributo2().equals("-")){
                         if(!variavel_indexada){
@@ -267,7 +267,7 @@ public class LanguageRules {
                             pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", tabelaSimbolo.getAtributo1()));
                             ponteiro = ponteiro + 1;
                         }else{
-                            error.add("Identificador (" + identificadorAcao11 + ") de variável não indexada");
+                            error.add("Identificador (" + identificadorAcao10 + ") de variável não indexada");
                         }
                     }else{
                         if(variavel_indexada){
@@ -277,11 +277,11 @@ public class LanguageRules {
                             pilha_de_instrucoes.add(new Instruction(ponteiro, "STR", auxAtributo.toString()));
                             ponteiro = ponteiro + 1;
                         }else{
-                            error.add("Identificador (" + identificadorAcao11 + ") de variável indexada exige índice");
+                            error.add("Identificador (" + identificadorAcao10 + ") de variável indexada exige índice");
                         }
                     }
                 }else{
-                    error.add("Identificador (" + identificadorAcao11 + ") não declarado ou de constante");
+                    error.add("Identificador (" + identificadorAcao10 + ") não declarado ou de constante");
                 }
                 break;
             default :
