@@ -47,8 +47,8 @@ public class LanguageParser {
     final public void adicionar_regra(String regra, List<String> lista_parametros_dentro_funcao) throws ParseException {
         System.out.println("Iniciando análise semântica...");
         switch(regra){
-            case "#1":
-                regraDasLinguagem.regra1(lista_parametros_dentro_funcao.get(0));
+            case "#2":
+                regraDasLinguagem.regra2(lista_parametros_dentro_funcao.get(0));
                 for(Instruction instrucao: regraDasLinguagem.getPilha_de_instrucoes()){
                     System.out.println(instrucao.getPonteiro() + " | "
                         + instrucao.getInstrucao()
@@ -65,38 +65,17 @@ public class LanguageParser {
                 case "#2":
                     regraDasLinguagem.regra2();
                     break;
-                case "#3":
-                    regraDasLinguagem.regra3();
-                    break;
-                case "#4":
-                    regraDasLinguagem.regra4(lista_parametros_dentro_funcao.get(0));
-                    break;
-                case "#5":
-                    regraDasLinguagem.regra5();
-                    break;
                 case "#6":
                     regraDasLinguagem.regra6();
                     break;
                 case "#7":
-                    regraDasLinguagem.regra7();
+                    regraDasLinguagem.regra7(lista_parametros_dentro_funcao.get(0));
                     break;
                 case "#8":
                     regraDasLinguagem.regra8();
                     break;
-                case "#9":
-                    regraDasLinguagem.regra9();
-                    break;
-                case "#10":
-                    regraDasLinguagem.regra10(lista_parametros_dentro_funcao.get(0));
-                    break;
-                case "#11":
-                    regraDasLinguagem.regra11(lista_parametros_dentro_funcao.get(0));
-                    break;
-                case "#12":
-                    regraDasLinguagem.regra12();
-                    break;
                 case "#13":
-                    regraDasLinguagem.regra13(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
+                    regraDasLinguagem.regra13();
                     break;
                 case "#14":
                     regraDasLinguagem.regra14();
@@ -107,38 +86,59 @@ public class LanguageParser {
                 case "#16":
                     regraDasLinguagem.regra16();
                     break;
-                case "#17":
-                    regraDasLinguagem.regra17();
+                case "#9":
+                    regraDasLinguagem.regra9(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#10":
+                    regraDasLinguagem.regra10(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#11":
+                    regraDasLinguagem.regra11();
+                    break;
+                case "#12":
+                    regraDasLinguagem.regra12(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
                     break;
                 case "#18":
-                    regraDasLinguagem.regra18(lista_parametros_dentro_funcao.get(0));
+                    regraDasLinguagem.regra18();
                     break;
-                case "#19":
-                    regraDasLinguagem.regra19();
+                case "#15":
+                    regraDasLinguagem.regra15();
                     break;
                 case "#20":
-                    regraDasLinguagem.regra20(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
-                    break;
-                case "#21":
-                    regraDasLinguagem.regra21(Float.parseFloat(lista_parametros_dentro_funcao.get(0)));
-                    break;
-                case "#22":
-                    regraDasLinguagem.regra22(lista_parametros_dentro_funcao.get(0));
+                    regraDasLinguagem.regra20();
                     break;
                 case "#23":
                     regraDasLinguagem.regra23();
                     break;
                 case "#24":
-                    regraDasLinguagem.regra24();
+                    regraDasLinguagem.regra24(lista_parametros_dentro_funcao.get(0));
                     break;
                 case "#25":
                     regraDasLinguagem.regra25();
                     break;
                 case "#26":
-                    regraDasLinguagem.regra26();
+                    regraDasLinguagem.regra26(Integer.parseInt(lista_parametros_dentro_funcao.get(0)));
                     break;
-               case "#27":
-                    regraDasLinguagem.regra27();
+                case "#27":
+                    regraDasLinguagem.regra27(Float.parseFloat(lista_parametros_dentro_funcao.get(0)));
+                    break;
+                case "#28":
+                    regraDasLinguagem.regra28(lista_parametros_dentro_funcao.get(0));
+                    break;
+                case "#23":
+                    regraDasLinguagem.regra23();
+                    break;
+                case "#30":
+                    regraDasLinguagem.regra30();
+                    break;
+                case "#31":
+                    regraDasLinguagem.regra31();
+                    break;
+                case "#32":
+                    regraDasLinguagem.regra32();
+                    break;
+               case "#33":
+                    regraDasLinguagem.regra33();
                     break;
                case "#28":
                     regraDasLinguagem.regra28();
@@ -149,11 +149,11 @@ public class LanguageParser {
                case "#30":
                     regraDasLinguagem.regra30();
                     break;
-               case "#31":
-                    regraDasLinguagem.regra31();
+               case "#35":
+                    regraDasLinguagem.regra35();
                     break;
-               case "#32":
-                    regraDasLinguagem.regra32();
+               case "#36":
+                    regraDasLinguagem.regra36();
                     break;
                case "#33":
                     regraDasLinguagem.regra33();
@@ -170,14 +170,14 @@ public class LanguageParser {
                case "#37":
                     regraDasLinguagem.regra37();
                     break;
-               case "#38":
-                    regraDasLinguagem.regra38();
+               case "#42":
+                    regraDasLinguagem.regra42();
                     break;
                case "#39":
                     regraDasLinguagem.regra39();
                     break;
-               case "#40":
-                    regraDasLinguagem.regra40();
+               case "#44":
+                    regraDasLinguagem.regra44();
                     break;
                case "#41":
                     regraDasLinguagem.regra41();
@@ -191,20 +191,20 @@ public class LanguageParser {
                case "#44":
                     regraDasLinguagem.regra44();
                     break;
-               case "#45":
-                    regraDasLinguagem.regra45();
+               case "#49":
+                    regraDasLinguagem.regra49();
                     break;
                case "#46":
                     regraDasLinguagem.regra46();
                     break;
-               case "#47":
-                    regraDasLinguagem.regra47();
+               case "#52":
+                    regraDasLinguagem.regra52();
                     break;
-               case "#48":
-                    regraDasLinguagem.regra48();
+               case "#53":
+                    regraDasLinguagem.regra53();
                     break;
-               case "#49":
-                    regraDasLinguagem.regra49();
+               case "#54":
+                    regraDasLinguagem.regra54();
                     break;
                default :
                   break;

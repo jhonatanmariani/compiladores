@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
 import java.lang.StringBuilder;
+import maquinavirtual.Instruction;
+import maquinavirtual.VirtualMachine;
+import maquinavirtual.SymbolTable;
 
 /** Token Manager. */
 public class LanguageParserTokenManager implements LanguageParserConstants
