@@ -2,13 +2,12 @@ package gui;
 
 //import classes.Sintatico;
 //import classes.ParseEOFException;
+import classes.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import maquinavirtual.InstructionK;
 import util.AlertFactory;
 import util.Operation;
 //import maquinavirtual.VirtualMachineK;
-import classes.ErrorStruct;
-import classes.Language20221;
-import classes.Language20221Constants;
-import classes.Token;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +26,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import classes.Language20221;
 
 public class Controller {
+    private List<InstructionK> insList;
     private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
     private static boolean hasOpenFile = false;
@@ -294,7 +295,7 @@ public class Controller {
         checkSyntax();
     }*/
 
-    public void compileProgram(ActionEvent actionEvent) throws ParseException {
+    public boolean compileProgram(ActionEvent actionEvent) throws ParseException {
         //messageTextArea.clear();
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
@@ -306,7 +307,7 @@ public class Controller {
                             "Um arquivo vazio nao pode ser compilado"
                     );
             alert.show();
-            return;
+            return false;
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
@@ -317,8 +318,24 @@ public class Controller {
         messageTextArea.setText(result);
         System.out.println(result);
         //tokenizer.limpaClasse();
+
+        if (tokenizer.hasAnyErrors()) {
+            System.out.println("Has errors!");
+            return false;
+        } else {
+            this.insList = tokenizer.getInstructions();
+            displayInstructions(this.insList);
+            System.out.println(result);
+        }
+        return true;
     }
 
+    private void displayInstructions(List<InstructionK> instructions) {
+//        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+//        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
+//        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
+//        instructionTable.setItems(getObservableListOf(instructions));
+    }
 
     /*
     public void handleRunButton() throws ParseEOFException, ParseException {
@@ -425,7 +442,7 @@ public class Controller {
     public void pasteFromClipboard() {
         inputTextArea.paste();
     }
-    private ObservableList<Instruction> getObservableListOf(List<Instruction> instructionList) {
+    private ObservableList<InstructionK> getObservableListOf(List<InstructionK> instructionList) {
         return FXCollections.observableArrayList(instructionList);
     }
 }

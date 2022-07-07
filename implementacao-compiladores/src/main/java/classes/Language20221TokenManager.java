@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
+import maquinavirtual.InstructionK;
 
 /** Token Manager. */
 public class Language20221TokenManager implements Language20221Constants

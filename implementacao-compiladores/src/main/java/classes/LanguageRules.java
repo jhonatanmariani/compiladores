@@ -25,14 +25,12 @@ public class LanguageRules { // AcoesSemanticas
     private static List<String> listaErros = new ArrayList<>();
 
     public List<InstructionK> getInstructionKList() {
-        // Ugly hack: figure out why do is this list blank after the .JJ has run.
         var tmp =  instructionList;
         instructionList = new ArrayList<>();
         return tmp;
     }
 
     public List<String> getListaErros() {
-        // Ugly hack: figure out why do is this list blank after the .JJ has run.
         var tmp = listaErros;
         listaErros = new ArrayList<>();
         return tmp;

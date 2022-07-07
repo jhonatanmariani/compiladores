@@ -6,16 +6,20 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
+import maquinavirtual.InstructionK;
 
 public class Language20221 implements Language20221Constants {
     private StringBuilder tokens = new StringBuilder();
-    private StringBuilder lexicalErrors = new StringBuilder();
+    private List<String> lexicalErrors = new ArrayList<String>();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
     static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    private List<String> semanticErrors = new ArrayList<String>();
+    public LanguageRules acoesSemanticas = new LanguageRules();
     boolean debugRecovery = true;
     boolean eof;
     private int contSyntaticsErrors = 0;
+    private List<InstructionK> instructionList;
 
     public void leituraDeTokens()  {
         contLexicalErrors = 0;
@@ -114,7 +118,7 @@ public class Language20221 implements Language20221Constants {
                 case SIMBOLO_INVALIDO:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -123,7 +127,7 @@ public class Language20221 implements Language20221Constants {
                 case CONSTANTE_LITERAL_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -132,7 +136,7 @@ public class Language20221 implements Language20221Constants {
                 case CONSTANTE_NUMERICA_INTEIRA_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -141,7 +145,7 @@ public class Language20221 implements Language20221Constants {
                 case CONSTANTE_NUMERICA_REAL_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -150,7 +154,7 @@ public class Language20221 implements Language20221Constants {
                 case COMENTARIO_FACULTATIVO_INVALIDO:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -159,7 +163,7 @@ public class Language20221 implements Language20221Constants {
                  case IDENTIFICADOR_INVALIDO:
                  {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -184,9 +188,15 @@ public class Language20221 implements Language20221Constants {
         }
     }
 
+    public List<InstructionK> getInstructions() {
+        return this.instructionList;
+    }
+
     public String analyze(String args[], String textToAnalyze) throws ParseException  {
         Language20221 language20221 = this.readInput(args, textToAnalyze);
+        StringBuilder errosLexicos = new StringBuilder("");
         StringBuilder errosSintaticos = new StringBuilder("");
+        StringBuilder errosSemanticos = new StringBuilder("");
 
         this.leituraDeTokens();
         tokens.append("<EOF>");
@@ -195,6 +205,8 @@ public class Language20221 implements Language20221Constants {
             if(!hasLexicalErrors){
                 language20221.begin_program();
             } else {
+                language20221 = null;
+                errosLexicos.append(errorListToString("Lexic errors found!", lexicalErrors));
                 return lexicalErrors.toString();
             }
         }catch (ParseException ex) {
@@ -213,32 +225,51 @@ public class Language20221 implements Language20221Constants {
              return errosSintaticos.toString();
         }
         errosSintaticos.append("Sintaticamente correto!");
+
+        this.semanticErrors = acoesSemanticas.getListaErros();
+        if (semanticErrors.size() > 0) {
+            errosSemanticos.append(errorListToString("Semantic errors found!", semanticErrors));
+            language20221 = null;
+            return errosSemanticos.toString();
+        }
+        this.instructionList = acoesSemanticas.getInstructionKList();
+        errosSemanticos.append("Semantico OK!\n");
+
         language20221 = null;
-        return errosSintaticos.toString();
+        return errosSemanticos.toString();
     }
 
-        private Language20221 readInput(String args[], String textToAnalyze) {
-            Language20221 sintatico = null;
-            if(args.length == 0){
-                System.out.println("Reading from received text!");
-                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-                sintatico = new Language20221(targetStream);
-            }
-            else if(args.length == 1){
-                try{
-                    sintatico = new Language20221(new java.io.FileInputStream(args[0]));
-                }
-                catch(java.io.FileNotFoundException e){
-                    System.err.println(args[0] + " was not found." );
-                    System.err.println(e);
-                }
-            }
-            else{
-                System.out.println("Use:\njava Sintatico < inputFile");
-                System.out.println("or java Sintatico inputFile");
-            }
-            return sintatico;
+    public String errorListToString(String message, List<String> errors) {
+        StringBuilder sb = new StringBuilder(message);
+        sb.append(String.format(" Count %s", errors.size())).append("\n");
+        for (String s : errors) {
+            sb.append(s).append("\n");
         }
+        return sb.toString();
+    }
+
+    private Language20221 readInput(String args[], String textToAnalyze) {
+        Language20221 sintatico = null;
+        if(args.length == 0){
+            System.out.println("Reading from received text!");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+            sintatico = new Language20221(targetStream);
+        }
+        else if(args.length == 1){
+            try{
+                sintatico = new Language20221(new java.io.FileInputStream(args[0]));
+            }
+            catch(java.io.FileNotFoundException e){
+                System.err.println(args[0] + " was not found." );
+                System.err.println(e);
+            }
+        }
+        else{
+            System.out.println("Use:\njava Sintatico < inputFile");
+            System.out.println("or java Sintatico inputFile");
+        }
+        return sintatico;
+    }
 
     public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
         Token tok;
@@ -274,6 +305,12 @@ public class Language20221 implements Language20221Constants {
 
     public String getSyntacticErrors() {
         return this.syntaticsErrors.toString();
+    }
+
+    public boolean hasAnyErrors() {
+        return lexicalErrors.size()!=0
+        || syntaticsErrors.size()!=0
+        || semanticErrors.size()!= 0;
     }
 
   final public void enum_values() throws ParseException {
