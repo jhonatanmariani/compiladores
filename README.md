@@ -37,11 +37,36 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
     <li> Clicar em 'Install to IntelliJ IDEA' </li>
 </ol>
 
+## Instalação e configuração do Maven
+<ol>
+  <li> Descompacte o arquivo onde você gostaria de armazenar os binários, por exemplo:</li>
+
+    Sistemas operacionais baseados em Unix (Linux, Solaris e Mac OS X)
+      tar zxvf apache-maven-3.x.y.tar.gz
+    Windows
+      descompacte o apache-maven-3.x.y.zip
+
+ <li> Um diretório chamado "apache-maven-3.x.y" será criado.</li>
+
+ <li> Adicione o diretório bin ao seu PATH, por exemplo: </li>
+
+    Sistemas operacionais baseados em Unix (Linux, Solaris e Mac OS X)
+      export PATH=/usr/local/apache-maven-3.x.y/bin:$PATH
+    Windows
+      set PATH="c:\program files\apache-maven-3.x.y\bin";%PATH%
+
+ <li> Certifique-se de que JAVA_HOME esteja configurado para o local do seu JDK</li>
+
+  <li> Execute "mvn --version" para verificar se está instalado corretamente.</li>
+
+  Para obter a documentação completa, consulte https://maven.apache.org/download.html#Installation
+</ol>
+
 ## Gerar classes Java do arquivo .jj
 
 - Basta executar o arquivo geraClassesJavaJJ.bat
 
-## Gerar arquivo executável .jar com maven
+## Gerar arquivo executável .jar com Maven
 
 <ol>
     <li> Ir na pasta aonde está o arquivo pom.xml </li>

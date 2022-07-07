@@ -6,8 +6,8 @@ import util.AlertFactory;
 import util.Operation;
 //import maquinavirtual.VirtualMachineK;
 import classes.ErrorStruct;
-import classes.LanguageParser;
-import classes.LanguageParserConstants;
+import classes.Language20221;
+import classes.Language20221Constants;
 import classes.Token;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -286,75 +286,39 @@ public class Controller {
         }
     }
 
-    public void compileProgram(ActionEvent actionEvent) {
+    /*public void compileProgram(ActionEvent actionEvent) {
         if (this.inputTextArea.getText().length() == 0) {
             return;
         }
         checkLexical();
         checkSyntax();
-    }
+    }*/
 
-    private void checkSyntax(){
-        ArrayList<ErrorStruct> output = LanguageParser.checkSyntax(this.inputTextArea.getText());
-        if (output.size() == 0) {
-            this.messageTextArea.appendText("Compilado com sucesso!\n");
+    public void compileProgram(ActionEvent actionEvent) throws ParseException {
+        //messageTextArea.clear();
+        actionEvent.consume();
+        if (inputTextArea.getText().length() == 0) {
+            Alert alert = AlertFactory.create
+                    (
+                            Alert.AlertType.ERROR,
+                            "Erro",
+                            "Arquivo vazio",
+                            "Um arquivo vazio nao pode ser compilado"
+                    );
+            alert.show();
             return;
         }
-        this.messageTextArea.appendText("\n");
-        this.messageTextArea.appendText(output.size() + " Erros sintaticos encontrados :\n");
-        for (ErrorStruct err: output){
-            this.messageTextArea.appendText(err.getMsg());
-            this.messageTextArea.appendText("Esperado(s):" + err.expected());
-            this.messageTextArea.appendText("Linha: " + err.getError().currentToken.beginLine);
-            this.messageTextArea.appendText("; Coluna: " + err.getError().currentToken.endColumn + "\n");
-        }
+        String[] args = new String[0];
+        java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
+        Language20221 tokenizer = new Language20221(targetStream);
+        String result = tokenizer.analyze(args, inputTextArea.getText());
+        //messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
+        //    + "\n" + tokenizer.getLexicalErrors()); //result);
+        messageTextArea.setText(result);
+        System.out.println(result);
+        //tokenizer.limpaClasse();
     }
 
-    private void checkLexical(){
-        this.messageTextArea.clear();
-        ArrayList<Token> tokens = (ArrayList<Token>) LanguageParser.getTokens(this.inputTextArea.getText());
-        int counter = 0;
-        if (tokens.size() > 0) {
-            this.messageTextArea.appendText("Erro(s) lexicos encontrados: ");
-            for (Token token : tokens) {
-                if (token.kind == LanguageParserConstants.OTHER || token.kind == LanguageParserConstants.INVALID_IDENTIFIER) {
-                    counter++;
-                    switch (token.kind) {
-                        case 61:
-                            this.messageTextArea.appendText("\nSimbolo invalido " + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 62:
-                            this.messageTextArea.appendText("\nIdentificador invalido, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 74:
-                            this.messageTextArea.appendText("\nString literal invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 75:
-                            this.messageTextArea.appendText("\nConstante numerica inteira invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 76:
-                            this.messageTextArea.appendText("\nConstante numerica real invalida, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        case 77:
-                            this.messageTextArea.appendText("\nComentario facultativo invalido, linha" + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                        default:
-                            this.messageTextArea.appendText("\nToken invalido, linha " + token.beginLine + "; coluna: " + token.endColumn + " " + LanguageParserConstants.tokenImage[token.kind] + " (" + token.kind + ")");
-                            break;
-                    }
-                } else if (token.kind == 5) {
-                    counter++;
-                    this.messageTextArea.appendText("\nErro lexico: Comentario de bloco nao encerrado (" + token.kind + ")");
-                }
-            }
-            if (counter == 0){
-                this.messageTextArea.appendText("0\n");
-            }
-        }
-        else {
-            this.messageTextArea.appendText("\nErros(s) lexicos encontrados 0\n");
-        }
-    }
 
     /*
     public void handleRunButton() throws ParseEOFException, ParseException {
