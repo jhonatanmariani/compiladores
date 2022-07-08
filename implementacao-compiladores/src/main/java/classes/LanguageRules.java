@@ -67,6 +67,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao5() {
         System.out.println("Acao 5 - reconhecimento das palavras reservadas as constant");
         this.contexto = "as constant";
+        System.out.println("Acao 5 - Setado contexto: as constant");
         this.VI = 0;
         this.TVI = 0;
     }
@@ -76,6 +77,7 @@ public class LanguageRules { // AcoesSemanticas
         this.VP = this.VP + this.TVI;
         switch (this.tipo){
             case 1: case 5: {
+                System.out.println("Acao 6 - Entrou no caso 1 ou 5");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.ALI, new DataFrameK(DataTypeK.INTEGER, this.VP));
                 instructionList.add(instruction);
                 break;
@@ -83,22 +85,26 @@ public class LanguageRules { // AcoesSemanticas
             case 2:
             case 6:
             {
+                System.out.println("Acao 6 - Entrou no caso 2 ou 6");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.ALR, new DataFrameK(DataTypeK.INTEGER, this.VP));
                 instructionList.add(instruction);
                 break;
             }
             case 3: case 7: {
+                System.out.println("Acao 6 - Entrou no caso 3 ou 7");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.ALS, new DataFrameK(DataTypeK.INTEGER, this.VP));
                 instructionList.add(instruction);
                 break;
             }
             case 4:{
+                System.out.println("Acao 6 - Entrou no caso 4");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.ALB, new DataFrameK(DataTypeK.INTEGER, this.VP));
                 instructionList.add(instruction);
                 break;
             }
         }
         if(this.tipo == 1 || this.tipo == 2 || this.tipo == 3 || this.tipo == 4){
+            System.out.println("Acao 6 - O tipo  da categoria é 1, 2, 3 ou 4");
             this.VP = 0;
             this.VI = 0;
             this.TVI = 0;
@@ -109,16 +115,19 @@ public class LanguageRules { // AcoesSemanticas
         System.out.println("Acao 7 - reconhecimento de valor na declaração de constante");
         switch (this.tipo){
             case 5: {
+                System.out.println("Acao 7 - O tipo da categoria é 5");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.LDI, new DataFrameK(DataTypeK.INTEGER, Integer.parseInt(valor)));
                 instructionList.add(instruction);
                 break;
             }
             case 6: {
+                System.out.println("Acao 7 - O tipo da categoria é 6");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.LDR, new DataFrameK(DataTypeK.FLOAT, Float.parseFloat(valor)));
                 instructionList.add(instruction);
                 break;
             }
             case 7: {
+                System.out.println("Acao 7 - O tipo da categoria é 7");
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.LITERAL, valor));
                 instructionList.add(instruction);
                 break;
@@ -133,6 +142,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao8(){
         System.out.println("Acao 8 - reconhecimento das palavras reservadas as variable");
         this.contexto = "as variable";
+        System.out.println("Acao 8 - Setado contexto: as variable");
     }
 
     public void acao9(Token token) {
@@ -153,6 +163,7 @@ public class LanguageRules { // AcoesSemanticas
         System.out.println("Acao 10 - reconhecimento de identificador de variável");
         switch (this.contexto){
             case "as variable": {
+                System.out.println("Acao 10 - Contexto é: as variable");
                 Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
                 if (!(exist == null)) {
                     this.listaErros.add("10 - Identificador ja declarado: '" + token.image + "' - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
@@ -163,6 +174,7 @@ public class LanguageRules { // AcoesSemanticas
                 break;
             }
             case "atribuicao": case "entrada dados": {
+                System.out.println("Acao 10 - Contexto é: atribuicao ou entrada de dados");
                 variavelIndexada = false;
                 this.identificadorReconhecido = token.image;
                 break;
@@ -174,12 +186,15 @@ public class LanguageRules { // AcoesSemanticas
         System.out.println("Acao 11 - reconhecimento de identificador de variável e tamanho da variável indexada");
         switch (this.contexto){
             case "as variable": {
+                System.out.println("Acao 11 - Contexto é: as variable");
                 if(!this.variavelIndexada){
+                    System.out.println("Acao 11 - A variavel indexada = falso");
                     this.VT= this.VT + 1;
                     this.VP= this.VP + 1;
                     Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT);
                     tabelaDeSimbolos.add(simbolo);
                 }else{
+                    System.out.println("Acao 11 - A variavel indexada = true");
                     this.VI = this.VI + 1;
                     this.TVI = this.TVI + this.constanteInteira;
                     Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT+1, this.constanteInteira);
@@ -189,6 +204,7 @@ public class LanguageRules { // AcoesSemanticas
                 break;
             }
             case "atribuicao": {
+                System.out.println("Acao 11 - Contexto é: atribuicao");
                 Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
                 if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
                     if(exist.getAtributo2() == 0){
@@ -210,6 +226,7 @@ public class LanguageRules { // AcoesSemanticas
                 break;
             }
             case "entrada dados": {
+                System.out.println("Acao 11 - Contexto é: entrada dados");
                 Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
                 if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
                     if(exist.getAtributo2() == 0){
@@ -248,6 +265,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao13(){
         System.out.println(": Acao 13 - reconhecimento da palavra reservada integer");
         if(this.contexto.equals("as variable")){
+            System.out.println("Acao 13 - O contexto é: as variable");
             this.tipo = 1;
         }else{
             this.tipo = 5;
@@ -257,6 +275,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao14(){
         System.out.println("Acao 14 - reconhecimento da palavra reservada float");
         if(this.contexto.equals("as variable")){
+            System.out.println("Acao 14 - O contexto é: as variable");
             this.tipo = 2;
         }else{
             this.tipo = 6;
@@ -265,7 +284,8 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao15(){
         System.out.println(": Acao 15 - reconhecimento da palavra reservada string");
-        if(this.contexto.equals("as variable")){
+        if(this.contexto.equals("Acao 15 - as variable")){
+            System.out.println("O contexto é: as variable");
             this.tipo = 3;
         }else{
             this.tipo = 7;
@@ -275,6 +295,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao16(Token token){
         System.out.println("Acao 16 - reconhecimento da palavra reservada boolean"+ token.image);
         if(this.contexto.equals("as variable")){
+            System.out.println("Acao 16 - O contexto é: as variable");
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
@@ -285,6 +306,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao17(Token token){
         System.out.println("Acao 17 - reconhecimento de identificador do tipo enumerado");
         if(this.contexto.equals("as variable")){
+            System.out.println("Acao 17 - O contexto é: as variable");
             this.tipo = 1;
         }else{
             this.listaErros.add("17 - Tipo invalido para constante - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
@@ -294,6 +316,7 @@ public class LanguageRules { // AcoesSemanticas
     public void acao18(){
         System.out.println("Acao 18 - reconhecimento do início do comando de atribuicao");
         this.contexto = "atribuicao";
+        System.out.println("Acao 18 - Setado contexto: atribuicao");
     }
 
     public void acao19(){
@@ -307,16 +330,20 @@ public class LanguageRules { // AcoesSemanticas
     public void acao20(){
         System.out.println("Acao 20 - reconhecimento do comando de entrada de dados");
         this.contexto = "entrada dados";
+        System.out.println("Acao 20 - Setado contexto: entrada dados");
+
     }
 
     public void acao21() {
         System.out.println("Acao 21 - reconhecimento das palavras reservadas write all this");
         saida = "write this all";
+        System.out.println("Acao 21 - Setado saida: write this all");
     }
 
     public void acao22() {
         System.out.println("Acao 22 - reconhecimento das palavras reservadas write all");
         saida = "write this";
+        System.out.println("Acao 22 - write this");
     }
 
     public void acao23(){
@@ -327,8 +354,9 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao24(Token token){
         System.out.println("Acao 24 - reconhecimento de identificador em comando de saída ou em expressão");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse( );
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
+            System.out.println("Acao 24 - Identificador existe na tabela de simolos e identificador é idengtificador de constante ou de variável");
             this.variavelIndexada = false;
             this.identificadorReconhecido = token.image;
         }else{
@@ -341,8 +369,11 @@ public class LanguageRules { // AcoesSemanticas
         Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
             if (!variavelIndexada) {
+                System.out.println("Acao 25 - Variavel indexada = false");
                 if (exist.getAtributo2() == 0) {
+                    System.out.println("Acao 25 - Atributo 2 = vazio/0");
                     if (saida.equals("write all this")) {
+                        System.out.println("Acao 25 - Saida: write all this");
                         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.ADDRESS, "identificador=")));
                         this.ponteiro = this.ponteiro + 1;
                         instructionList.add(new InstructionK(InstructionK.Mnemonic.WRT, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
@@ -355,7 +386,9 @@ public class LanguageRules { // AcoesSemanticas
                 }
             } else {
                 if(exist.getAtributo2() != 0) {
+                    System.out.println("Acao 25 - Atributo 2 é diferente de 0");
                     if(saida.equals("write this all")) {
+                        System.out.println("Acao 25 - Saida: write all this");
                         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.ADDRESS, "identificador=")));
                         this.ponteiro = this.ponteiro + 1;
                         instructionList.add(new InstructionK(InstructionK.Mnemonic.WRT, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
@@ -530,7 +563,9 @@ public class LanguageRules { // AcoesSemanticas
         System.out.println("Acao 51 - reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em expressão");
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!this.variavelIndexada){
+            System.out.println("Acao 51 - Variavel indexada: false");
             if(exist.getAtributo2() == 0){
+                System.out.println("Acao 51 - Atributo 2 = vazio/0");
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
@@ -538,6 +573,7 @@ public class LanguageRules { // AcoesSemanticas
             }
         }else{
             if(exist.getAtributo2() != 0){
+                System.out.println("Acao 51 - Atributo 2 é diferente de vazio/0");
                 instructionList.add(new InstructionK(InstructionK.Mnemonic.LDV, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
