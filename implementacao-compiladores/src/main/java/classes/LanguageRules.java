@@ -39,13 +39,13 @@ public class LanguageRules { // AcoesSemanticas
 /////// REGRAS DAS AÇÕES SEMANTICAS
 
     public void acao1(Token token){
-        System.out.println("reconhecimento do identificador do programa (identificador, 0, -, -)");
+        System.out.println("Acao 1 - reconhecimento do identificador do programa (identificador, 0, -, -)");
         Simbolo simbolo = new Simbolo(token.image, 0);
         tabelaDeSimbolos.add(simbolo);
     }
 
     public void acao2(){
-        System.out.println("reconhecimento de fim de programa (ponteiro, STP, 0)");
+        System.out.println("Acao 2 - reconhecimento de fim de programa (ponteiro, STP, 0)");
         InstructionK instruction = new InstructionK(InstructionK.Mnemonic.STP, new DataFrameK(DataTypeK.INTEGER, 0));
         instructionList.add(instruction);
         InstructionK.enumerateInstructions(instructionList);
@@ -57,22 +57,22 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao3(){
-        System.out.println("reconhecimento de identificador do tipo enumerado");
+        System.out.println("Acao 3 - reconhecimento de identificador do tipo enumerado");
     }
 
     public void acao4() {
-        System.out.println("reconhecimento de identificador de constante de tipo enumerado");
+        System.out.println("Acao 4 - reconhecimento de identificador de constante de tipo enumerado");
     }
 
     public void acao5() {
-        System.out.println("reconhecimento das palavras reservadas as constant");
+        System.out.println("Acao 5 - reconhecimento das palavras reservadas as constant");
         this.contexto = "as constant";
         this.VI = 0;
         this.TVI = 0;
     }
 
     public void acao6(){
-        System.out.println("reconhecimento do término da declaração de constantes ou variáveis de um determinado tipo");
+        System.out.println("Acao 6 - reconhecimento do término da declaração de constantes ou variáveis de um determinado tipo");
         this.VP = this.VP + this.TVI;
         switch (this.tipo){
             case 1: case 5: {
@@ -106,7 +106,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao7(String valor){
-        System.out.println("reconhecimento de valor na declaração de constante");
+        System.out.println("Acao 7 - reconhecimento de valor na declaração de constante");
         switch (this.tipo){
             case 5: {
                 InstructionK instruction = new InstructionK(InstructionK.Mnemonic.LDI, new DataFrameK(DataTypeK.INTEGER, Integer.parseInt(valor)));
@@ -131,12 +131,12 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao8(){
-        System.out.println("reconhecimento das palavras reservadas as variable");
+        System.out.println("Acao 8 - reconhecimento das palavras reservadas as variable");
         this.contexto = "as variable";
     }
 
     public void acao9(Token token) {
-        System.out.println("reconhecimento de identificador de constante");
+        System.out.println("Acao 9 - reconhecimento de identificador de constante");
         Simbolo exist;
         exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
@@ -150,7 +150,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao10(Token token) {
-        System.out.println("reconhecimento de identificador de variável");
+        System.out.println("Acao 10 - reconhecimento de identificador de variável");
         switch (this.contexto){
             case "as variable": {
                 Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
@@ -171,7 +171,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao11(Token token){
-        System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
+        System.out.println("Acao 11 - reconhecimento de identificador de variável e tamanho da variável indexada");
         switch (this.contexto){
             case "as variable": {
                 if(!this.variavelIndexada){
@@ -240,13 +240,13 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao12(Token token){
-        System.out.println(" reconhecimento de constante inteira como tamanho da variável indexada");
+        System.out.println("Acao 12 - Reconhecimento de constante inteira como tamanho da variável indexada");
         this.constanteInteira = Integer.parseInt(token.image);
         this.variavelIndexada = true;
     }
 
     public void acao13(){
-        System.out.println(": reconhecimento da palavra reservada integer");
+        System.out.println(": Acao 13 - reconhecimento da palavra reservada integer");
         if(this.contexto.equals("as variable")){
             this.tipo = 1;
         }else{
@@ -255,7 +255,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao14(){
-        System.out.println("reconhecimento da palavra reservada float");
+        System.out.println("Acao 14 - reconhecimento da palavra reservada float");
         if(this.contexto.equals("as variable")){
             this.tipo = 2;
         }else{
@@ -264,7 +264,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao15(){
-        System.out.println(": reconhecimento da palavra reservada string");
+        System.out.println(": Acao 15 - reconhecimento da palavra reservada string");
         if(this.contexto.equals("as variable")){
             this.tipo = 3;
         }else{
@@ -273,7 +273,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao16(Token token){
-        System.out.println(" reconhecimento da palavra reservada boolean"+ token.image);
+        System.out.println("Acao 16 - reconhecimento da palavra reservada boolean"+ token.image);
         if(this.contexto.equals("as variable")){
             this.tipo = 4;
         }else{
@@ -283,7 +283,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao17(Token token){
-        System.out.println("reconhecimento de identificador do tipo enumerado");
+        System.out.println("Acao 17 - reconhecimento de identificador do tipo enumerado");
         if(this.contexto.equals("as variable")){
             this.tipo = 1;
         }else{
@@ -292,12 +292,12 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao18(){
-        System.out.println("reconhecimento do início do comando de atribuicao");
+        System.out.println("Acao 18 - reconhecimento do início do comando de atribuicao");
         this.contexto = "atribuicao";
     }
 
     public void acao19(){
-        System.out.println(": reconhecimento do fim do comando de atribuicao");
+        System.out.println(": Acao 19 - reconhecimento do fim do comando de atribuicao");
         for(int i=0; i< this.listaAtributos.size(); i++){
             instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, this.listaAtributos.get(i))));
             this.ponteiro = this.ponteiro + 1;
@@ -305,29 +305,29 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao20(){
-        System.out.println("reconhecimento do comando de entrada de dados");
+        System.out.println("Acao 20 - reconhecimento do comando de entrada de dados");
         this.contexto = "entrada dados";
     }
 
     public void acao21() {
-        System.out.println("reconhecimento das palavras reservadas write all this");
+        System.out.println("Acao 21 - reconhecimento das palavras reservadas write all this");
         saida = "write this all";
     }
 
     public void acao22() {
-        System.out.println("reconhecimento das palavras reservadas write all");
+        System.out.println("Acao 22 - reconhecimento das palavras reservadas write all");
         saida = "write this";
     }
 
     public void acao23(){
-        System.out.println("reconhecimento de mensagem em comando de saída de dados");
+        System.out.println("Acao 23 - reconhecimento de mensagem em comando de saída de dados");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.WRT, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao24(Token token){
-        System.out.println("reconhecimento de identificador em comando de saída ou em expressão");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
+        System.out.println("Acao 24 - reconhecimento de identificador em comando de saída ou em expressão");
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse( );
         if(!(exist == null)){
             this.variavelIndexada = false;
             this.identificadorReconhecido = token.image;
@@ -337,7 +337,7 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao25(Token token) {
-        System.out.println("reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em comando de saída");
+        System.out.println("Acao 25 - reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em comando de saída");
         Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
             if (!variavelIndexada) {
@@ -371,44 +371,44 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao26(Integer constInt){
-        System.out.println("reconhecimento de constante inteira em comando de saída ou em expressão");
+        System.out.println("Acao 26 - reconhecimento de constante inteira em comando de saída ou em expressão");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDI, new DataFrameK(DataTypeK.INTEGER, constInt)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao27(Float constReal){
-        System.out.println("reconhecimento de constante real em comando de saída ou em expressão");
+        System.out.println("Acao 27 - reconhecimento de constante real em comando de saída ou em expressão");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDR, new DataFrameK(DataTypeK.FLOAT, constReal)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao28(String constLiteral){
-        System.out.println("reconhecimento de constante literal em comando de saída ou em expressão");
+        System.out.println("Acao 28 - reconhecimento de constante literal em comando de saída ou em expressão");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDS, new DataFrameK(DataTypeK.LITERAL, constLiteral)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao29(){
-        System.out.println("reconhecimento de fim de comando de seleção");
+        System.out.println("Acao 29 - reconhecimento de fim de comando de seleção");
         this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro);
     }
 
     public void acao30(){
-        System.out.println(" reconhecimento da palavra reservada true");
+        System.out.println(" Acao 30 - reconhecimento da palavra reservada true");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.JMF, new DataFrameK(DataTypeK.NONE, '?')));
         this.ponteiro = this.ponteiro + 1;
         this.pilhaDeDesvios.add(this.ponteiro -1);
     }
 
     public void acao31(){
-        System.out.println(" reconhecimento da palavra reservada untrue");
+        System.out.println(" Acao 31 - reconhecimento da palavra reservada untrue");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.JMT, new DataFrameK(DataTypeK.ADDRESS, '?')));
         this.ponteiro = this.ponteiro + 1;
         this.pilhaDeDesvios.add(this.ponteiro -1);
     }
 
     public void acao32(){
-        System.out.println("reconhecimento da palavra reservada untrue (ou true)");
+        System.out.println("Acao 32 - reconhecimento da palavra reservada untrue (ou true)");
         this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro+1);
         instructionList.add(new InstructionK(InstructionK.Mnemonic.JMP, new DataFrameK(DataTypeK.NONE, '?')));
         this.ponteiro = this.ponteiro + 1;
@@ -416,19 +416,19 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao33(){
-        System.out.println("reconhecimento do início de expressão em comando de repetição");
+        System.out.println("Acao 33 - reconhecimento do início de expressão em comando de repetição");
         this.pilhaDeDesvios.add(this.ponteiro);
     }
 
     public void acao34(){
-        System.out.println("reconhecimento de expressão em comando de repetição");
+        System.out.println("Acao 34 - reconhecimento de expressão em comando de repetição");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.JMF, new DataFrameK(DataTypeK.INTEGER, '?')));
         this.ponteiro = this.ponteiro + 1;
         this.pilhaDeDesvios.add(this.ponteiro-1);
     }
 
     public void acao35(){
-        System.out.println("reconhecimento do fim do comando de repetição");
+        System.out.println("Acao 35 - reconhecimento do fim do comando de repetição");
         Integer desvioAcao34 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
         instructionList.get(desvioAcao34).setParameter(new DataFrameK(DataTypeK.ADDRESS, this.ponteiro + 1));
         Integer desvioAcao33 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
@@ -437,97 +437,97 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao36(){
-        System.out.println("reconhecimento de operação relacional igual");
+        System.out.println("Acao 36 - reconhecimento de operação relacional igual");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.EQL, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao37(){
-        System.out.println("reconhecimento de operação relacional diferente");
+        System.out.println("Acao 37 - reconhecimento de operação relacional diferente");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.DIF, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao38(){
-        System.out.println("reconhecimento de operação relacional menor");
+        System.out.println("Acao 38 - reconhecimento de operação relacional menor");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.SMR, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao39(){
-        System.out.println("reconhecimento de operação relacional maior");
+        System.out.println("Acao 39 - reconhecimento de operação relacional maior");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.BGR, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao40(){
-        System.out.println("reconhecimento de operação relacional menor igual");
+        System.out.println("Acao 40 - reconhecimento de operação relacional menor igual");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.SME, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao41(){
-        System.out.println("reconhecimento de operação relacional maior igual");
+        System.out.println("Acao 41 - reconhecimento de operação relacional maior igual");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.BGE, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao42(){
-        System.out.println("reconhecimento de operação aritmética adição");
+        System.out.println("Acao 42 - reconhecimento de operação aritmética adição");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.ADD, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao43(){
-        System.out.println("reconhecimento de operação aritmética subtração");
+        System.out.println("Acao 43 - reconhecimento de operação aritmética subtração");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.SUB, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao44(){
-        System.out.println("reconhecimento de operação lógica OU ( | )");
+        System.out.println("Acao 44 - reconhecimento de operação lógica OU ( | )");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.OR, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao45(){
-        System.out.println("reconhecimento de operação aritmética multiplicação");
+        System.out.println("Acao 45 - reconhecimento de operação aritmética multiplicação");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.MUL, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao46(){
-        System.out.println("reconhecimento de operação aritmética divisão real");
+        System.out.println("Acao 46 - reconhecimento de operação aritmética divisão real");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.DIV, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao47(){
-        System.out.println("reconhecimento de operação aritmética divisão inteira");
+        System.out.println("Acao 47 - reconhecimento de operação aritmética divisão inteira");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.DVW, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao48(){
-        System.out.println("reconhecimento de operação aritmética resto da divisão inteira");
+        System.out.println("Acao 48 - reconhecimento de operação aritmética resto da divisão inteira");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.MOD, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao49(){
-        System.out.println("reconhecimento de operação lógica E (&)\n");
+        System.out.println("Acao 49 - reconhecimento de operação lógica E (&)\n");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.AND, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao50(){
-        System.out.println(" reconhecimento de operação aritmética potenciação");
+        System.out.println("Acao 50 - reconhecimento de operação aritmética potenciação");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.PWR, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = ponteiro + 1;
     }
 
     public void acao51(Token token){
-        System.out.println(" reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em expressão");
+        System.out.println("Acao 51 - reconhecimento de identificador de constante ou de variável e tamanho de variável indexada em expressão");
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!this.variavelIndexada){
             if(exist.getAtributo2() == 0){
@@ -547,19 +547,19 @@ public class LanguageRules { // AcoesSemanticas
     }
 
     public void acao52(){
-        System.out.println("reconhecimento de constante lógica true");
+        System.out.println("Acao 52 - reconhecimento de constante lógica true");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDB, new DataFrameK(DataTypeK.BOOLEAN, true)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao53(){
-        System.out.println("reconhecimento de constante lógica untrue");
+        System.out.println("Acao 53 - reconhecimento de constante lógica untrue");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.LDB, new DataFrameK(DataTypeK.BOOLEAN, false)));
         this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao54(){
-        System.out.println("reconhecimento de operação lógica não ( ! )");
+        System.out.println("Acao 54 - reconhecimento de operação lógica não ( ! )");
         instructionList.add(new InstructionK(InstructionK.Mnemonic.NOT, new DataFrameK(DataTypeK.INTEGER, 0)));
         this.ponteiro = this.ponteiro + 1;
     }
