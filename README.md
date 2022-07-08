@@ -55,7 +55,7 @@ OBSERVAÇÃO: A Versão do JAVACC utilizada nesse trabalho foi a 7.0.10
     Windows
       set PATH="c:\program files\apache-maven-3.x.y\bin";%PATH%
 
- <li> Certifique-se de que JAVA_HOME esteja configurado para o local do seu JDK</li>
+ <li> Certifique-se de que JAVA_HOME esteja configurado para o local do seu JDK. Ex.: C:\Program Files\Java\jdk-16.0.1</li>
 
   <li> Execute "mvn --version" para verificar se está instalado corretamente.</li>
 
