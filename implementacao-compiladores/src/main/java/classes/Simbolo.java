@@ -36,6 +36,16 @@ public class Simbolo {
         return categoria;
     }
 
+    @Override
+    public String toString() {
+        return "Simbolo{" +
+                "identificador='" + identificador + '\'' +
+                ", categoria=" + categoria +
+                ", atributo1=" + atributo1 +
+                ", atributo2=" + atributo2 +
+                '}';
+    }
+
     public void setCategoria(int categoria) {
         this.categoria = categoria;
     }

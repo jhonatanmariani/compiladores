@@ -182,22 +182,29 @@ public class LanguageRules { // AcoesSemanticas
         }
     }
 
-    public void acao11(Token token){
+    public void acao11(Token token) {
         System.out.println("Acao 11 - reconhecimento de identificador de variável e tamanho da variável indexada");
-        switch (this.contexto){
+        System.out.println("contexto setado = " + this.contexto);
+        switch (this.contexto) {
             case "as variable": {
                 System.out.println("Acao 11 - Contexto é: as variable");
-                if(!this.variavelIndexada){
+                if (!this.variavelIndexada) {
                     System.out.println("Acao 11 - A variavel indexada = falso");
-                    this.VT= this.VT + 1;
-                    this.VP= this.VP + 1;
+                    this.VT = this.VT + 1;
+                    this.VP = this.VP + 1;
+                    System.out.println("Identificador reconhecido: " + identificadorReconhecido);
+                    System.out.println("tipo do identificador= " + tipo);
+                    System.out.println("VT= " + VT);
+                    System.out.println("Token : " + token.image);
                     Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT);
+                    System.out.println("Simbolo gerado = "+ simbolo.getIdentificador());
                     tabelaDeSimbolos.add(simbolo);
-                }else{
+                    System.out.println("Acao 11- tabela de simbolos após inserir: " + tabelaDeSimbolos.toString());
+                } else {
                     System.out.println("Acao 11 - A variavel indexada = true");
                     this.VI = this.VI + 1;
                     this.TVI = this.TVI + this.constanteInteira;
-                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT+1, this.constanteInteira);
+                    Simbolo simbolo = new Simbolo(this.identificadorReconhecido, this.tipo, this.VT + 1, this.constanteInteira);
                     tabelaDeSimbolos.add(simbolo);
                     this.VT = this.VT + this.constanteInteira;
                 }
@@ -205,57 +212,64 @@ public class LanguageRules { // AcoesSemanticas
             }
             case "atribuicao": {
                 System.out.println("Acao 11 - Contexto é: atribuicao");
-                Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
-                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
-                    if(exist.getAtributo2() == 0){
-                        if(!this.variavelIndexada){
-                            this.listaAtributos.add(exist.getAtributo1());
-                        }else{
-                            this.listaErros.add("11 - Identificador de variavel nao indexada: '" + this.identificadorReconhecido + "' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
+                Simbolo simboloo = null;
+                if (tabelaDeSimbolos.contains(identificadorReconhecido)) {
+                    int index = tabelaDeSimbolos.indexOf(identificadorReconhecido);
+                    simboloo = tabelaDeSimbolos.get(index);
+                    //int categoria = simbolo.getCategoria();
+                    if (simboloo.getAtributo2() == 0) {
+                        if (!this.variavelIndexada) {
+                            this.listaAtributos.add(simboloo.getAtributo1());
+                        } else {
+                            this.listaErros.add("11 - Identificador de variavel nao indexada: '" + this.identificadorReconhecido + "' - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
                         }
-                    } else{
-                        if(this.variavelIndexada){
-                            this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
-                        }else{
-                            this.listaErros.add("11 - Variavel indexada precisa de index - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
+                    } else {
+                        if (this.variavelIndexada) {
+                            this.listaAtributos.add(simboloo.getAtributo1() + this.constanteInteira - 1);
+                        } else {
+                            this.listaErros.add("11 - Variavel indexada precisa de index - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
                         }
                     }
-                }else{
-                    this.listaErros.add("11 - Uso de variavel ou constante nao declarada - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
+                } else {
+                    this.listaErros.add("11 - Uso de variavel ou constante nao declarada - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
                 }
                 break;
             }
             case "entrada dados": {
                 System.out.println("Acao 11 - Contexto é: entrada dados");
-                Simbolo exist = this.tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
-                if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
-                    if(exist.getAtributo2() == 0){
-                        if(!this.variavelIndexada){
-                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
+                Simbolo simboloo2 = null;
+                if (tabelaDeSimbolos.contains(identificadorReconhecido)) {
+                    int index = tabelaDeSimbolos.indexOf(identificadorReconhecido);
+                    simboloo2 = tabelaDeSimbolos.get(index);
+                    int atr1 = simboloo2.getAtributo1();
+                    int atr2 = simboloo2.getAtributo2();
+                    //int categoria = simbolo.getCategoria();
+                    int categ = simboloo2.getCategoria();
+                    if (simboloo2.getAtributo2() == 0) {
+                        if (!this.variavelIndexada) {
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(categ), categ)));
                             this.ponteiro = this.ponteiro + 1;
-                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1())));
+                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, atr1)));
                             this.ponteiro = this.ponteiro + 1;
-                        }else{
-                            this.listaErros.add("11 - Identificador de variavel nao indexado - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
+                        } else {
+                            if (this.variavelIndexada) {
+                                instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(categ), categ)));
+                                this.ponteiro = this.ponteiro + 1;
+                                instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, atr1 + this.constanteInteira - 1)));
+                                this.ponteiro = this.ponteiro + 1;
+                            } else {
+                                this.listaErros.add("11 - Variavel indexada precisa de um index - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
+                            }
                         }
-                    } else{
-                        if(this.variavelIndexada){
-                            instructionList.add(new InstructionK(InstructionK.Mnemonic.REA, new DataFrameK(DataTypeK.get(exist.getCategoria()), exist.getCategoria())));
-                            this.ponteiro = this.ponteiro + 1;
-                            instructionList.add(new InstructionK(InstructionK.Mnemonic.STR, new DataFrameK(DataTypeK.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
-                            this.ponteiro = this.ponteiro + 1;
-                        }else{
-                            this.listaErros.add("11 - Variavel indexada precisa de um index - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
-                        }
+                    } else {
+                        this.listaErros.add("11 - Uso de variavel ou constante nao declarada: '" + this.identificadorReconhecido + "' - Linha/Coluna: " + token.beginLine + "/" + token.beginColumn);
                     }
-                }else{
-                    this.listaErros.add("11 - Uso de variavel ou constante nao declarada: '"+this.identificadorReconhecido+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
+                    break;
                 }
                 break;
             }
         }
     }
-
     public void acao12(Token token){
         System.out.println("Acao 12 - Reconhecimento de constante inteira como tamanho da variável indexada");
         this.constanteInteira = Integer.parseInt(token.image);
@@ -270,6 +284,7 @@ public class LanguageRules { // AcoesSemanticas
         }else{
             this.tipo = 5;
         }
+        System.out.println("Ação 13 - Tipo informado: " + tipo);
     }
 
     public void acao14(){
@@ -354,14 +369,19 @@ public class LanguageRules { // AcoesSemanticas
 
     public void acao24(Token token){
         System.out.println("Acao 24 - reconhecimento de identificador em comando de saída ou em expressão");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
-        if(!(exist == null)){
-            System.out.println("Acao 24 - Identificador existe na tabela de simolos e identificador é idengtificador de constante ou de variável");
+        //Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
+        System.out.println("Acao 24 - Contexto é: atribuicao");
+        System.out.println("Identificador reconhecido= " + identificadorReconhecido);
+        System.out.println(tabelaDeSimbolos.toString());
+        if (tabelaDeSimbolos.contains(identificadorReconhecido)) {
+            int index = tabelaDeSimbolos.indexOf(identificadorReconhecido);
+            System.out.println("Acao 24 - Identificador existe na tabela de simbolos e identificador é identificador de constante ou de variável");
             this.variavelIndexada = false;
             this.identificadorReconhecido = token.image;
         }else{
             this.listaErros.add("24 - Uso de identificador nao declarado: '"+token.image+"' - Linha/Coluna: "+token.beginLine+"/"+token.beginColumn);
         }
+
     }
 
     public void acao25(Token token) {

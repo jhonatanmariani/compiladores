@@ -250,7 +250,7 @@ public class Language20221{
     public String errorListToString(String message, List<String> errors) {
         StringBuilder sb = new StringBuilder(message);
         System.out.println("tamanho da lista de erros:  " + errors.size());
-        sb.append(String.format(" Count %s", errors.size())).append("\u005cn");
+        sb.append(String.format(" : %s", errors.size())).append("\u005cn");
         for (String s : errors) {
             sb.append(s).append("\u005cn");
         }
@@ -547,6 +547,14 @@ void identifiers() : {} {
     <IDENTIFICADOR> index()
 }
 
+void identifiers_list_constant() : {} {
+    try {
+        identifiers() {acoesSemanticas.acao9(getToken(0));} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
+    }
+}
+
 void identifiers_list() : {} {
     try {
         identifiers() {acoesSemanticas.acao10(getToken(0));} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
@@ -581,12 +589,17 @@ void end_constant() : {} {
 }
 
 void start_variable() : {} {
-    <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+ (end_constant())?
+    <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8();} (variable_declaration())+ (end_constant())?
+}
+
+void constant_declaration_loop(): {} {
+    (constant_declaration())?
 }
 
 void constant_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() {acoesSemanticas.acao6();}
+    identifiers_list_constant() <PALAVRA_RESERVADA_IS> type_constant() {acoesSemanticas.acao6();}
     <OPERADOR_ATRIBUICAO> constant_result() {acoesSemanticas.acao7(getToken(0).image);} <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    constant_declaration_loop()
 }
 
 void end_variable() : {} {
@@ -629,7 +642,7 @@ void declaration_constants_and_variables(RecoverySet r) : {} {
 void constant_result() : {} {
     <IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao25(getToken(0));}
     |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
-    |   <CONSTANTE_NUMERICA_INTEIRA>    {acoesSemanticas.acao26(getToken(0));}
+    |   <CONSTANTE_NUMERICA_INTEIRA>   {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
     |   <CONSTANTE_NUMERICA_REAL>   {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
 }
 
@@ -912,5 +925,4 @@ void begin_program() : {RecoverySet r = new RecoverySet(EOF);} {
         consumeUntil(r, e, "begin_program");
         syntaticsErrors.add(new ErrorStruct("Erro: Forma geral do programa incorreto.\n", e));
     }
-
 }
