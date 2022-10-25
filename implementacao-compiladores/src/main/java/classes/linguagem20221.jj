@@ -15,16 +15,20 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.StringBuilder;
+import maquinavirtual.InstructionK;
 
 public class Language20221{
     private StringBuilder tokens = new StringBuilder();
-    private StringBuilder lexicalErrors = new StringBuilder();
+    private List<String> lexicalErrors = new ArrayList<String>();
     private Boolean hasLexicalErrors = false;
     private int contLexicalErrors = 0;
     static List<ErrorStruct> syntaticsErrors = new ArrayList<ErrorStruct>();
+    private List<String> semanticErrors = new ArrayList<String>();
+    public LanguageRules acoesSemanticas = new LanguageRules();
     boolean debugRecovery = true;
     boolean eof;
     private int contSyntaticsErrors = 0;
+    private List<InstructionK> instructionList;
 
     public void leituraDeTokens()  {
         contLexicalErrors = 0;
@@ -36,7 +40,6 @@ public class Language20221{
             Token t = null;
             t = getNextToken();
             if (t.kind == EOF) return;
-            //System.out.println("KIND DO TOKEN LIDO: " + t.kind);
             switch(t.kind){
                 case PALAVRA_RESERVADA_ALL        :
                 case PALAVRA_RESERVADA_AND        :
@@ -123,7 +126,7 @@ public class Language20221{
                 case SIMBOLO_INVALIDO:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'SIMBOLO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -132,7 +135,7 @@ public class Language20221{
                 case CONSTANTE_LITERAL_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_LITERAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -141,7 +144,7 @@ public class Language20221{
                 case CONSTANTE_NUMERICA_INTEIRA_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_INTEIRA_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -150,7 +153,7 @@ public class Language20221{
                 case CONSTANTE_NUMERICA_REAL_INVALIDA:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'CONSTANTE_NUMERICA_REAL_INVALIDA'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -159,7 +162,7 @@ public class Language20221{
                 case COMENTARIO_FACULTATIVO_INVALIDO:
                 {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'COMENTARIO_FACULTATIVO_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -168,7 +171,7 @@ public class Language20221{
                  case IDENTIFICADOR_INVALIDO:
                  {
                     tokens.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
-                    lexicalErrors.append("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
+                    lexicalErrors.add("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "ID: " +  t.kind + " - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     System.out.println("Erro: '" + t.image + "' - Tipo: 'IDENTIFICADOR_INVALIDO'  -  " + "Id: '" +  t.kind + "' - Linha: '" + t.beginLine + "'  -  Coluna: '" + t.beginColumn + "'\n");
                     hasLexicalErrors = true;
                     contLexicalErrors++;
@@ -193,9 +196,15 @@ public class Language20221{
         }
     }
 
+    public List<InstructionK> getInstructions() {
+        return this.instructionList;
+    }
+
     public String analyze(String args[], String textToAnalyze) throws ParseException  {
         Language20221 language20221 = this.readInput(args, textToAnalyze);
+        StringBuilder errosLexicos = new StringBuilder("");
         StringBuilder errosSintaticos = new StringBuilder("");
+        StringBuilder errosSemanticos = new StringBuilder("");
 
         this.leituraDeTokens();
         tokens.append("<EOF>");
@@ -204,6 +213,8 @@ public class Language20221{
             if(!hasLexicalErrors){
                 language20221.begin_program();
             } else {
+                language20221 = null;
+                errosLexicos.append(errorListToString("Erros lexicos encontrados", lexicalErrors));
                 return lexicalErrors.toString();
             }
         }catch (ParseException ex) {
@@ -222,32 +233,52 @@ public class Language20221{
              return errosSintaticos.toString();
         }
         errosSintaticos.append("Sintaticamente correto!");
+
+        this.semanticErrors = acoesSemanticas.getListaErros();
+        if (semanticErrors.size() > 0) {
+            errosSemanticos.append(errorListToString("Erros semanticos encontrados", semanticErrors));
+            language20221 = null;
+            return errosSemanticos.toString();
+        }
+        this.instructionList = acoesSemanticas.getInstructionKList();
+        errosSemanticos.append("Semantico OK!\n");
+
         language20221 = null;
-        return errosSintaticos.toString();
+        return errosSemanticos.toString();
     }
 
-        private Language20221 readInput(String args[], String textToAnalyze) {
-            Language20221 sintatico = null;
-            if(args.length == 0){
-                System.out.println("Reading from received text!");
-                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-                sintatico = new Language20221(targetStream);
-            }
-            else if(args.length == 1){
-                try{
-                    sintatico = new Language20221(new java.io.FileInputStream(args[0]));
-                }
-                catch(java.io.FileNotFoundException e){
-                    System.err.println(args[0] + " was not found." );
-                    System.err.println(e);
-                }
-            }
-            else{
-                System.out.println("Use:\njava Sintatico < inputFile");
-                System.out.println("or java Sintatico inputFile");
-            }
-            return sintatico;
+    public String errorListToString(String message, List<String> errors) {
+        StringBuilder sb = new StringBuilder(message);
+        System.out.println("tamanho da lista de erros:  " + errors.size());
+        sb.append(String.format(" : %s", errors.size())).append("\u005cn");
+        for (String s : errors) {
+            sb.append(s).append("\u005cn");
         }
+        return sb.toString();
+    }
+
+    private Language20221 readInput(String args[], String textToAnalyze) {
+        Language20221 sintatico = null;
+        if(args.length == 0){
+            System.out.println("Lendo do texto recebido!");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+            sintatico = new Language20221(targetStream);
+        }
+        else if(args.length == 1){
+            try{
+                sintatico = new Language20221(new java.io.FileInputStream(args[0]));
+            }
+            catch(java.io.FileNotFoundException e){
+                System.err.println(args[0] + " nao foi encontrado." );
+                System.err.println(e);
+            }
+        }
+        else{
+            System.out.println("Use:\njava Sintatico < inputFile");
+            System.out.println("or java Sintatico inputFile");
+        }
+        return sintatico;
+    }
 
     public void consumeUntil(RecoverySet g, ParseException e, String met) throws  ParseException {
         Token tok;
@@ -284,7 +315,16 @@ public class Language20221{
     public String getSyntacticErrors() {
         return this.syntaticsErrors.toString();
     }
+
+    public boolean hasAnyErrors() {
+        return lexicalErrors.size()!=0
+        || syntaticsErrors.size()!=0
+        || semanticErrors.size()!= 0;
+    }
+
 }
+
+
 
 PARSER_END(Language20221)
 
@@ -413,7 +453,7 @@ TOKEN :
     |   < OPERADOR_LOGICO_NAO: "!">
 }
 
-//Operador Atribuição
+//Operador Atribuicao
 TOKEN :
 {
     < OPERADOR_ATRIBUICAO: "=">
@@ -470,16 +510,19 @@ TOKEN : {       //Caracteres que não são reconhecidos pela linguagem
                 ("")(<LETRA>|<DIGITO>|(""))*>
 }
 
+////////// INICIO DAS ACOES SEMANTICAS
+
 void enum_values(): {} {
-    constant_result() | <IDENTIFICADOR>
+    <IDENTIFICADOR> {acoesSemanticas.acao4();} constant_result()
 }
 
 void inner_enum_declaration(RecoverySet r) : {} {
     try {
-        <IDENTIFICADOR> <PALAVRA_RESERVADA_IS> enum_values() inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <IDENTIFICADOR> {acoesSemanticas.acao3();} <PALAVRA_RESERVADA_IS> enum_values()
+        inner_enum_decla_cont() <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }
     catch (ParseException e){
-           consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+           consumeUntil(r, e, "Erro: declaracao de sintaxe de enum invalida");
            syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum interna incorreta.\n", e));
         }
 }
@@ -495,62 +538,83 @@ void enum_declaration(RecoverySet r) : {} {
         (<PALAVRA_RESERVADA_DECLARATION> declaration_constants_and_variables(r))?
     }
     catch (ParseException e){
-       consumeUntil(r, e, "Error: Invalid enum declaration syntax.");
+       consumeUntil(r, e, "Erro: sintaxe de declaracao de enum invalida");
        syntaticsErrors.add(new ErrorStruct("Erro: declaracao de enum incorreta.\n", e));
     }
 }
 
 void identifiers() : {} {
     <IDENTIFICADOR> index()
+}
 
-
+void identifiers_list_constant() : {} {
+    try {
+        identifiers() {acoesSemanticas.acao9(getToken(0));} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+    }catch (ParseException e){
+        syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
+    }
 }
 
 void identifiers_list() : {} {
     try {
-        identifiers() (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
+        identifiers() {acoesSemanticas.acao10(getToken(0));} (<SIMBOLO_ESPECIAL_VIRGULA> identifiers())*
     }catch (ParseException e){
         syntaticsErrors.add(new ErrorStruct("Erro: Lista de identificadores incorreto.\n", e));
     }
 }
 
 void type_declaration() : {} {
-    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+    <PALAVRA_RESERVADA_INTEGER>  {acoesSemanticas.acao13();}
+    | <PALAVRA_RESERVADA_REAL> {acoesSemanticas.acao14();}
+    | <PALAVRA_RESERVADA_STRING>  {acoesSemanticas.acao15();}
+    | <PALAVRA_RESERVADA_LOGIC> {acoesSemanticas.acao16(getToken(0));}
+    | <IDENTIFICADOR> {acoesSemanticas.acao17(getToken(0));}
+
 }
 
 void variable_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    identifiers_list() <PALAVRA_RESERVADA_IS> type_declaration() {acoesSemanticas.acao6();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
 }
 
 void type_constant() : {} {
-    <PALAVRA_RESERVADA_INTEGER> | <PALAVRA_RESERVADA_REAL> | <PALAVRA_RESERVADA_STRING> | <PALAVRA_RESERVADA_LOGIC>
+    <PALAVRA_RESERVADA_INTEGER> {acoesSemanticas.acao13();}
+    |<PALAVRA_RESERVADA_REAL>   {acoesSemanticas.acao14();}
+    | <PALAVRA_RESERVADA_STRING>    {acoesSemanticas.acao15();}
+    | <PALAVRA_RESERVADA_LOGIC>     {acoesSemanticas.acao16(getToken(0));}
+    | <IDENTIFICADOR>
 }
 
 void end_constant() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5();} (constant_declaration())+
 }
 
 void start_variable() : {} {
-    <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+ (end_constant())?
+    <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8();} (variable_declaration())+ (end_constant())?
+}
+
+void constant_declaration_loop(): {} {
+    (constant_declaration())?
 }
 
 void constant_declaration() : {} {
-    identifiers_list() <PALAVRA_RESERVADA_IS> type_constant() <OPERADOR_ATRIBUICAO> constant_result() <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    identifiers_list_constant() <PALAVRA_RESERVADA_IS> type_constant() {acoesSemanticas.acao6();}
+    <OPERADOR_ATRIBUICAO> constant_result() {acoesSemanticas.acao7(getToken(0).image);} <SIMBOLO_ESPECIAL_PONTO_FINAL>
+    constant_declaration_loop()
 }
 
 void end_variable() : {} {
-    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> (variable_declaration())+
+    <PALAVRA_RESERVADA_AS> <PALAVRA_RESERVADA_VARIABLE> {acoesSemanticas.acao8();} (variable_declaration())+
 }
 
 void start_constant() : {} {
-    <PALAVRA_RESERVADA_CONSTANT> (constant_declaration())+ (end_variable())?
+    <PALAVRA_RESERVADA_CONSTANT> {acoesSemanticas.acao5();} (constant_declaration())+ (end_variable())?
 }
 
 void start_declaration(RecoverySet r) : {} {
     try{
         start_variable() | start_constant()
     }catch (ParseException e){
-         consumeUntil(r, e, "Error: Invalid declaration body.\n");
+         consumeUntil(r, e, "Erro: declaracao de corpo do programa invalido.\n");
          syntaticsErrors.add(new ErrorStruct("Erro: Declaracao de variavel/constante errado.\n", e));
      }
 }
@@ -559,32 +623,34 @@ void inner_declaration(RecoverySet r) : {} {
     try {
         <PALAVRA_RESERVADA_AS> start_declaration(r)
     }catch (ParseException e){
-        consumeUntil(r, e, "Error: Invalid declaration body.\n");
-        syntaticsErrors.add(new ErrorStruct("Error: Bad inner declaration of as.\n", e));
+        consumeUntil(r, e, "Erro: declaracao de corpo do programa invalido.\n");
+        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao interna incorreta\n", e));
     }
 }
 
 void declaration_constants_and_variables(RecoverySet r) : {} {
     try{
-       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE> <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
+       <PALAVRA_RESERVADA_CONSTANT> <PALAVRA_RESERVADA_AND> <PALAVRA_RESERVADA_VARIABLE>
+       <SIMBOLO_ESPECIAL_ABRE_COLCHETES> inner_declaration(r) <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }
     catch (ParseException e){
         consumeUntil(r, e, "declaration_constants_and_variables");
-        syntaticsErrors.add(new ErrorStruct("Error: Forma geral de declaracao de constante e variaval incorreta.\n", e));
+        syntaticsErrors.add(new ErrorStruct("Erro: Forma geral de declaracao de constante e variaval incorreta.\n", e));
     }
 }
 
 void constant_result() : {} {
-        <CONSTANTE_LITERAL>
-    |   <CONSTANTE_NUMERICA_INTEIRA>
-    |   <CONSTANTE_NUMERICA_REAL>
+    <IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao25(getToken(0));}
+    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
+    |   <CONSTANTE_NUMERICA_INTEIRA>   {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
+    |   <CONSTANTE_NUMERICA_REAL>   {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
 }
 
 void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
-            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> {acoesSemanticas.acao30();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> true_result_cont()
-        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        |   <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT>  {acoesSemanticas.acao31();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> untrue_result_cont()
     }catch (ParseException e){
         consumeUntil(r, e, "");
@@ -595,7 +661,7 @@ void logic_result(RecoverySet r ) : {RecoverySet g = new RecoverySet(SIMBOLO_ESP
 void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
         (
-            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_UNTRUE> <PALAVRA_RESERVADA_RESULT> {acoesSemanticas.acao32();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
         |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
@@ -608,7 +674,7 @@ void true_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECH
 void untrue_result_cont() : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);} {
     try {
         (
-            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+            <PALAVRA_RESERVADA_TRUE> <PALAVRA_RESERVADA_RESULT>  {acoesSemanticas.acao32();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(g) <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
         )
         |   <SIMBOLO_ESPECIAL_PONTO_FINAL>
@@ -663,12 +729,12 @@ void arithmetic_or_logic_expression(RecoverySet g) : {} {
 
 void expression_cont(RecoverySet g) : {} {
     (
-            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))
-        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))
+            (<OPERADOR_RELACIONAL_IGUAL> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao36();}
+        |   (<OPERADOR_RELACIONAL_DIFERENTE> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao37();}
+        |   (<OPERADOR_RELACIONAL_MENOR> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao38();}
+        |   (<OPERADOR_RELACIONAL_MAIOR> arithmetic_or_logic_expression(g)) {acoesSemanticas.acao39();}
+        |   (<OPERADOR_RELACIONAL_MENOR_IGUAL> arithmetic_or_logic_expression(g))   {acoesSemanticas.acao40();}
+        |   (<OPERADOR_RELACIONAL_MAIOR_IGUAL> arithmetic_or_logic_expression(g))   {acoesSemanticas.acao41();}
     )?
 }
 
@@ -681,39 +747,40 @@ void second_term(RecoverySet g) : {} {
 }
 
 void element(RecoverySet g) : {} {
-        (<IDENTIFICADOR> index())
-    |   <CONSTANTE_NUMERICA_INTEIRA>
-    |   <CONSTANTE_NUMERICA_REAL>
-    |   <CONSTANTE_LITERAL>
-    |   <PALAVRA_RESERVADA_TRUE>
-    |   <PALAVRA_RESERVADA_UNTRUE>
+        (<IDENTIFICADOR> {acoesSemanticas.acao24(getToken(0));} index() {acoesSemanticas.acao51(getToken(0));})
+    |   <CONSTANTE_NUMERICA_INTEIRA>  {acoesSemanticas.acao26(Integer.parseInt(getToken(0).image));}
+    |   <CONSTANTE_NUMERICA_REAL> {acoesSemanticas.acao27(Float.parseFloat(getToken(0).image));}
+    |   <CONSTANTE_LITERAL> {acoesSemanticas.acao28(getToken(0).image);}
+    |   <PALAVRA_RESERVADA_TRUE> {acoesSemanticas.acao52();}
+    |   <PALAVRA_RESERVADA_UNTRUE> {acoesSemanticas.acao53();}
     |   (<SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
-    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES>)
+    |   (<OPERADOR_LOGICO_NAO> <SIMBOLO_ESPECIAL_ABRE_PARENTESES> expression(g) <SIMBOLO_ESPECIAL_FECHA_PARENTESES> {acoesSemanticas.acao54();})
 }
 
 void index() : {} {
-    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?
+    (<SIMBOLO_ESPECIAL_ABRE_CHAVES> <CONSTANTE_NUMERICA_INTEIRA> {acoesSemanticas.acao12(getToken(0));}
+    <SIMBOLO_ESPECIAL_FECHA_CHAVES>)?   {acoesSemanticas.acao11(getToken(0));}
 }
 
 void top_priority_operators(RecoverySet g) : {} {
-    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*
+    (<OPERADOR_ARITMETICO_POTENCIACAO> element(g))*  {acoesSemanticas.acao50();}
 }
 
 void medium_priority_operators(RecoverySet g) : {} {
     (
-            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g))
-        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))
-        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))
-        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g))
-        |   (<OPERADOR_LOGICO_E> first_term(g))
+            (<OPERADOR_ARITMETICO_MULTIPLICACAO> first_term(g)) {acoesSemanticas.acao45();}
+        |   (<OPERADOR_ARITMETICO_DIVISAO> first_term(g))   {acoesSemanticas.acao46();}
+        |   (<OPERADOR_ARITMETICO_DIVISAO_INTEIRA> first_term(g))   {acoesSemanticas.acao47();}
+        |   (<OPERADOR_ARITMETICO_RESTO_DIVISAO_INTEIRA> first_term(g)) {acoesSemanticas.acao48();}
+        |   (<OPERADOR_LOGICO_E> first_term(g)) {acoesSemanticas.acao49();}
     )*
 }
 
 void lesser_priority_operators(RecoverySet g) : {} {
     (
-            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))
-        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))
-        |   (<OPERADOR_LOGICO_OU> second_term(g))
+            (<OPERADOR_ARITMETICO_ADICAO> second_term(g))   {acoesSemanticas.acao42();}
+        |   (<OPERADOR_ARITMETICO_SUBTRACAO> second_term(g))    {acoesSemanticas.acao43();}
+        |   (<OPERADOR_LOGICO_OU> second_term(g))      {acoesSemanticas.acao44();}
     )*
 }
 
@@ -722,9 +789,10 @@ void repeat(RecoverySet r) : {
         RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_FECHA_COLCHETES);
 }{
     try {
-        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> expression(g) <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_REPEAT> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao33();} expression(g)
+        {acoesSemanticas.acao34();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
             list_of_commands(h)
-        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <SIMBOLO_ESPECIAL_FECHA_COLCHETES> {acoesSemanticas.acao35();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando repeat incorreta. \n", e));
@@ -735,7 +803,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
     try {
         <PALAVRA_RESERVADA_AVALIATE> <PALAVRA_RESERVADA_THIS>
         expression(First.selection_command)
-        logic_result(g)
+        logic_result(g) {acoesSemanticas.acao29();}
     }catch (ParseException e){
            consumeUntil(r, e, "");
            syntaticsErrors.add(new ErrorStruct("Erro: Declaracao do comando avaliate incorreta. \n", e));
@@ -744,7 +812,7 @@ void avaliate(RecoverySet r) : {RecoverySet g = new RecoverySet(SIMBOLO_ESPECIAL
 
 void write(RecoverySet g) : {} {
     try {
-        <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao22();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(g, e, "list_of_commands");
@@ -754,7 +822,7 @@ void write(RecoverySet g) : {} {
 
 void write_all(RecoverySet g) : {} {
     try {
-        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_ALL> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao21();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         write_body() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(g, e, "");
@@ -785,8 +853,8 @@ void write_body_cont() : {} {
 
 void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIAL_PONTO_FINAL);} {
     try {
-        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> identifiers_list()
-        <PALAVRA_RESERVADA_AS> expression(h) <SIMBOLO_ESPECIAL_PONTO_FINAL>
+        <PALAVRA_RESERVADA_DESIGNATE> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao18();} identifiers_list()
+        <PALAVRA_RESERVADA_AS> expression(h) {acoesSemanticas.acao19();} <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
        consumeUntil(r, e, "");
        syntaticsErrors.add(new ErrorStruct("Erro: Erro de atribuicao (designate).\n", e));
@@ -795,7 +863,7 @@ void designate(RecoverySet r) : {RecoverySet h = new RecoverySet(SIMBOLO_ESPECIA
 
 void read(RecoverySet r) : {} {
     try {
-        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_READ> <PALAVRA_RESERVADA_THIS> {acoesSemanticas.acao20();} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         identifiers_list() <SIMBOLO_ESPECIAL_FECHA_COLCHETES> <SIMBOLO_ESPECIAL_PONTO_FINAL>
     }catch (ParseException e){
         consumeUntil(r, e, "read");
@@ -804,7 +872,7 @@ void read(RecoverySet r) : {} {
 
 void header(RecoverySet r) : {} {
     try {
-        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
+        <PALAVRA_RESERVADA_DO> <PALAVRA_RESERVADA_THIS> <IDENTIFICADOR> {acoesSemanticas.acao1(getToken(0));} <SIMBOLO_ESPECIAL_ABRE_COLCHETES>
         <SIMBOLO_ESPECIAL_FECHA_COLCHETES>
     }catch (ParseException e){
         consumeUntil(r, e, "header");
@@ -844,6 +912,7 @@ void main(RecoverySet r) : {
             declarations(h)
             body(r.union(l))
             desc(r)
+            {acoesSemanticas.acao2();}
     }catch (ParseException e){
         consumeUntil(r, e, "main");
     }

@@ -8,7 +8,9 @@
 <?import org.fxmisc.richtext.CodeArea?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/14"
             fx:controller="gui.Controller">
-    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+    <VBox AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
         <HBox>
             <MenuBar>
@@ -25,11 +27,12 @@
                     <MenuItem fx:id="pasteMenuItem" text="Colar" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compilacao">
-                    <MenuItem text="Compilar" onAction="#compileProgram"/>
-                    <MenuItem disable="true" text="Executar"/>
+                    <MenuItem fx:id="compileMenuItem" text="Compilar" onAction="#compileProgram"/>
+                    <MenuItem fx:id="runMenuItem" disable="true" text="Executar" onAction="#runButton"/>
                 </Menu>
             </MenuBar>
         </HBox>
+
         <HBox>
             <ToolBar>
                 <Button fx:id="newBtn" onAction="#newFileDialog">
@@ -104,7 +107,7 @@
                         <Tooltip text="Compilar"/>
                     </tooltip>
                 </Button>
-                <Button fx:id="runBtn" disable="true">
+                <Button fx:id="runBtn" onAction="#runButton" disable="true" >
                     <graphic>
                         <ImageView>
                             <Image url="@icones/executar.png"/>
@@ -116,28 +119,54 @@
                 </Button>
             </ToolBar>
         </HBox>
-        <VBox VBox.vgrow="ALWAYS">
-            <Label>Entrada</Label>
-            <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
-                <VirtualizedScrollPane HBox.hgrow="ALWAYS">
-                    <content>
-                        <CodeArea fx:id="inputTextArea"/>
-                    </content>
-                </VirtualizedScrollPane>
-            </HBox>
-            <Label>Saída</Label>
-            <HBox>
-                <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
-            </HBox>
-            <HBox>
-                <Label fx:id="statusBar">Status ...</Label>
-            </HBox>
-            <HBox>
-                <Label fx:id="lineColLabel">Linha/Coluna</Label>
-            </HBox>
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-            </padding>
-        </VBox>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <VBox VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                <Label>Entrada de dados</Label>
+                <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
+                    <VirtualizedScrollPane HBox.hgrow="ALWAYS">
+                        <content>
+                            <CodeArea fx:id="inputTextArea"/>
+                        </content>
+                    </VirtualizedScrollPane>
+                </HBox>
+                <Label>Saída</Label>
+                <HBox>
+                    <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <Label text="Console de entrada" />
+                <HBox>
+                    <children>
+                        <TextArea fx:id="consoleInput" disable="true" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+                <HBox>
+                    <Label fx:id="statusBar">Status ...</Label>
+                </HBox>
+                <HBox>
+                    <Label fx:id="lineColLabel">Linha/Coluna</Label>
+                </HBox>
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </VBox>
+
+            <VBox VBox.vgrow="ALWAYS">
+                <HBox VBox.vgrow="ALWAYS">
+                    <TableView fx:id="instructionTable" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="instructionNumberCol" text="Número"/>
+                            <TableColumn fx:id="instructionMnemonicCol" text="Mnemonico"/>
+                            <TableColumn fx:id="instructionParameterCol" text="Parametro"/>
+                        </columns>
+                        <HBox.margin>
+                            <Insets left="10.0" bottom="10.0" right="10.0"/>
+                        </HBox.margin>
+                    </TableView>
+                </HBox>
+            </VBox>
+        </HBox>
     </VBox>
+
+
 </AnchorPane>

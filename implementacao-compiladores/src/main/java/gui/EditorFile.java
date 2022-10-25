@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public class EditorFile {
     public static final String FILE_EXT = "txt";
+    public static File LAST_CURRENT_WORKING_DIR = new File(System.getProperty("user.dir"));
     private File file = null;
 
     public EditorFile(){};
@@ -53,6 +54,7 @@ public class EditorFile {
         try {
             FileUtils.write(target, contents, StandardCharsets.UTF_8);
             this.file = target;
+            this.LAST_CURRENT_WORKING_DIR = this.file.getParentFile();
         } catch (IOException e) {
             e.printStackTrace();
             return FileStatus.IO_ERROR;
@@ -68,7 +70,7 @@ public class EditorFile {
         if (hasValidExt) {
             return true;
         }
-        System.err.printf("File doesn't have a valid extension, want %s, have %s\n", FILE_EXT, FilenameUtils.getExtension(file.getName()));
+        System.err.printf("Arquivo com extensao invalida", FILE_EXT, FilenameUtils.getExtension(file.getName()));
         return false;
     }
 

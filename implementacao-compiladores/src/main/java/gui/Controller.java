@@ -1,9 +1,15 @@
 package gui;
 
 import classes.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import maquinavirtual.*;
 import util.AlertFactory;
 import util.Operation;
+import maquinavirtual.VirtualMachineK;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,25 +22,44 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import classes.Language20221;
 
 public class Controller {
+    private List<InstructionK> insList;
+    private VirtualMachineK vm;
     private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
     private static boolean hasOpenFile = false;
+    private boolean isReadingConsole = false;
+    // tabela da máquina virtual
+    @FXML
+    private TableView<InstructionK> instructionTable;
+    @FXML
+    private TableColumn<InstructionK, Integer> instructionNumberCol;
+    @FXML
+    private TableColumn<InstructionK, String> instructionMnemonicCol;
+    @FXML
+    private TableColumn<InstructionK, String> instructionParameterCol;
     @FXML
     private Stage stage;
     public CodeArea inputTextArea;
     public TextArea messageTextArea;
+    public TextArea consoleInput;
     public Label statusBar, lineColLabel;
     // Menu bar items
     public MenuItem saveMenuItem, saveAsMenuItem, exitProgramItem;
     public MenuItem cutMenuItem, copyMenuItem, pasteMenuItem;
+    public MenuItem compileMenuItem, runMenuItem;
     //  Menu toolbar buttons
     public Button newBtn, openBtn, saveBtn;
     public Button copyBtn, cutBtn, pasteBtn;
     public Button buildBtn, runBtn;
+
+
+
+
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -44,9 +69,9 @@ public class Controller {
         }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
-        filePicker.setInitialDirectory(new File(System.getProperty("user.dir")));
+        filePicker.setInitialDirectory(EditorFile.LAST_CURRENT_WORKING_DIR);
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
-
+        // Error handling
         if (!editorFile.isFileStatusOK()) {
             Alert alert = AlertFactory.create
                     (
@@ -58,6 +83,7 @@ public class Controller {
             alert.showAndWait();
             return;
         }
+        EditorFile.LAST_CURRENT_WORKING_DIR = editorFile.getFile().getParentFile();
         fileContentsToCodeArea();
     }
 
@@ -67,11 +93,12 @@ public class Controller {
             return;
         }
         inputTextArea.clear();
-        clearMessageArea();
+        //clearMessageArea();
+        messageTextArea.clear();
         hasOpenFile = false;
         this.editorFile.setFile(null);
         updateStageTitle();
-        setStatusMsg("");
+        //setStatusMsg("");
     }
 
     private void fileContentsToCodeArea() {
@@ -114,6 +141,7 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
+        System.out.println("Salvar como");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -182,7 +210,14 @@ public class Controller {
         saveBtn.setDisable(b);
         saveMenuItem.setDisable(b);
     }
-
+    public void disableEditOptions(boolean b) {
+        cutBtn.setDisable(b);
+        cutMenuItem.setDisable(b);
+        copyBtn.setDisable(b);
+        copyMenuItem.setDisable(b);
+        pasteBtn.setDisable(b);
+        pasteMenuItem.setDisable(b);
+    }
     public void setStatusMsg(String msg) {
         statusBar.setText(String.format("Status: %s", msg));
     }
@@ -268,17 +303,15 @@ public class Controller {
         }
     }
 
-    /*public void compileProgram(ActionEvent actionEvent) {
-        if (this.inputTextArea.getText().length() == 0) {
-            return;
-        }
-        checkLexical();
-        checkSyntax();
-    }*/
+    public void disableRunBtn() {
+        consoleInput.setDisable(true);
+        runMenuItem.setDisable(true);
+        runBtn.setDisable(true);
+    }
 
-    public void compileProgram(ActionEvent actionEvent) throws ParseException {
+    public boolean compileProgram() throws ParseException {
         //messageTextArea.clear();
-        actionEvent.consume();
+        disableRunBtn();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create
                     (
@@ -288,19 +321,130 @@ public class Controller {
                             "Um arquivo vazio nao pode ser compilado"
                     );
             alert.show();
-            return;
+            return false;
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
-        Language20221 tokenizer = new Language20221(targetStream);
-        String result = tokenizer.analyze(args, inputTextArea.getText());
-        //messageTextArea.setText("Qtd Erros Lexicos: " + tokenizer.getContLexicalErrors()
-        //    + "\n" + tokenizer.getLexicalErrors()); //result);
+        Language20221 language20221 = new Language20221(targetStream);
+        String result = language20221.analyze(args, inputTextArea.getText());
+        //messageTextArea.setText("Qtd Erros Lexicos: " + language20221.getContLexicalErrors()
+        //    + "\n" + language20221.getLexicalErrors()); //result);
         messageTextArea.setText(result);
         System.out.println(result);
-        //tokenizer.limpaClasse();
+
+        if (language20221.hasAnyErrors()) {
+            System.out.println("Ha erros!");
+            return false;
+        } else {
+            this.insList = language20221.getInstructions();
+            System.out.println("tamanho da lista: " + insList.size());
+            System.out.println("ENTROU NA PARTE DE MOSTRAR AS INSTRUÇÕES");
+            displayInstructions(this.insList);
+            System.out.println(result);
+        }
+        consoleInput.setDisable(false);
+        runMenuItem.setDisable(false);
+        runBtn.setDisable(false);
+        return true;
     }
 
+    public void runButton(ActionEvent actionEvent) throws ParseException {
+        if (handleVMmaybeRunning() == Operation.SUCCESS) {
+            if (compileProgram()) {
+                this.vm = new VirtualMachineK(insList);
+                this.isReadingConsole = false;
+                runVirtualMachine();
+            }
+        }
+    }
+
+    public Operation handleVMmaybeRunning() {
+        if (vm == null || vm.getStatus() == VirtualMachineStatusK.HALTED) {
+            return Operation.SUCCESS;
+        }
+        var confirm = AlertFactory.create(
+                Alert.AlertType.CONFIRMATION,
+                "Confirmação", "",
+                "Máquina virtual ainda está rodando, você deseja para a operação?"
+        );
+        Optional<ButtonType> optional = Optional.empty();
+        var op = Operation.CANCELED;
+        if (
+                vm.getStatus() == VirtualMachineStatusK.RUNNING
+                        || vm.getStatus() == VirtualMachineStatusK.SYSCALL_IO_READ
+                        || vm.getStatus() == VirtualMachineStatusK.SYSCALL_IO_WRITE)
+        {
+            optional = confirm.showAndWait();
+        }
+        if (optional.isEmpty()) {
+            return Operation.CANCELED;
+        }
+        var buttonData = optional.get().getButtonData();
+        if (buttonData.equals(ButtonType.OK.getButtonData())) {
+            vm = null;
+            this.messageTextArea.clear();
+            setStatusMsg("VM fechada de forma forçada");
+            return Operation.SUCCESS;
+        }
+        if (buttonData.equals(ButtonType.CANCEL.getButtonData())) {
+            return Operation.CANCELED;
+        }
+        return op;
+    }
+
+    public void runVirtualMachine() {
+        try {
+            while (vm.getStatus() != VirtualMachineStatusK.HALTED) {
+                if (isReadingConsole) {
+                    return;
+                }
+                statusBar.setText("Executando maquina virtual");
+                System.out.println("Executando maquina virtual");
+                vm.executeAll();
+                switch (vm.getStatus()) {
+                    case SYSCALL_IO_READ -> {
+                        handleSyscallRead(vm.getSyscallDataTypeK());
+                    }
+                    case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
+                }
+            }
+            statusBar.setText("Maquina virtual terminada, programa encerrado");
+        } catch (Exception e) {
+            statusBar.setText("Erro em tempo de execução da VM, finalizando VM!");
+            this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
+            e.printStackTrace();
+            this.vm.setStatus(VirtualMachineStatusK.HALTED);
+            this.isReadingConsole = false;
+            this.consoleInput.setDisable(true);
+        }
+    }
+
+    private void handleSyscallWrite(Object o) {
+        messageTextArea.appendText("\n" + o.toString());
+    }
+
+    private void handleSyscallRead(DataTypeK o) {
+        consoleInput.setDisable(false);
+        isReadingConsole = true;
+        statusBar.setText("Aguardando entrada de " + o.toString());
+        consoleInput.setOnKeyReleased(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                vm.setSyscallData(consoleInput.getText().trim());
+                messageTextArea.appendText("\n--> " + consoleInput.getText().trim());
+                consoleInput.setDisable(true);
+                consoleInput.clear();
+                isReadingConsole = false;
+                runVirtualMachine();
+            }
+        });
+    }
+
+    private void displayInstructions(List<InstructionK> instructions) {
+        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
+        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
+        instructionTable.setItems(getObservableListOf(instructions));
+    }
 
     public String copySelection() {
         String selection = inputTextArea.getSelectedText();
@@ -316,5 +460,8 @@ public class Controller {
 
     public void pasteFromClipboard() {
         inputTextArea.paste();
+    }
+    private ObservableList<InstructionK> getObservableListOf(List<InstructionK> instructionList) {
+        return FXCollections.observableArrayList(instructionList);
     }
 }
